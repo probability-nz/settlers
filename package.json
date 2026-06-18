@@ -1,0 +1,19 @@
+{
+  "name": "settlers-probability-example",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "generate:assets": "node scripts/generate-assets.mjs",
+    "arrange:pieces": "node scripts/arrange-pieces.mjs",
+    "validate": "node scripts/validate-manifest.mjs",
+    "build": "pnpm generate:assets && pnpm arrange:pieces && pnpm validate",
+    "dev": "vite --host 127.0.0.1 --port 9208 --strictPort"
+  },
+  "dependencies": {
+    "@probability-nz/types": "file:../sdk/packages/types",
+    "three": "^0.184.0"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}
