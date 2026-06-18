@@ -1,0 +1,3561 @@
+{
+  "$schema": "https://registry.probabilityusercontent.nz/npm/@probability-nz/types/-/types-0.0.0.tgz/dist/analog.json",
+  "templates": {
+    "ocean": {
+      "name": "OCEAN BOARD",
+      "src": "models/ocean.gltf",
+      "locked": true
+    },
+    "tileBrick": {
+      "name": "BRICK TILE",
+      "src": "models/tile-brick.gltf",
+      "locked": true
+    },
+    "tileDesert": {
+      "name": "DESERT TILE",
+      "src": "models/tile-desert.gltf",
+      "locked": true
+    },
+    "tileGrain": {
+      "name": "GRAIN TILE",
+      "src": "models/tile-grain.gltf",
+      "locked": true
+    },
+    "tileLumber": {
+      "name": "LUMBER TILE",
+      "src": "models/tile-lumber.gltf",
+      "locked": true
+    },
+    "tileOre": {
+      "name": "ORE TILE",
+      "src": "models/tile-ore.gltf",
+      "locked": true
+    },
+    "tileWool": {
+      "name": "WOOL TILE",
+      "src": "models/tile-wool.gltf",
+      "locked": true
+    },
+    "harbor31": {
+      "name": "3:1 HARBOR",
+      "src": "models/harbor-3-1.gltf",
+      "locked": true
+    },
+    "harborBrick": {
+      "name": "BRICK 2:1 HARBOR",
+      "src": "models/harbor-brick.gltf",
+      "locked": true
+    },
+    "harborGrain": {
+      "name": "GRAIN 2:1 HARBOR",
+      "src": "models/harbor-grain.gltf",
+      "locked": true
+    },
+    "harborLumber": {
+      "name": "LUMBER 2:1 HARBOR",
+      "src": "models/harbor-lumber.gltf",
+      "locked": true
+    },
+    "harborOre": {
+      "name": "ORE 2:1 HARBOR",
+      "src": "models/harbor-ore.gltf",
+      "locked": true
+    },
+    "harborWool": {
+      "name": "WOOL 2:1 HARBOR",
+      "src": "models/harbor-wool.gltf",
+      "locked": true
+    },
+    "robber": {
+      "name": "ROBBER",
+      "src": "models/robber.gltf"
+    },
+    "road": {
+      "name": "ROAD",
+      "src": "models/road.gltf"
+    },
+    "settlement": {
+      "name": "SETTLEMENT",
+      "src": "models/settlement.gltf"
+    },
+    "house": {
+      "name": "CITY",
+      "src": "models/house.gltf"
+    },
+    "counter2": {
+      "name": "2 COUNTER",
+      "src": "models/counter-2.gltf",
+      "locked": true
+    },
+    "counter3": {
+      "name": "3 COUNTER",
+      "src": "models/counter-3.gltf",
+      "locked": true
+    },
+    "counter4": {
+      "name": "4 COUNTER",
+      "src": "models/counter-4.gltf",
+      "locked": true
+    },
+    "counter5": {
+      "name": "5 COUNTER",
+      "src": "models/counter-5.gltf",
+      "locked": true
+    },
+    "counter6": {
+      "name": "6 COUNTER",
+      "src": "models/counter-6.gltf",
+      "locked": true
+    },
+    "counter8": {
+      "name": "8 COUNTER",
+      "src": "models/counter-8.gltf",
+      "locked": true
+    },
+    "counter9": {
+      "name": "9 COUNTER",
+      "src": "models/counter-9.gltf",
+      "locked": true
+    },
+    "counter10": {
+      "name": "10 COUNTER",
+      "src": "models/counter-10.gltf",
+      "locked": true
+    },
+    "counter11": {
+      "name": "11 COUNTER",
+      "src": "models/counter-11.gltf",
+      "locked": true
+    },
+    "counter12": {
+      "name": "12 COUNTER",
+      "src": "models/counter-12.gltf",
+      "locked": true
+    },
+    "resourceCardBrick": {
+      "name": "BRICK RESOURCE CARD",
+      "src": "models/resource-card-brick.gltf"
+    },
+    "resourceCardGrain": {
+      "name": "GRAIN RESOURCE CARD",
+      "src": "models/resource-card-grain.gltf"
+    },
+    "resourceCardLumber": {
+      "name": "LUMBER RESOURCE CARD",
+      "src": "models/resource-card-lumber.gltf"
+    },
+    "resourceCardOre": {
+      "name": "ORE RESOURCE CARD",
+      "src": "models/resource-card-ore.gltf"
+    },
+    "resourceCardWool": {
+      "name": "WOOL RESOURCE CARD",
+      "src": "models/resource-card-wool.gltf"
+    },
+    "knightCard": {
+      "name": "KNIGHT CARD",
+      "src": "models/knight-card.gltf"
+    },
+    "roadBuildingCard": {
+      "name": "ROAD BUILDING CARD",
+      "src": "models/road-building-card.gltf"
+    },
+    "yearOfPlentyCard": {
+      "name": "YEAR OF PLENTY CARD",
+      "src": "models/year-of-plenty-card.gltf"
+    },
+    "monopolyCard": {
+      "name": "MONOPOLY CARD",
+      "src": "models/monopoly-card.gltf"
+    },
+    "chapelCard": {
+      "name": "CHAPEL CARD",
+      "src": "models/chapel-card.gltf"
+    },
+    "greatHallCard": {
+      "name": "GREAT HALL CARD",
+      "src": "models/great-hall-card.gltf"
+    },
+    "libraryCard": {
+      "name": "LIBRARY CARD",
+      "src": "models/library-card.gltf"
+    },
+    "marketCard": {
+      "name": "MARKET CARD",
+      "src": "models/market-card.gltf"
+    },
+    "universityCard": {
+      "name": "UNIVERSITY CARD",
+      "src": "models/university-card.gltf"
+    },
+    "largestArmyCard": {
+      "name": "LARGEST ARMY CARD",
+      "src": "models/largest-army-card.gltf"
+    },
+    "longestRoadCard": {
+      "name": "LONGEST ROAD CARD",
+      "src": "models/longest-road-card.gltf"
+    },
+    "buildingCostCard": {
+      "name": "BUILDING COST CARD",
+      "src": "models/building-cost-card.gltf"
+    },
+    "businessCard": {
+      "name": "BUSINESS CARD",
+      "src": "models/business-card.gltf"
+    }
+  },
+  "scenarios": [
+    {
+      "name": "PREMADE SETTLERS BOARD",
+      "children": [
+        {
+          "template": "ocean",
+          "name": "OCEAN",
+          "position": [
+            0,
+            null,
+            0
+          ],
+          "children": [
+            {
+              "template": "tileOre",
+              "name": "ORE 5",
+              "position": [
+                -0.0789,
+                null,
+                -0.1366
+              ],
+              "children": [
+                {
+                  "template": "counter5",
+                  "name": "ORE 5 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileGrain",
+              "name": "GRAIN 2",
+              "position": [
+                0,
+                null,
+                -0.1366
+              ],
+              "children": [
+                {
+                  "template": "counter2",
+                  "name": "GRAIN 2 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileLumber",
+              "name": "LUMBER 6",
+              "position": [
+                0.0789,
+                null,
+                -0.1366
+              ],
+              "children": [
+                {
+                  "template": "counter6",
+                  "name": "LUMBER 6 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileWool",
+              "name": "WOOL 3",
+              "position": [
+                -0.1183,
+                null,
+                -0.0683
+              ],
+              "children": [
+                {
+                  "template": "counter3",
+                  "name": "WOOL 3 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileBrick",
+              "name": "BRICK 8",
+              "position": [
+                -0.0394,
+                null,
+                -0.0683
+              ],
+              "children": [
+                {
+                  "template": "counter8",
+                  "name": "BRICK 8 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileOre",
+              "name": "ORE 10",
+              "position": [
+                0.0394,
+                null,
+                -0.0683
+              ],
+              "children": [
+                {
+                  "template": "counter10",
+                  "name": "ORE 10 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileGrain",
+              "name": "GRAIN 9",
+              "position": [
+                0.1183,
+                null,
+                -0.0683
+              ],
+              "children": [
+                {
+                  "template": "counter9",
+                  "name": "GRAIN 9 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileLumber",
+              "name": "LUMBER 11",
+              "position": [
+                -0.1577,
+                null,
+                0
+              ],
+              "children": [
+                {
+                  "template": "counter11",
+                  "name": "LUMBER 11 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileWool",
+              "name": "WOOL 4",
+              "position": [
+                -0.0789,
+                null,
+                0
+              ],
+              "children": [
+                {
+                  "template": "counter4",
+                  "name": "WOOL 4 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileDesert",
+              "name": "DESERT",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "children": [
+                {
+                  "template": "robber",
+                  "name": "ROBBER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileBrick",
+              "name": "BRICK 3",
+              "position": [
+                0.0789,
+                null,
+                0
+              ],
+              "children": [
+                {
+                  "template": "counter3",
+                  "name": "BRICK 3 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileOre",
+              "name": "ORE 8",
+              "position": [
+                0.1577,
+                null,
+                0
+              ],
+              "children": [
+                {
+                  "template": "counter8",
+                  "name": "ORE 8 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileGrain",
+              "name": "GRAIN 4",
+              "position": [
+                -0.1183,
+                null,
+                0.0683
+              ],
+              "children": [
+                {
+                  "template": "counter4",
+                  "name": "GRAIN 4 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileLumber",
+              "name": "LUMBER 10",
+              "position": [
+                -0.0394,
+                null,
+                0.0683
+              ],
+              "children": [
+                {
+                  "template": "counter10",
+                  "name": "LUMBER 10 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileWool",
+              "name": "WOOL 9",
+              "position": [
+                0.0394,
+                null,
+                0.0683
+              ],
+              "children": [
+                {
+                  "template": "counter9",
+                  "name": "WOOL 9 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileBrick",
+              "name": "BRICK 12",
+              "position": [
+                0.1183,
+                null,
+                0.0683
+              ],
+              "children": [
+                {
+                  "template": "counter12",
+                  "name": "BRICK 12 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileWool",
+              "name": "WOOL 6",
+              "position": [
+                -0.0789,
+                null,
+                0.1366
+              ],
+              "children": [
+                {
+                  "template": "counter6",
+                  "name": "WOOL 6 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileGrain",
+              "name": "GRAIN 5",
+              "position": [
+                0,
+                null,
+                0.1366
+              ],
+              "children": [
+                {
+                  "template": "counter5",
+                  "name": "GRAIN 5 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "tileLumber",
+              "name": "LUMBER 11",
+              "position": [
+                0.0789,
+                null,
+                0.1366
+              ],
+              "children": [
+                {
+                  "template": "counter11",
+                  "name": "LUMBER 11 COUNTER",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ]
+                }
+              ]
+            },
+            {
+              "template": "harbor31",
+              "name": "Generic harbor 1",
+              "position": [
+                -0.1183,
+                null,
+                -0.2049
+              ]
+            },
+            {
+              "template": "harborBrick",
+              "name": "Brick harbor",
+              "position": [
+                0.0394,
+                null,
+                -0.2049
+              ]
+            },
+            {
+              "template": "harbor31",
+              "name": "Generic harbor 2",
+              "position": [
+                0.1578,
+                null,
+                -0.1366
+              ]
+            },
+            {
+              "template": "harborLumber",
+              "name": "Lumber harbor",
+              "position": [
+                0.2367,
+                null,
+                0
+              ]
+            },
+            {
+              "template": "harborWool",
+              "name": "Wool harbor",
+              "position": [
+                0.1578,
+                null,
+                0.1366
+              ]
+            },
+            {
+              "template": "harborOre",
+              "name": "Ore harbor",
+              "position": [
+                0.0394,
+                null,
+                0.2049
+              ]
+            },
+            {
+              "template": "harbor31",
+              "name": "Generic harbor 3",
+              "position": [
+                -0.1183,
+                null,
+                0.2049
+              ]
+            },
+            {
+              "template": "harborGrain",
+              "name": "Grain harbor",
+              "position": [
+                -0.1972,
+                null,
+                0.0683
+              ]
+            },
+            {
+              "template": "harbor31",
+              "name": "Generic harbor 4",
+              "position": [
+                -0.1972,
+                null,
+                -0.0683
+              ]
+            }
+          ]
+        },
+        {
+          "template": "resourceCardBrick",
+          "name": "BRICK RESOURCE CARD-1",
+          "position": [
+            0.34,
+            null,
+            -0.18
+          ],
+          "rotation": [
+            180,
+            0,
+            0
+          ],
+          "children": [
+            {
+              "template": "resourceCardBrick",
+              "name": "BRICK RESOURCE CARD-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "rotation": [
+                180,
+                0,
+                0
+              ],
+              "children": [
+                {
+                  "template": "resourceCardBrick",
+                  "name": "BRICK RESOURCE CARD-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "rotation": [
+                    180,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "template": "resourceCardBrick",
+                      "name": "BRICK RESOURCE CARD-4",
+                      "position": [
+                        0,
+                        null,
+                        0
+                      ],
+                      "rotation": [
+                        180,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "template": "resourceCardBrick",
+                          "name": "BRICK RESOURCE CARD-5",
+                          "position": [
+                            0,
+                            null,
+                            0
+                          ],
+                          "rotation": [
+                            180,
+                            0,
+                            0
+                          ],
+                          "children": [
+                            {
+                              "template": "resourceCardBrick",
+                              "name": "BRICK RESOURCE CARD-6",
+                              "position": [
+                                0,
+                                null,
+                                0
+                              ],
+                              "rotation": [
+                                180,
+                                0,
+                                0
+                              ],
+                              "children": [
+                                {
+                                  "template": "resourceCardBrick",
+                                  "name": "BRICK RESOURCE CARD-7",
+                                  "position": [
+                                    0,
+                                    null,
+                                    0
+                                  ],
+                                  "rotation": [
+                                    180,
+                                    0,
+                                    0
+                                  ],
+                                  "children": [
+                                    {
+                                      "template": "resourceCardBrick",
+                                      "name": "BRICK RESOURCE CARD-8",
+                                      "position": [
+                                        0,
+                                        null,
+                                        0
+                                      ],
+                                      "rotation": [
+                                        180,
+                                        0,
+                                        0
+                                      ],
+                                      "children": [
+                                        {
+                                          "template": "resourceCardBrick",
+                                          "name": "BRICK RESOURCE CARD-9",
+                                          "position": [
+                                            0,
+                                            null,
+                                            0
+                                          ],
+                                          "rotation": [
+                                            180,
+                                            0,
+                                            0
+                                          ],
+                                          "children": [
+                                            {
+                                              "template": "resourceCardBrick",
+                                              "name": "BRICK RESOURCE CARD-10",
+                                              "position": [
+                                                0,
+                                                null,
+                                                0
+                                              ],
+                                              "rotation": [
+                                                180,
+                                                0,
+                                                0
+                                              ],
+                                              "children": [
+                                                {
+                                                  "template": "resourceCardBrick",
+                                                  "name": "BRICK RESOURCE CARD-11",
+                                                  "position": [
+                                                    0,
+                                                    null,
+                                                    0
+                                                  ],
+                                                  "rotation": [
+                                                    180,
+                                                    0,
+                                                    0
+                                                  ],
+                                                  "children": [
+                                                    {
+                                                      "template": "resourceCardBrick",
+                                                      "name": "BRICK RESOURCE CARD-12",
+                                                      "position": [
+                                                        0,
+                                                        null,
+                                                        0
+                                                      ],
+                                                      "rotation": [
+                                                        180,
+                                                        0,
+                                                        0
+                                                      ],
+                                                      "children": [
+                                                        {
+                                                          "template": "resourceCardBrick",
+                                                          "name": "BRICK RESOURCE CARD-13",
+                                                          "position": [
+                                                            0,
+                                                            null,
+                                                            0
+                                                          ],
+                                                          "rotation": [
+                                                            180,
+                                                            0,
+                                                            0
+                                                          ],
+                                                          "children": [
+                                                            {
+                                                              "template": "resourceCardBrick",
+                                                              "name": "BRICK RESOURCE CARD-14",
+                                                              "position": [
+                                                                0,
+                                                                null,
+                                                                0
+                                                              ],
+                                                              "rotation": [
+                                                                180,
+                                                                0,
+                                                                0
+                                                              ],
+                                                              "children": [
+                                                                {
+                                                                  "template": "resourceCardBrick",
+                                                                  "name": "BRICK RESOURCE CARD-15",
+                                                                  "position": [
+                                                                    0,
+                                                                    null,
+                                                                    0
+                                                                  ],
+                                                                  "rotation": [
+                                                                    180,
+                                                                    0,
+                                                                    0
+                                                                  ],
+                                                                  "children": [
+                                                                    {
+                                                                      "template": "resourceCardBrick",
+                                                                      "name": "BRICK RESOURCE CARD-16",
+                                                                      "position": [
+                                                                        0,
+                                                                        null,
+                                                                        0
+                                                                      ],
+                                                                      "rotation": [
+                                                                        180,
+                                                                        0,
+                                                                        0
+                                                                      ],
+                                                                      "children": [
+                                                                        {
+                                                                          "template": "resourceCardBrick",
+                                                                          "name": "BRICK RESOURCE CARD-17",
+                                                                          "position": [
+                                                                            0,
+                                                                            null,
+                                                                            0
+                                                                          ],
+                                                                          "rotation": [
+                                                                            180,
+                                                                            0,
+                                                                            0
+                                                                          ],
+                                                                          "children": [
+                                                                            {
+                                                                              "template": "resourceCardBrick",
+                                                                              "name": "BRICK RESOURCE CARD-18",
+                                                                              "position": [
+                                                                                0,
+                                                                                null,
+                                                                                0
+                                                                              ],
+                                                                              "rotation": [
+                                                                                180,
+                                                                                0,
+                                                                                0
+                                                                              ],
+                                                                              "children": [
+                                                                                {
+                                                                                  "template": "resourceCardBrick",
+                                                                                  "name": "BRICK RESOURCE CARD-19",
+                                                                                  "position": [
+                                                                                    0,
+                                                                                    null,
+                                                                                    0
+                                                                                  ],
+                                                                                  "rotation": [
+                                                                                    180,
+                                                                                    0,
+                                                                                    0
+                                                                                  ]
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "resourceCardLumber",
+          "name": "LUMBER RESOURCE CARD-1",
+          "position": [
+            0.34,
+            null,
+            -0.09
+          ],
+          "rotation": [
+            180,
+            0,
+            0
+          ],
+          "children": [
+            {
+              "template": "resourceCardLumber",
+              "name": "LUMBER RESOURCE CARD-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "rotation": [
+                180,
+                0,
+                0
+              ],
+              "children": [
+                {
+                  "template": "resourceCardLumber",
+                  "name": "LUMBER RESOURCE CARD-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "rotation": [
+                    180,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "template": "resourceCardLumber",
+                      "name": "LUMBER RESOURCE CARD-4",
+                      "position": [
+                        0,
+                        null,
+                        0
+                      ],
+                      "rotation": [
+                        180,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "template": "resourceCardLumber",
+                          "name": "LUMBER RESOURCE CARD-5",
+                          "position": [
+                            0,
+                            null,
+                            0
+                          ],
+                          "rotation": [
+                            180,
+                            0,
+                            0
+                          ],
+                          "children": [
+                            {
+                              "template": "resourceCardLumber",
+                              "name": "LUMBER RESOURCE CARD-6",
+                              "position": [
+                                0,
+                                null,
+                                0
+                              ],
+                              "rotation": [
+                                180,
+                                0,
+                                0
+                              ],
+                              "children": [
+                                {
+                                  "template": "resourceCardLumber",
+                                  "name": "LUMBER RESOURCE CARD-7",
+                                  "position": [
+                                    0,
+                                    null,
+                                    0
+                                  ],
+                                  "rotation": [
+                                    180,
+                                    0,
+                                    0
+                                  ],
+                                  "children": [
+                                    {
+                                      "template": "resourceCardLumber",
+                                      "name": "LUMBER RESOURCE CARD-8",
+                                      "position": [
+                                        0,
+                                        null,
+                                        0
+                                      ],
+                                      "rotation": [
+                                        180,
+                                        0,
+                                        0
+                                      ],
+                                      "children": [
+                                        {
+                                          "template": "resourceCardLumber",
+                                          "name": "LUMBER RESOURCE CARD-9",
+                                          "position": [
+                                            0,
+                                            null,
+                                            0
+                                          ],
+                                          "rotation": [
+                                            180,
+                                            0,
+                                            0
+                                          ],
+                                          "children": [
+                                            {
+                                              "template": "resourceCardLumber",
+                                              "name": "LUMBER RESOURCE CARD-10",
+                                              "position": [
+                                                0,
+                                                null,
+                                                0
+                                              ],
+                                              "rotation": [
+                                                180,
+                                                0,
+                                                0
+                                              ],
+                                              "children": [
+                                                {
+                                                  "template": "resourceCardLumber",
+                                                  "name": "LUMBER RESOURCE CARD-11",
+                                                  "position": [
+                                                    0,
+                                                    null,
+                                                    0
+                                                  ],
+                                                  "rotation": [
+                                                    180,
+                                                    0,
+                                                    0
+                                                  ],
+                                                  "children": [
+                                                    {
+                                                      "template": "resourceCardLumber",
+                                                      "name": "LUMBER RESOURCE CARD-12",
+                                                      "position": [
+                                                        0,
+                                                        null,
+                                                        0
+                                                      ],
+                                                      "rotation": [
+                                                        180,
+                                                        0,
+                                                        0
+                                                      ],
+                                                      "children": [
+                                                        {
+                                                          "template": "resourceCardLumber",
+                                                          "name": "LUMBER RESOURCE CARD-13",
+                                                          "position": [
+                                                            0,
+                                                            null,
+                                                            0
+                                                          ],
+                                                          "rotation": [
+                                                            180,
+                                                            0,
+                                                            0
+                                                          ],
+                                                          "children": [
+                                                            {
+                                                              "template": "resourceCardLumber",
+                                                              "name": "LUMBER RESOURCE CARD-14",
+                                                              "position": [
+                                                                0,
+                                                                null,
+                                                                0
+                                                              ],
+                                                              "rotation": [
+                                                                180,
+                                                                0,
+                                                                0
+                                                              ],
+                                                              "children": [
+                                                                {
+                                                                  "template": "resourceCardLumber",
+                                                                  "name": "LUMBER RESOURCE CARD-15",
+                                                                  "position": [
+                                                                    0,
+                                                                    null,
+                                                                    0
+                                                                  ],
+                                                                  "rotation": [
+                                                                    180,
+                                                                    0,
+                                                                    0
+                                                                  ],
+                                                                  "children": [
+                                                                    {
+                                                                      "template": "resourceCardLumber",
+                                                                      "name": "LUMBER RESOURCE CARD-16",
+                                                                      "position": [
+                                                                        0,
+                                                                        null,
+                                                                        0
+                                                                      ],
+                                                                      "rotation": [
+                                                                        180,
+                                                                        0,
+                                                                        0
+                                                                      ],
+                                                                      "children": [
+                                                                        {
+                                                                          "template": "resourceCardLumber",
+                                                                          "name": "LUMBER RESOURCE CARD-17",
+                                                                          "position": [
+                                                                            0,
+                                                                            null,
+                                                                            0
+                                                                          ],
+                                                                          "rotation": [
+                                                                            180,
+                                                                            0,
+                                                                            0
+                                                                          ],
+                                                                          "children": [
+                                                                            {
+                                                                              "template": "resourceCardLumber",
+                                                                              "name": "LUMBER RESOURCE CARD-18",
+                                                                              "position": [
+                                                                                0,
+                                                                                null,
+                                                                                0
+                                                                              ],
+                                                                              "rotation": [
+                                                                                180,
+                                                                                0,
+                                                                                0
+                                                                              ],
+                                                                              "children": [
+                                                                                {
+                                                                                  "template": "resourceCardLumber",
+                                                                                  "name": "LUMBER RESOURCE CARD-19",
+                                                                                  "position": [
+                                                                                    0,
+                                                                                    null,
+                                                                                    0
+                                                                                  ],
+                                                                                  "rotation": [
+                                                                                    180,
+                                                                                    0,
+                                                                                    0
+                                                                                  ]
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "resourceCardWool",
+          "name": "WOOL RESOURCE CARD-1",
+          "position": [
+            0.34,
+            null,
+            0
+          ],
+          "rotation": [
+            180,
+            0,
+            0
+          ],
+          "children": [
+            {
+              "template": "resourceCardWool",
+              "name": "WOOL RESOURCE CARD-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "rotation": [
+                180,
+                0,
+                0
+              ],
+              "children": [
+                {
+                  "template": "resourceCardWool",
+                  "name": "WOOL RESOURCE CARD-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "rotation": [
+                    180,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "template": "resourceCardWool",
+                      "name": "WOOL RESOURCE CARD-4",
+                      "position": [
+                        0,
+                        null,
+                        0
+                      ],
+                      "rotation": [
+                        180,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "template": "resourceCardWool",
+                          "name": "WOOL RESOURCE CARD-5",
+                          "position": [
+                            0,
+                            null,
+                            0
+                          ],
+                          "rotation": [
+                            180,
+                            0,
+                            0
+                          ],
+                          "children": [
+                            {
+                              "template": "resourceCardWool",
+                              "name": "WOOL RESOURCE CARD-6",
+                              "position": [
+                                0,
+                                null,
+                                0
+                              ],
+                              "rotation": [
+                                180,
+                                0,
+                                0
+                              ],
+                              "children": [
+                                {
+                                  "template": "resourceCardWool",
+                                  "name": "WOOL RESOURCE CARD-7",
+                                  "position": [
+                                    0,
+                                    null,
+                                    0
+                                  ],
+                                  "rotation": [
+                                    180,
+                                    0,
+                                    0
+                                  ],
+                                  "children": [
+                                    {
+                                      "template": "resourceCardWool",
+                                      "name": "WOOL RESOURCE CARD-8",
+                                      "position": [
+                                        0,
+                                        null,
+                                        0
+                                      ],
+                                      "rotation": [
+                                        180,
+                                        0,
+                                        0
+                                      ],
+                                      "children": [
+                                        {
+                                          "template": "resourceCardWool",
+                                          "name": "WOOL RESOURCE CARD-9",
+                                          "position": [
+                                            0,
+                                            null,
+                                            0
+                                          ],
+                                          "rotation": [
+                                            180,
+                                            0,
+                                            0
+                                          ],
+                                          "children": [
+                                            {
+                                              "template": "resourceCardWool",
+                                              "name": "WOOL RESOURCE CARD-10",
+                                              "position": [
+                                                0,
+                                                null,
+                                                0
+                                              ],
+                                              "rotation": [
+                                                180,
+                                                0,
+                                                0
+                                              ],
+                                              "children": [
+                                                {
+                                                  "template": "resourceCardWool",
+                                                  "name": "WOOL RESOURCE CARD-11",
+                                                  "position": [
+                                                    0,
+                                                    null,
+                                                    0
+                                                  ],
+                                                  "rotation": [
+                                                    180,
+                                                    0,
+                                                    0
+                                                  ],
+                                                  "children": [
+                                                    {
+                                                      "template": "resourceCardWool",
+                                                      "name": "WOOL RESOURCE CARD-12",
+                                                      "position": [
+                                                        0,
+                                                        null,
+                                                        0
+                                                      ],
+                                                      "rotation": [
+                                                        180,
+                                                        0,
+                                                        0
+                                                      ],
+                                                      "children": [
+                                                        {
+                                                          "template": "resourceCardWool",
+                                                          "name": "WOOL RESOURCE CARD-13",
+                                                          "position": [
+                                                            0,
+                                                            null,
+                                                            0
+                                                          ],
+                                                          "rotation": [
+                                                            180,
+                                                            0,
+                                                            0
+                                                          ],
+                                                          "children": [
+                                                            {
+                                                              "template": "resourceCardWool",
+                                                              "name": "WOOL RESOURCE CARD-14",
+                                                              "position": [
+                                                                0,
+                                                                null,
+                                                                0
+                                                              ],
+                                                              "rotation": [
+                                                                180,
+                                                                0,
+                                                                0
+                                                              ],
+                                                              "children": [
+                                                                {
+                                                                  "template": "resourceCardWool",
+                                                                  "name": "WOOL RESOURCE CARD-15",
+                                                                  "position": [
+                                                                    0,
+                                                                    null,
+                                                                    0
+                                                                  ],
+                                                                  "rotation": [
+                                                                    180,
+                                                                    0,
+                                                                    0
+                                                                  ],
+                                                                  "children": [
+                                                                    {
+                                                                      "template": "resourceCardWool",
+                                                                      "name": "WOOL RESOURCE CARD-16",
+                                                                      "position": [
+                                                                        0,
+                                                                        null,
+                                                                        0
+                                                                      ],
+                                                                      "rotation": [
+                                                                        180,
+                                                                        0,
+                                                                        0
+                                                                      ],
+                                                                      "children": [
+                                                                        {
+                                                                          "template": "resourceCardWool",
+                                                                          "name": "WOOL RESOURCE CARD-17",
+                                                                          "position": [
+                                                                            0,
+                                                                            null,
+                                                                            0
+                                                                          ],
+                                                                          "rotation": [
+                                                                            180,
+                                                                            0,
+                                                                            0
+                                                                          ],
+                                                                          "children": [
+                                                                            {
+                                                                              "template": "resourceCardWool",
+                                                                              "name": "WOOL RESOURCE CARD-18",
+                                                                              "position": [
+                                                                                0,
+                                                                                null,
+                                                                                0
+                                                                              ],
+                                                                              "rotation": [
+                                                                                180,
+                                                                                0,
+                                                                                0
+                                                                              ],
+                                                                              "children": [
+                                                                                {
+                                                                                  "template": "resourceCardWool",
+                                                                                  "name": "WOOL RESOURCE CARD-19",
+                                                                                  "position": [
+                                                                                    0,
+                                                                                    null,
+                                                                                    0
+                                                                                  ],
+                                                                                  "rotation": [
+                                                                                    180,
+                                                                                    0,
+                                                                                    0
+                                                                                  ]
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "resourceCardGrain",
+          "name": "GRAIN RESOURCE CARD-1",
+          "position": [
+            0.34,
+            null,
+            0.09
+          ],
+          "rotation": [
+            180,
+            0,
+            0
+          ],
+          "children": [
+            {
+              "template": "resourceCardGrain",
+              "name": "GRAIN RESOURCE CARD-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "rotation": [
+                180,
+                0,
+                0
+              ],
+              "children": [
+                {
+                  "template": "resourceCardGrain",
+                  "name": "GRAIN RESOURCE CARD-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "rotation": [
+                    180,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "template": "resourceCardGrain",
+                      "name": "GRAIN RESOURCE CARD-4",
+                      "position": [
+                        0,
+                        null,
+                        0
+                      ],
+                      "rotation": [
+                        180,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "template": "resourceCardGrain",
+                          "name": "GRAIN RESOURCE CARD-5",
+                          "position": [
+                            0,
+                            null,
+                            0
+                          ],
+                          "rotation": [
+                            180,
+                            0,
+                            0
+                          ],
+                          "children": [
+                            {
+                              "template": "resourceCardGrain",
+                              "name": "GRAIN RESOURCE CARD-6",
+                              "position": [
+                                0,
+                                null,
+                                0
+                              ],
+                              "rotation": [
+                                180,
+                                0,
+                                0
+                              ],
+                              "children": [
+                                {
+                                  "template": "resourceCardGrain",
+                                  "name": "GRAIN RESOURCE CARD-7",
+                                  "position": [
+                                    0,
+                                    null,
+                                    0
+                                  ],
+                                  "rotation": [
+                                    180,
+                                    0,
+                                    0
+                                  ],
+                                  "children": [
+                                    {
+                                      "template": "resourceCardGrain",
+                                      "name": "GRAIN RESOURCE CARD-8",
+                                      "position": [
+                                        0,
+                                        null,
+                                        0
+                                      ],
+                                      "rotation": [
+                                        180,
+                                        0,
+                                        0
+                                      ],
+                                      "children": [
+                                        {
+                                          "template": "resourceCardGrain",
+                                          "name": "GRAIN RESOURCE CARD-9",
+                                          "position": [
+                                            0,
+                                            null,
+                                            0
+                                          ],
+                                          "rotation": [
+                                            180,
+                                            0,
+                                            0
+                                          ],
+                                          "children": [
+                                            {
+                                              "template": "resourceCardGrain",
+                                              "name": "GRAIN RESOURCE CARD-10",
+                                              "position": [
+                                                0,
+                                                null,
+                                                0
+                                              ],
+                                              "rotation": [
+                                                180,
+                                                0,
+                                                0
+                                              ],
+                                              "children": [
+                                                {
+                                                  "template": "resourceCardGrain",
+                                                  "name": "GRAIN RESOURCE CARD-11",
+                                                  "position": [
+                                                    0,
+                                                    null,
+                                                    0
+                                                  ],
+                                                  "rotation": [
+                                                    180,
+                                                    0,
+                                                    0
+                                                  ],
+                                                  "children": [
+                                                    {
+                                                      "template": "resourceCardGrain",
+                                                      "name": "GRAIN RESOURCE CARD-12",
+                                                      "position": [
+                                                        0,
+                                                        null,
+                                                        0
+                                                      ],
+                                                      "rotation": [
+                                                        180,
+                                                        0,
+                                                        0
+                                                      ],
+                                                      "children": [
+                                                        {
+                                                          "template": "resourceCardGrain",
+                                                          "name": "GRAIN RESOURCE CARD-13",
+                                                          "position": [
+                                                            0,
+                                                            null,
+                                                            0
+                                                          ],
+                                                          "rotation": [
+                                                            180,
+                                                            0,
+                                                            0
+                                                          ],
+                                                          "children": [
+                                                            {
+                                                              "template": "resourceCardGrain",
+                                                              "name": "GRAIN RESOURCE CARD-14",
+                                                              "position": [
+                                                                0,
+                                                                null,
+                                                                0
+                                                              ],
+                                                              "rotation": [
+                                                                180,
+                                                                0,
+                                                                0
+                                                              ],
+                                                              "children": [
+                                                                {
+                                                                  "template": "resourceCardGrain",
+                                                                  "name": "GRAIN RESOURCE CARD-15",
+                                                                  "position": [
+                                                                    0,
+                                                                    null,
+                                                                    0
+                                                                  ],
+                                                                  "rotation": [
+                                                                    180,
+                                                                    0,
+                                                                    0
+                                                                  ],
+                                                                  "children": [
+                                                                    {
+                                                                      "template": "resourceCardGrain",
+                                                                      "name": "GRAIN RESOURCE CARD-16",
+                                                                      "position": [
+                                                                        0,
+                                                                        null,
+                                                                        0
+                                                                      ],
+                                                                      "rotation": [
+                                                                        180,
+                                                                        0,
+                                                                        0
+                                                                      ],
+                                                                      "children": [
+                                                                        {
+                                                                          "template": "resourceCardGrain",
+                                                                          "name": "GRAIN RESOURCE CARD-17",
+                                                                          "position": [
+                                                                            0,
+                                                                            null,
+                                                                            0
+                                                                          ],
+                                                                          "rotation": [
+                                                                            180,
+                                                                            0,
+                                                                            0
+                                                                          ],
+                                                                          "children": [
+                                                                            {
+                                                                              "template": "resourceCardGrain",
+                                                                              "name": "GRAIN RESOURCE CARD-18",
+                                                                              "position": [
+                                                                                0,
+                                                                                null,
+                                                                                0
+                                                                              ],
+                                                                              "rotation": [
+                                                                                180,
+                                                                                0,
+                                                                                0
+                                                                              ],
+                                                                              "children": [
+                                                                                {
+                                                                                  "template": "resourceCardGrain",
+                                                                                  "name": "GRAIN RESOURCE CARD-19",
+                                                                                  "position": [
+                                                                                    0,
+                                                                                    null,
+                                                                                    0
+                                                                                  ],
+                                                                                  "rotation": [
+                                                                                    180,
+                                                                                    0,
+                                                                                    0
+                                                                                  ]
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "resourceCardOre",
+          "name": "ORE RESOURCE CARD-1",
+          "position": [
+            0.34,
+            null,
+            0.18
+          ],
+          "rotation": [
+            180,
+            0,
+            0
+          ],
+          "children": [
+            {
+              "template": "resourceCardOre",
+              "name": "ORE RESOURCE CARD-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "rotation": [
+                180,
+                0,
+                0
+              ],
+              "children": [
+                {
+                  "template": "resourceCardOre",
+                  "name": "ORE RESOURCE CARD-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "rotation": [
+                    180,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "template": "resourceCardOre",
+                      "name": "ORE RESOURCE CARD-4",
+                      "position": [
+                        0,
+                        null,
+                        0
+                      ],
+                      "rotation": [
+                        180,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "template": "resourceCardOre",
+                          "name": "ORE RESOURCE CARD-5",
+                          "position": [
+                            0,
+                            null,
+                            0
+                          ],
+                          "rotation": [
+                            180,
+                            0,
+                            0
+                          ],
+                          "children": [
+                            {
+                              "template": "resourceCardOre",
+                              "name": "ORE RESOURCE CARD-6",
+                              "position": [
+                                0,
+                                null,
+                                0
+                              ],
+                              "rotation": [
+                                180,
+                                0,
+                                0
+                              ],
+                              "children": [
+                                {
+                                  "template": "resourceCardOre",
+                                  "name": "ORE RESOURCE CARD-7",
+                                  "position": [
+                                    0,
+                                    null,
+                                    0
+                                  ],
+                                  "rotation": [
+                                    180,
+                                    0,
+                                    0
+                                  ],
+                                  "children": [
+                                    {
+                                      "template": "resourceCardOre",
+                                      "name": "ORE RESOURCE CARD-8",
+                                      "position": [
+                                        0,
+                                        null,
+                                        0
+                                      ],
+                                      "rotation": [
+                                        180,
+                                        0,
+                                        0
+                                      ],
+                                      "children": [
+                                        {
+                                          "template": "resourceCardOre",
+                                          "name": "ORE RESOURCE CARD-9",
+                                          "position": [
+                                            0,
+                                            null,
+                                            0
+                                          ],
+                                          "rotation": [
+                                            180,
+                                            0,
+                                            0
+                                          ],
+                                          "children": [
+                                            {
+                                              "template": "resourceCardOre",
+                                              "name": "ORE RESOURCE CARD-10",
+                                              "position": [
+                                                0,
+                                                null,
+                                                0
+                                              ],
+                                              "rotation": [
+                                                180,
+                                                0,
+                                                0
+                                              ],
+                                              "children": [
+                                                {
+                                                  "template": "resourceCardOre",
+                                                  "name": "ORE RESOURCE CARD-11",
+                                                  "position": [
+                                                    0,
+                                                    null,
+                                                    0
+                                                  ],
+                                                  "rotation": [
+                                                    180,
+                                                    0,
+                                                    0
+                                                  ],
+                                                  "children": [
+                                                    {
+                                                      "template": "resourceCardOre",
+                                                      "name": "ORE RESOURCE CARD-12",
+                                                      "position": [
+                                                        0,
+                                                        null,
+                                                        0
+                                                      ],
+                                                      "rotation": [
+                                                        180,
+                                                        0,
+                                                        0
+                                                      ],
+                                                      "children": [
+                                                        {
+                                                          "template": "resourceCardOre",
+                                                          "name": "ORE RESOURCE CARD-13",
+                                                          "position": [
+                                                            0,
+                                                            null,
+                                                            0
+                                                          ],
+                                                          "rotation": [
+                                                            180,
+                                                            0,
+                                                            0
+                                                          ],
+                                                          "children": [
+                                                            {
+                                                              "template": "resourceCardOre",
+                                                              "name": "ORE RESOURCE CARD-14",
+                                                              "position": [
+                                                                0,
+                                                                null,
+                                                                0
+                                                              ],
+                                                              "rotation": [
+                                                                180,
+                                                                0,
+                                                                0
+                                                              ],
+                                                              "children": [
+                                                                {
+                                                                  "template": "resourceCardOre",
+                                                                  "name": "ORE RESOURCE CARD-15",
+                                                                  "position": [
+                                                                    0,
+                                                                    null,
+                                                                    0
+                                                                  ],
+                                                                  "rotation": [
+                                                                    180,
+                                                                    0,
+                                                                    0
+                                                                  ],
+                                                                  "children": [
+                                                                    {
+                                                                      "template": "resourceCardOre",
+                                                                      "name": "ORE RESOURCE CARD-16",
+                                                                      "position": [
+                                                                        0,
+                                                                        null,
+                                                                        0
+                                                                      ],
+                                                                      "rotation": [
+                                                                        180,
+                                                                        0,
+                                                                        0
+                                                                      ],
+                                                                      "children": [
+                                                                        {
+                                                                          "template": "resourceCardOre",
+                                                                          "name": "ORE RESOURCE CARD-17",
+                                                                          "position": [
+                                                                            0,
+                                                                            null,
+                                                                            0
+                                                                          ],
+                                                                          "rotation": [
+                                                                            180,
+                                                                            0,
+                                                                            0
+                                                                          ],
+                                                                          "children": [
+                                                                            {
+                                                                              "template": "resourceCardOre",
+                                                                              "name": "ORE RESOURCE CARD-18",
+                                                                              "position": [
+                                                                                0,
+                                                                                null,
+                                                                                0
+                                                                              ],
+                                                                              "rotation": [
+                                                                                180,
+                                                                                0,
+                                                                                0
+                                                                              ],
+                                                                              "children": [
+                                                                                {
+                                                                                  "template": "resourceCardOre",
+                                                                                  "name": "ORE RESOURCE CARD-19",
+                                                                                  "position": [
+                                                                                    0,
+                                                                                    null,
+                                                                                    0
+                                                                                  ],
+                                                                                  "rotation": [
+                                                                                    180,
+                                                                                    0,
+                                                                                    0
+                                                                                  ]
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "knightCard",
+          "name": "KNIGHT CARD-1",
+          "position": [
+            0.34,
+            null,
+            0.31
+          ],
+          "children": [
+            {
+              "template": "knightCard",
+              "name": "KNIGHT CARD-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "children": [
+                {
+                  "template": "knightCard",
+                  "name": "KNIGHT CARD-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "template": "knightCard",
+                      "name": "KNIGHT CARD-4",
+                      "position": [
+                        0,
+                        null,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "template": "knightCard",
+                          "name": "KNIGHT CARD-5",
+                          "position": [
+                            0,
+                            null,
+                            0
+                          ],
+                          "children": [
+                            {
+                              "template": "knightCard",
+                              "name": "KNIGHT CARD-6",
+                              "position": [
+                                0,
+                                null,
+                                0
+                              ],
+                              "children": [
+                                {
+                                  "template": "knightCard",
+                                  "name": "KNIGHT CARD-7",
+                                  "position": [
+                                    0,
+                                    null,
+                                    0
+                                  ],
+                                  "children": [
+                                    {
+                                      "template": "knightCard",
+                                      "name": "KNIGHT CARD-8",
+                                      "position": [
+                                        0,
+                                        null,
+                                        0
+                                      ],
+                                      "children": [
+                                        {
+                                          "template": "knightCard",
+                                          "name": "KNIGHT CARD-9",
+                                          "position": [
+                                            0,
+                                            null,
+                                            0
+                                          ],
+                                          "children": [
+                                            {
+                                              "template": "knightCard",
+                                              "name": "KNIGHT CARD-10",
+                                              "position": [
+                                                0,
+                                                null,
+                                                0
+                                              ],
+                                              "children": [
+                                                {
+                                                  "template": "knightCard",
+                                                  "name": "KNIGHT CARD-11",
+                                                  "position": [
+                                                    0,
+                                                    null,
+                                                    0
+                                                  ],
+                                                  "children": [
+                                                    {
+                                                      "template": "knightCard",
+                                                      "name": "KNIGHT CARD-12",
+                                                      "position": [
+                                                        0,
+                                                        null,
+                                                        0
+                                                      ],
+                                                      "children": [
+                                                        {
+                                                          "template": "knightCard",
+                                                          "name": "KNIGHT CARD-13",
+                                                          "position": [
+                                                            0,
+                                                            null,
+                                                            0
+                                                          ],
+                                                          "children": [
+                                                            {
+                                                              "template": "knightCard",
+                                                              "name": "KNIGHT CARD-14",
+                                                              "position": [
+                                                                0,
+                                                                null,
+                                                                0
+                                                              ],
+                                                              "children": [
+                                                                {
+                                                                  "template": "roadBuildingCard",
+                                                                  "name": "ROAD BUILDING CARD-1",
+                                                                  "position": [
+                                                                    0,
+                                                                    null,
+                                                                    0
+                                                                  ],
+                                                                  "children": [
+                                                                    {
+                                                                      "template": "roadBuildingCard",
+                                                                      "name": "ROAD BUILDING CARD-2",
+                                                                      "position": [
+                                                                        0,
+                                                                        null,
+                                                                        0
+                                                                      ],
+                                                                      "children": [
+                                                                        {
+                                                                          "template": "yearOfPlentyCard",
+                                                                          "name": "YEAR OF PLENTY CARD-1",
+                                                                          "position": [
+                                                                            0,
+                                                                            null,
+                                                                            0
+                                                                          ],
+                                                                          "children": [
+                                                                            {
+                                                                              "template": "yearOfPlentyCard",
+                                                                              "name": "YEAR OF PLENTY CARD-2",
+                                                                              "position": [
+                                                                                0,
+                                                                                null,
+                                                                                0
+                                                                              ],
+                                                                              "children": [
+                                                                                {
+                                                                                  "template": "monopolyCard",
+                                                                                  "name": "MONOPOLY CARD-1",
+                                                                                  "position": [
+                                                                                    0,
+                                                                                    null,
+                                                                                    0
+                                                                                  ],
+                                                                                  "children": [
+                                                                                    {
+                                                                                      "template": "monopolyCard",
+                                                                                      "name": "MONOPOLY CARD-2",
+                                                                                      "position": [
+                                                                                        0,
+                                                                                        null,
+                                                                                        0
+                                                                                      ],
+                                                                                      "children": [
+                                                                                        {
+                                                                                          "template": "chapelCard",
+                                                                                          "name": "CHAPEL CARD-1",
+                                                                                          "position": [
+                                                                                            0,
+                                                                                            null,
+                                                                                            0
+                                                                                          ],
+                                                                                          "children": [
+                                                                                            {
+                                                                                              "template": "greatHallCard",
+                                                                                              "name": "GREAT HALL CARD-1",
+                                                                                              "position": [
+                                                                                                0,
+                                                                                                null,
+                                                                                                0
+                                                                                              ],
+                                                                                              "children": [
+                                                                                                {
+                                                                                                  "template": "libraryCard",
+                                                                                                  "name": "LIBRARY CARD-1",
+                                                                                                  "position": [
+                                                                                                    0,
+                                                                                                    null,
+                                                                                                    0
+                                                                                                  ],
+                                                                                                  "children": [
+                                                                                                    {
+                                                                                                      "template": "marketCard",
+                                                                                                      "name": "MARKET CARD-1",
+                                                                                                      "position": [
+                                                                                                        0,
+                                                                                                        null,
+                                                                                                        0
+                                                                                                      ],
+                                                                                                      "children": [
+                                                                                                        {
+                                                                                                          "template": "universityCard",
+                                                                                                          "name": "UNIVERSITY CARD-1",
+                                                                                                          "position": [
+                                                                                                            0,
+                                                                                                            null,
+                                                                                                            0
+                                                                                                          ]
+                                                                                                        }
+                                                                                                      ]
+                                                                                                    }
+                                                                                                  ]
+                                                                                                }
+                                                                                              ]
+                                                                                            }
+                                                                                          ]
+                                                                                        }
+                                                                                      ]
+                                                                                    }
+                                                                                  ]
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "businessCard",
+          "name": "BUSINESS CARD-1",
+          "position": [
+            -0.35,
+            null,
+            -0.21
+          ]
+        },
+        {
+          "template": "largestArmyCard",
+          "name": "LARGEST ARMY CARD-1",
+          "position": [
+            -0.35,
+            null,
+            -0.08
+          ],
+          "rotation": [
+            180,
+            0,
+            0
+          ]
+        },
+        {
+          "template": "longestRoadCard",
+          "name": "LONGEST ROAD CARD-1",
+          "position": [
+            -0.35,
+            null,
+            0.08
+          ],
+          "rotation": [
+            180,
+            0,
+            0
+          ]
+        },
+        {
+          "template": "buildingCostCard",
+          "name": "BUILDING COST CARD-1",
+          "position": [
+            -0.35,
+            null,
+            0.25
+          ],
+          "rotation": [
+            180,
+            0,
+            0
+          ]
+        },
+        {
+          "template": "road",
+          "name": "RED ROAD 1-1",
+          "position": [
+            0.43,
+            null,
+            -0.12
+          ],
+          "tint": "red",
+          "children": [
+            {
+              "template": "road",
+              "name": "RED ROAD 1-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "red",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "RED ROAD 1-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "red"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "road",
+          "name": "RED ROAD 2-1",
+          "position": [
+            0.43,
+            null,
+            -0.115
+          ],
+          "tint": "red",
+          "children": [
+            {
+              "template": "road",
+              "name": "RED ROAD 2-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "red",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "RED ROAD 2-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "red"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "road",
+          "name": "RED ROAD 3-1",
+          "position": [
+            0.43,
+            null,
+            -0.11
+          ],
+          "tint": "red",
+          "children": [
+            {
+              "template": "road",
+              "name": "RED ROAD 3-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "red",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "RED ROAD 3-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "red"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "road",
+          "name": "RED ROAD 4-1",
+          "position": [
+            0.43,
+            null,
+            -0.105
+          ],
+          "tint": "red",
+          "children": [
+            {
+              "template": "road",
+              "name": "RED ROAD 4-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "red",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "RED ROAD 4-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "red"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "road",
+          "name": "RED ROAD 5-1",
+          "position": [
+            0.43,
+            null,
+            -0.1
+          ],
+          "tint": "red",
+          "children": [
+            {
+              "template": "road",
+              "name": "RED ROAD 5-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "red",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "RED ROAD 5-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "red"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "settlement",
+          "name": "RED SETTLEMENT 1",
+          "position": [
+            0.43,
+            null,
+            -0.02
+          ],
+          "tint": "red"
+        },
+        {
+          "template": "settlement",
+          "name": "RED SETTLEMENT 2",
+          "position": [
+            0.43,
+            null,
+            -0.008
+          ],
+          "tint": "red"
+        },
+        {
+          "template": "settlement",
+          "name": "RED SETTLEMENT 3",
+          "position": [
+            0.43,
+            null,
+            0.004
+          ],
+          "tint": "red"
+        },
+        {
+          "template": "settlement",
+          "name": "RED SETTLEMENT 4",
+          "position": [
+            0.43,
+            null,
+            0.016
+          ],
+          "tint": "red"
+        },
+        {
+          "template": "settlement",
+          "name": "RED SETTLEMENT 5",
+          "position": [
+            0.43,
+            null,
+            0.028
+          ],
+          "tint": "red"
+        },
+        {
+          "template": "house",
+          "name": "RED CITY 1",
+          "position": [
+            0.43,
+            null,
+            0.07
+          ],
+          "tint": "red"
+        },
+        {
+          "template": "house",
+          "name": "RED CITY 2",
+          "position": [
+            0.43,
+            null,
+            0.082
+          ],
+          "tint": "red"
+        },
+        {
+          "template": "house",
+          "name": "RED CITY 3",
+          "position": [
+            0.43,
+            null,
+            0.094
+          ],
+          "tint": "red"
+        },
+        {
+          "template": "house",
+          "name": "RED CITY 4",
+          "position": [
+            0.43,
+            null,
+            0.106
+          ],
+          "tint": "red"
+        },
+        {
+          "template": "road",
+          "name": "BLUE ROAD 1-1",
+          "position": [
+            0.5,
+            null,
+            -0.12
+          ],
+          "tint": "blue",
+          "children": [
+            {
+              "template": "road",
+              "name": "BLUE ROAD 1-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "blue",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "BLUE ROAD 1-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "blue"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "road",
+          "name": "BLUE ROAD 2-1",
+          "position": [
+            0.5,
+            null,
+            -0.115
+          ],
+          "tint": "blue",
+          "children": [
+            {
+              "template": "road",
+              "name": "BLUE ROAD 2-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "blue",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "BLUE ROAD 2-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "blue"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "road",
+          "name": "BLUE ROAD 3-1",
+          "position": [
+            0.5,
+            null,
+            -0.11
+          ],
+          "tint": "blue",
+          "children": [
+            {
+              "template": "road",
+              "name": "BLUE ROAD 3-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "blue",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "BLUE ROAD 3-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "blue"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "road",
+          "name": "BLUE ROAD 4-1",
+          "position": [
+            0.5,
+            null,
+            -0.105
+          ],
+          "tint": "blue",
+          "children": [
+            {
+              "template": "road",
+              "name": "BLUE ROAD 4-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "blue",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "BLUE ROAD 4-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "blue"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "road",
+          "name": "BLUE ROAD 5-1",
+          "position": [
+            0.5,
+            null,
+            -0.1
+          ],
+          "tint": "blue",
+          "children": [
+            {
+              "template": "road",
+              "name": "BLUE ROAD 5-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "blue",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "BLUE ROAD 5-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "blue"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "settlement",
+          "name": "BLUE SETTLEMENT 1",
+          "position": [
+            0.5,
+            null,
+            -0.02
+          ],
+          "tint": "blue"
+        },
+        {
+          "template": "settlement",
+          "name": "BLUE SETTLEMENT 2",
+          "position": [
+            0.5,
+            null,
+            -0.008
+          ],
+          "tint": "blue"
+        },
+        {
+          "template": "settlement",
+          "name": "BLUE SETTLEMENT 3",
+          "position": [
+            0.5,
+            null,
+            0.004
+          ],
+          "tint": "blue"
+        },
+        {
+          "template": "settlement",
+          "name": "BLUE SETTLEMENT 4",
+          "position": [
+            0.5,
+            null,
+            0.016
+          ],
+          "tint": "blue"
+        },
+        {
+          "template": "settlement",
+          "name": "BLUE SETTLEMENT 5",
+          "position": [
+            0.5,
+            null,
+            0.028
+          ],
+          "tint": "blue"
+        },
+        {
+          "template": "house",
+          "name": "BLUE CITY 1",
+          "position": [
+            0.5,
+            null,
+            0.07
+          ],
+          "tint": "blue"
+        },
+        {
+          "template": "house",
+          "name": "BLUE CITY 2",
+          "position": [
+            0.5,
+            null,
+            0.082
+          ],
+          "tint": "blue"
+        },
+        {
+          "template": "house",
+          "name": "BLUE CITY 3",
+          "position": [
+            0.5,
+            null,
+            0.094
+          ],
+          "tint": "blue"
+        },
+        {
+          "template": "house",
+          "name": "BLUE CITY 4",
+          "position": [
+            0.5,
+            null,
+            0.106
+          ],
+          "tint": "blue"
+        },
+        {
+          "template": "road",
+          "name": "WHITE ROAD 1-1",
+          "position": [
+            0.57,
+            null,
+            -0.12
+          ],
+          "tint": "white",
+          "children": [
+            {
+              "template": "road",
+              "name": "WHITE ROAD 1-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "white",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "WHITE ROAD 1-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "white"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "road",
+          "name": "WHITE ROAD 2-1",
+          "position": [
+            0.57,
+            null,
+            -0.115
+          ],
+          "tint": "white",
+          "children": [
+            {
+              "template": "road",
+              "name": "WHITE ROAD 2-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "white",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "WHITE ROAD 2-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "white"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "road",
+          "name": "WHITE ROAD 3-1",
+          "position": [
+            0.57,
+            null,
+            -0.11
+          ],
+          "tint": "white",
+          "children": [
+            {
+              "template": "road",
+              "name": "WHITE ROAD 3-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "white",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "WHITE ROAD 3-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "white"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "road",
+          "name": "WHITE ROAD 4-1",
+          "position": [
+            0.57,
+            null,
+            -0.105
+          ],
+          "tint": "white",
+          "children": [
+            {
+              "template": "road",
+              "name": "WHITE ROAD 4-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "white",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "WHITE ROAD 4-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "white"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "road",
+          "name": "WHITE ROAD 5-1",
+          "position": [
+            0.57,
+            null,
+            -0.1
+          ],
+          "tint": "white",
+          "children": [
+            {
+              "template": "road",
+              "name": "WHITE ROAD 5-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "white",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "WHITE ROAD 5-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "white"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "settlement",
+          "name": "WHITE SETTLEMENT 1",
+          "position": [
+            0.57,
+            null,
+            -0.02
+          ],
+          "tint": "white"
+        },
+        {
+          "template": "settlement",
+          "name": "WHITE SETTLEMENT 2",
+          "position": [
+            0.57,
+            null,
+            -0.008
+          ],
+          "tint": "white"
+        },
+        {
+          "template": "settlement",
+          "name": "WHITE SETTLEMENT 3",
+          "position": [
+            0.57,
+            null,
+            0.004
+          ],
+          "tint": "white"
+        },
+        {
+          "template": "settlement",
+          "name": "WHITE SETTLEMENT 4",
+          "position": [
+            0.57,
+            null,
+            0.016
+          ],
+          "tint": "white"
+        },
+        {
+          "template": "settlement",
+          "name": "WHITE SETTLEMENT 5",
+          "position": [
+            0.57,
+            null,
+            0.028
+          ],
+          "tint": "white"
+        },
+        {
+          "template": "house",
+          "name": "WHITE CITY 1",
+          "position": [
+            0.57,
+            null,
+            0.07
+          ],
+          "tint": "white"
+        },
+        {
+          "template": "house",
+          "name": "WHITE CITY 2",
+          "position": [
+            0.57,
+            null,
+            0.082
+          ],
+          "tint": "white"
+        },
+        {
+          "template": "house",
+          "name": "WHITE CITY 3",
+          "position": [
+            0.57,
+            null,
+            0.094
+          ],
+          "tint": "white"
+        },
+        {
+          "template": "house",
+          "name": "WHITE CITY 4",
+          "position": [
+            0.57,
+            null,
+            0.106
+          ],
+          "tint": "white"
+        },
+        {
+          "template": "road",
+          "name": "ORANGE ROAD 1-1",
+          "position": [
+            0.64,
+            null,
+            -0.12
+          ],
+          "tint": "orange",
+          "children": [
+            {
+              "template": "road",
+              "name": "ORANGE ROAD 1-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "orange",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "ORANGE ROAD 1-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "orange"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "road",
+          "name": "ORANGE ROAD 2-1",
+          "position": [
+            0.64,
+            null,
+            -0.115
+          ],
+          "tint": "orange",
+          "children": [
+            {
+              "template": "road",
+              "name": "ORANGE ROAD 2-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "orange",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "ORANGE ROAD 2-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "orange"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "road",
+          "name": "ORANGE ROAD 3-1",
+          "position": [
+            0.64,
+            null,
+            -0.11
+          ],
+          "tint": "orange",
+          "children": [
+            {
+              "template": "road",
+              "name": "ORANGE ROAD 3-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "orange",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "ORANGE ROAD 3-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "orange"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "road",
+          "name": "ORANGE ROAD 4-1",
+          "position": [
+            0.64,
+            null,
+            -0.105
+          ],
+          "tint": "orange",
+          "children": [
+            {
+              "template": "road",
+              "name": "ORANGE ROAD 4-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "orange",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "ORANGE ROAD 4-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "orange"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "road",
+          "name": "ORANGE ROAD 5-1",
+          "position": [
+            0.64,
+            null,
+            -0.1
+          ],
+          "tint": "orange",
+          "children": [
+            {
+              "template": "road",
+              "name": "ORANGE ROAD 5-2",
+              "position": [
+                0,
+                null,
+                0
+              ],
+              "tint": "orange",
+              "children": [
+                {
+                  "template": "road",
+                  "name": "ORANGE ROAD 5-3",
+                  "position": [
+                    0,
+                    null,
+                    0
+                  ],
+                  "tint": "orange"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "template": "settlement",
+          "name": "ORANGE SETTLEMENT 1",
+          "position": [
+            0.64,
+            null,
+            -0.02
+          ],
+          "tint": "orange"
+        },
+        {
+          "template": "settlement",
+          "name": "ORANGE SETTLEMENT 2",
+          "position": [
+            0.64,
+            null,
+            -0.008
+          ],
+          "tint": "orange"
+        },
+        {
+          "template": "settlement",
+          "name": "ORANGE SETTLEMENT 3",
+          "position": [
+            0.64,
+            null,
+            0.004
+          ],
+          "tint": "orange"
+        },
+        {
+          "template": "settlement",
+          "name": "ORANGE SETTLEMENT 4",
+          "position": [
+            0.64,
+            null,
+            0.016
+          ],
+          "tint": "orange"
+        },
+        {
+          "template": "settlement",
+          "name": "ORANGE SETTLEMENT 5",
+          "position": [
+            0.64,
+            null,
+            0.028
+          ],
+          "tint": "orange"
+        },
+        {
+          "template": "house",
+          "name": "ORANGE CITY 1",
+          "position": [
+            0.64,
+            null,
+            0.07
+          ],
+          "tint": "orange"
+        },
+        {
+          "template": "house",
+          "name": "ORANGE CITY 2",
+          "position": [
+            0.64,
+            null,
+            0.082
+          ],
+          "tint": "orange"
+        },
+        {
+          "template": "house",
+          "name": "ORANGE CITY 3",
+          "position": [
+            0.64,
+            null,
+            0.094
+          ],
+          "tint": "orange"
+        },
+        {
+          "template": "house",
+          "name": "ORANGE CITY 4",
+          "position": [
+            0.64,
+            null,
+            0.106
+          ],
+          "tint": "orange"
+        }
+      ]
+    }
+  ]
+}
