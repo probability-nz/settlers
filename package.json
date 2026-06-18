@@ -6,7 +6,9 @@
     "generate:assets": "node scripts/generate-assets.mjs",
     "arrange:pieces": "node scripts/arrange-pieces.mjs",
     "validate": "node scripts/validate-manifest.mjs",
+    "clean": "rm -f dist/mod.zip",
     "build": "pnpm generate:assets && pnpm arrange:pieces && pnpm validate",
+    "modfile": "pnpm clean && pnpm build && cd dist && zip -qr mod.zip package.json probability.json models",
     "dev": "vite --host 127.0.0.1 --port 9208 --strictPort"
   },
   "dependencies": {
