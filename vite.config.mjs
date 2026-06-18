@@ -7,6 +7,9 @@ export default {
       name: "prob-template",
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
+          res.setHeader("Cache-Control", "no-store, max-age=0");
+          res.setHeader("Pragma", "no-cache");
+          res.setHeader("Expires", "0");
           if (req.method === "OPTIONS") return res.end();
           if (req.url === "/" || req.url === "/dist") {
             res.statusCode = req.url === "/" ? 307 : 308;

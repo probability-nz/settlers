@@ -1,23 +1,28 @@
 import { execFile } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import * as THREE from "three";
 import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter.js";
-import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
-import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
-import { TTFLoader } from "three/examples/jsm/loaders/TTFLoader.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const modelsDir = join(root, "dist", "models");
 const exporter = new GLTFExporter();
 const exec = promisify(execFile);
-const fontPath = join(root, "node_modules/three/examples/fonts/ttf/kenpixel.ttf");
-const fontJson = new TTFLoader().parse((await readFile(fontPath)).buffer);
-const font = new FontLoader().parse(fontJson);
-
+const fontPath = join(root, "unifont-17.0.04.otf");
+const monoTextFontUrl = pathToFileURL(fontPath).href;
+const monoEmojiFontUrl = pathToFileURL(join(root, "OpenMoji-black-glyf.ttf")).href;
+const monoFontCss = `@font-face {
+    font-family: "SettlersUnifont";
+    src: url("${monoTextFontUrl}") format("opentype");
+  }
+  @font-face {
+    font-family: "SettlersMonoEmoji";
+    src: url("${monoEmojiFontUrl}") format("truetype");
+  }`;
 globalThis.FileReader ??= class {
   finish(result) {
     this.result = result;
@@ -57,9 +62,6 @@ const mesh = (geometry, material, position = [0, 0, 0], rotation = [0, 0, 0]) =>
   return result;
 };
 
-const plane = (width, height, material, position, rotation = [-Math.PI / 2, 0, 0]) =>
-  mesh(new THREE.PlaneGeometry(width, height), material, position, rotation);
-
 const orientedTexturePlane = (width, height, material, position, rotation = [-Math.PI / 2, 0, 0]) => {
   const geometry = new THREE.PlaneGeometry(width, height);
   const uv = geometry.getAttribute("uv");
@@ -70,34 +72,25 @@ const orientedTexturePlane = (width, height, material, position, rotation = [-Ma
   return mesh(geometry, material, position, rotation);
 };
 
-const textGeometry = (text, size = 1) => {
-  const geometry = new TextGeometry(text, {
-    font,
-    size,
-    depth: 0.0001,
-    curveSegments: 1,
-    bevelEnabled: false,
-  });
-  geometry.computeBoundingBox();
-  return geometry;
+const orientedTextureCircle = (radius, material, position, rotation = [-Math.PI / 2, 0, 0]) => {
+  const geometry = new THREE.CircleGeometry(radius, 48);
+  const uv = geometry.getAttribute("uv");
+  for (let i = 0; i < uv.count; i += 1) {
+    uv.setY(i, 1 - uv.getY(i));
+  }
+  uv.needsUpdate = true;
+  return mesh(geometry, material, position, rotation);
 };
 
-const textMesh = ({
-  text,
-  color = "black",
-  fit = null,
-  size = 1,
-  position,
-  rotation = [-Math.PI / 2, 0, 0],
-}) => {
-  const geometry = textGeometry(text, size);
-  const { min, max } = geometry.boundingBox;
-  geometry.translate(-(min.x + max.x) / 2, -(min.y + max.y) / 2, 0);
-  if (fit) {
-    const scale = Math.min(fit[0] / (max.x - min.x), fit[1] / (max.y - min.y));
-    geometry.scale(scale, scale, scale);
+const correctHexTextureUVs = (geometry) => {
+  const uv = geometry.getAttribute("uv");
+  for (let i = 0; i < uv.count; i += 1) {
+    const x = uv.getX(i) - 0.5;
+    const y = uv.getY(i) - 0.5;
+    uv.setXY(i, 0.5 + y, 0.5 + x);
   }
-  return mesh(geometry, basic({ color, side: THREE.DoubleSide }), position, rotation);
+  uv.needsUpdate = true;
+  return geometry;
 };
 
 const group = (...children) => {
@@ -106,63 +99,391 @@ const group = (...children) => {
   return result;
 };
 
-const card = ({ front, back, backSize = null, width = 0.063, height = 0.088, thickness = 0.0006 }) => {
-  const frontLines = front.lines ?? [{ text: front.text, color: front.textColor, fit: front.fit, z: 0 }];
-  return group(
-    mesh(new THREE.BoxGeometry(width, thickness, height), "linen"),
-    plane(width, height, basic({ color: front.color, side: THREE.FrontSide }), [0, thickness / 2 + 0.00002, 0]),
-    ...frontLines.map((line) => textMesh({
-      text: line.text,
-      color: line.color ?? front.textColor ?? "black",
-      fit: line.fit,
-      position: [0, thickness / 2 + 0.00004, line.z],
-    })),
-    plane(width, height, basic({ color: back.color, side: THREE.FrontSide }), [0, -thickness / 2 - 0.00002, 0], [Math.PI / 2, 0, 0]),
-    ...back.lines.map((line) => textMesh({
-      text: line.text,
-      color: line.color ?? back.textColor ?? "black",
-      fit: backSize ? null : line.fit,
-      size: backSize ?? 1,
-      position: [0, -thickness / 2 - 0.00004, line.z],
-      rotation: [Math.PI / 2, 0, 0],
-    })),
-  );
+const resourceCard = (key) => texturedCard({
+  frontImageUri: "resource-card-front.png",
+  backImageUri: `resource-card-${key}.png`,
+  width: 0.063,
+  height: 0.088,
+  thickness: 0.0006,
+  materialName: `Resource card ${key} face`,
+});
+
+const actionCard = (key) => texturedCard({
+  frontImageUri: "development-card-front.png",
+  backImageUri: `${key}-card-back.png`,
+  width: 0.063,
+  height: 0.088,
+  thickness: 0.0006,
+  materialName: `Development card ${key} face`,
+});
+
+const awardCard = (key) => texturedCard({
+  imageUri: `${key}-card.png`,
+  width: 0.088,
+  height: 0.126,
+  thickness: 0.002,
+  materialName: `Award card ${key} face`,
+});
+
+const resourceCardFrontTexture = async () => {
+  const imageName = "resource-card-front.png";
+  const htmlPath = join(modelsDir, "resource-card-front.html");
+  const imagePath = join(modelsDir, imageName);
+  await writeFile(htmlPath, `<!doctype html>
+<meta charset="utf-8">
+<style>
+  ${monoFontCss}
+  html, body {
+    margin: 0;
+    width: 630px;
+    height: 880px;
+    overflow: hidden;
+    background: transparent;
+  }
+  .card {
+    width: 630px;
+    height: 880px;
+    box-sizing: border-box;
+    background: oldlace;
+    color: black;
+    font-family: "SettlersUnifont", "SettlersMonoEmoji", monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 78px;
+    font-weight: 700;
+  }
+</style>
+<div class="card">RESOURCE</div>
+`);
+  await exec("chromium", [
+    "--headless=new",
+    "--disable-gpu",
+    "--no-sandbox",
+    `--screenshot=${imagePath}`,
+    "--window-size=630,880",
+    pathToFileURL(htmlPath).href,
+  ]);
+  await rm(htmlPath, { force: true });
+  return imageName;
 };
 
-const resourceCard = ({ label, color, text }) => card({
-  front: { text: "Resource", color: "oldlace", textColor: "black", fit: [0.045, 0.008] },
-  back: {
-    color,
-    textColor: text,
-    lines: [{ text: label, fit: [label.length > 4 ? 0.044 : 0.03, 0.008], z: 0 }],
-  },
-});
+const resourceCardBackTexture = async (key, { label, color, emoji }) => {
+  const imageName = `resource-card-${key}.png`;
+  const htmlPath = join(modelsDir, `resource-card-${key}.html`);
+  const imagePath = join(modelsDir, imageName);
+  await writeFile(htmlPath, `<!doctype html>
+<meta charset="utf-8">
+<style>
+  ${monoFontCss}
+  html, body {
+    margin: 0;
+    width: 630px;
+    height: 880px;
+    overflow: hidden;
+    background: transparent;
+  }
+  .card {
+    width: 630px;
+    height: 880px;
+    box-sizing: border-box;
+    background: ${color};
+    color: black;
+    font-family: "SettlersUnifont", "SettlersMonoEmoji", monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .label {
+    font-size: 82px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .emoji {
+    margin-top: 96px;
+    font-family: "SettlersMonoEmoji", "SettlersUnifont", monospace;
+    font-size: 150px;
+    line-height: 1;
+  }
+</style>
+<div class="card"><div class="label">${label}</div><div class="emoji">${emoji}</div></div>
+`);
+  await exec("chromium", [
+    "--headless=new",
+    "--disable-gpu",
+    "--no-sandbox",
+    `--screenshot=${imagePath}`,
+    "--window-size=630,880",
+    pathToFileURL(htmlPath).href,
+  ]);
+  await rm(htmlPath, { force: true });
+  return imageName;
+};
 
-const actionCard = ({ title, lines }) => card({
-  front: { text: "ACTION", color: "navy", textColor: "white", fit: [0.052, 0.01] },
-  backSize: 0.0036,
-  back: {
-    color: "oldlace",
-    textColor: "black",
-    lines: [
-      ...lines.map((text, index) => ({ text, z: 0.006 - index * 0.012 })),
-      { text: title, z: 0.026 },
-    ],
-  },
-});
+const developmentCardFrontTexture = async () => {
+  const imageName = "development-card-front.png";
+  const htmlPath = join(modelsDir, "development-card-front.html");
+  const imagePath = join(modelsDir, imageName);
+  await writeFile(htmlPath, `<!doctype html>
+<meta charset="utf-8">
+<style>
+  ${monoFontCss}
+  html, body {
+    margin: 0;
+    width: 630px;
+    height: 880px;
+    overflow: hidden;
+    background: transparent;
+  }
+  .card {
+    width: 630px;
+    height: 880px;
+    box-sizing: border-box;
+    background: navy;
+    color: white;
+    font-family: "SettlersUnifont", monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 58px;
+    font-weight: 700;
+  }
+</style>
+<div class="card">DEVELOPMENT</div>
+`);
+  await exec("chromium", [
+    "--headless=new",
+    "--disable-gpu",
+    "--no-sandbox",
+    `--screenshot=${imagePath}`,
+    "--window-size=630,880",
+    pathToFileURL(htmlPath).href,
+  ]);
+  await rm(htmlPath, { force: true });
+  return imageName;
+};
 
-const awardCard = ({ title, color }) => {
-  const lines = [
-    { text: "2 victory points", fit: [0.076, 0.011], z: 0.014 },
-    { text: title, fit: [0.076, 0.013], z: -0.014 },
-  ];
-  return card({
-    width: 0.088,
-    height: 0.126,
-    thickness: 0.002,
-    front: { color, textColor: "black", lines },
-    back: { color, textColor: "black", lines },
-  });
+const developmentCardBackTexture = async (key, { title, lines }) => {
+  const imageName = `${key}-card-back.png`;
+  const htmlPath = join(modelsDir, `${key}-card-back.html`);
+  const imagePath = join(modelsDir, imageName);
+  await writeFile(htmlPath, `<!doctype html>
+<meta charset="utf-8">
+<style>
+  ${monoFontCss}
+  html, body {
+    margin: 0;
+    width: 630px;
+    height: 880px;
+    overflow: hidden;
+    background: transparent;
+  }
+  .card {
+    width: 630px;
+    height: 880px;
+    box-sizing: border-box;
+    padding: 120px 48px;
+    background: oldlace;
+    color: black;
+    font-family: "SettlersUnifont", monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .title {
+    margin-bottom: 110px;
+    font-size: 46px;
+    font-weight: 700;
+    line-height: 1.05;
+    text-align: center;
+  }
+  .line {
+    margin-top: 32px;
+    font-size: 38px;
+    line-height: 1;
+    text-align: center;
+  }
+</style>
+<div class="card">
+  <div class="title">${title.toUpperCase()}</div>
+  ${lines.map((line) => `<div class="line">${line.toUpperCase()}</div>`).join("")}
+</div>
+`);
+  await exec("chromium", [
+    "--headless=new",
+    "--disable-gpu",
+    "--no-sandbox",
+    `--screenshot=${imagePath}`,
+    "--window-size=630,880",
+    pathToFileURL(htmlPath).href,
+  ]);
+  await rm(htmlPath, { force: true });
+  return imageName;
+};
+
+const awardCardTexture = async (key, { title, color }) => {
+  const imageName = `${key}-card.png`;
+  const htmlPath = join(modelsDir, `${key}-card.html`);
+  const imagePath = join(modelsDir, imageName);
+  await writeFile(htmlPath, `<!doctype html>
+<meta charset="utf-8">
+<style>
+  ${monoFontCss}
+  html, body {
+    margin: 0;
+    width: 880px;
+    height: 1260px;
+    overflow: hidden;
+    background: transparent;
+  }
+  .card {
+    width: 880px;
+    height: 1260px;
+    box-sizing: border-box;
+    background: ${color};
+    color: black;
+    font-family: "SettlersUnifont", monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .title {
+    margin-bottom: 90px;
+    font-size: 78px;
+    font-weight: 700;
+    line-height: 1.05;
+    text-align: center;
+  }
+  .points {
+    font-size: 54px;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+  }
+</style>
+<div class="card"><div class="title">${title.toUpperCase()}</div><div class="points">2 VICTORY POINTS</div></div>
+`);
+  await exec("chromium", [
+    "--headless=new",
+    "--disable-gpu",
+    "--no-sandbox",
+    `--screenshot=${imagePath}`,
+    "--window-size=880,1260",
+    pathToFileURL(htmlPath).href,
+  ]);
+  await rm(htmlPath, { force: true });
+  return imageName;
+};
+
+const tileTexture = async (key, { label, emoji }) => {
+  const imageName = `tile-${key}.png`;
+  const htmlPath = join(modelsDir, `tile-${key}.html`);
+  const imagePath = join(modelsDir, imageName);
+  const background = resources[key]?.color ?? "tan";
+  await writeFile(htmlPath, `<!doctype html>
+<meta charset="utf-8">
+<style>
+  ${monoFontCss}
+  html, body {
+    margin: 0;
+    width: 900px;
+    height: 900px;
+    overflow: hidden;
+    background: transparent;
+  }
+  .face {
+    position: relative;
+    width: 900px;
+    height: 900px;
+    background: ${background};
+    color: black;
+    font-family: "SettlersUnifont", "SettlersMonoEmoji", monospace;
+  }
+  .emoji, .label {
+    position: absolute;
+    left: 0;
+    width: 900px;
+    text-align: center;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .emoji {
+    top: 180px;
+    font-family: "SettlersMonoEmoji", "SettlersUnifont", monospace;
+    font-size: 170px;
+  }
+  .label {
+    bottom: 180px;
+    font-size: 92px;
+  }
+</style>
+<div class="face">${emoji ? `<div class="emoji">${emoji}</div>` : ""}<div class="label">${label}</div></div>
+`);
+  await exec("chromium", [
+    "--headless=new",
+    "--disable-gpu",
+    "--no-sandbox",
+    `--screenshot=${imagePath}`,
+    "--window-size=900,900",
+    pathToFileURL(htmlPath).href,
+  ]);
+  await rm(htmlPath, { force: true });
+  return imageName;
+};
+
+const harborTexture = async ({ key, label }) => {
+  const imageName = `harbor-${key}.png`;
+  const htmlPath = join(modelsDir, `harbor-${key}.html`);
+  const imagePath = join(modelsDir, imageName);
+  const lines = label.split(" ");
+  await writeFile(htmlPath, `<!doctype html>
+<meta charset="utf-8">
+<style>
+  ${monoFontCss}
+  html, body {
+    margin: 0;
+    width: 900px;
+    height: 900px;
+    overflow: hidden;
+    background: transparent;
+  }
+  .face {
+    width: 900px;
+    height: 900px;
+    background: ${portColor};
+    color: white;
+    font-family: "SettlersUnifont", monospace;
+    font-weight: 700;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .port {
+    font-size: 86px;
+    line-height: 1;
+    margin-bottom: 82px;
+  }
+  .trade {
+    font-size: 66px;
+    line-height: 1.15;
+  }
+</style>
+<div class="face"><div class="port">PORT</div><div class="trade">${lines.join("<br>")}</div></div>
+`);
+  await exec("chromium", [
+    "--headless=new",
+    "--disable-gpu",
+    "--no-sandbox",
+    `--screenshot=${imagePath}`,
+    "--window-size=900,900",
+    pathToFileURL(htmlPath).href,
+  ]);
+  await rm(htmlPath, { force: true });
+  return imageName;
 };
 
 const buildingCostTexture = async () => {
@@ -172,6 +493,7 @@ const buildingCostTexture = async () => {
   await writeFile(htmlPath, `<!doctype html>
 <meta charset="utf-8">
 <style>
+  ${monoFontCss}
   html, body {
     margin: 0;
     width: 880px;
@@ -186,47 +508,48 @@ const buildingCostTexture = async () => {
     padding: 76px 70px;
     background: #fff3c7;
     color: #111;
-    font-family: "Noto Sans Mono", "Noto Color Emoji", monospace;
+    font-family: "SettlersUnifont", "SettlersMonoEmoji", monospace;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
   }
   h1 {
     margin: 0 0 50px;
-    font-size: 70px;
+    font-size: 86px;
     font-weight: 700;
     line-height: 1;
     letter-spacing: 0;
   }
   .cost {
     width: 100%;
-    text-align: left;
+    text-align: center;
   }
   .label {
     margin-top: 18px;
-    font-size: 50px;
+    font-size: 58px;
     font-weight: 700;
     line-height: 1;
   }
   .icons {
-    margin: 12px 0 24px 42px;
-    font-family: "Noto Color Emoji", "Noto Sans Mono", monospace;
-    font-size: 66px;
+    margin: 12px 0 24px;
+    font-family: "SettlersMonoEmoji", "SettlersUnifont", monospace;
+    font-size: 74px;
     line-height: 1;
     white-space: nowrap;
   }
 </style>
 <div class="card">
-  <h1>Building Costs</h1>
+  <h1>BUILDING COSTS</h1>
   <div class="cost">
-    <div class="label">Road:</div>
-    <div class="icons">🧱 🪵</div>
-    <div class="label">Settlement:</div>
-    <div class="icons">🧱 🪵 🐑 🌾</div>
-    <div class="label">House:</div>
-    <div class="icons">🌾 🌾 🪨 🪨 🪨</div>
-    <div class="label">Action:</div>
-    <div class="icons">🐑 🌾 🪨</div>
+    <div class="label">ROAD:</div>
+    <div class="icons">🧱🪵</div>
+    <div class="label">SETTLEMENT:</div>
+    <div class="icons">🧱🪵🐑🌾</div>
+    <div class="label">CITY:</div>
+    <div class="icons">🌾🌾🪨🪨🪨</div>
+    <div class="label">DEVELOPMENT CARD:</div>
+    <div class="icons">🐑🌾🪨</div>
   </div>
 </div>
 `);
@@ -242,37 +565,247 @@ const buildingCostTexture = async () => {
   return imageName;
 };
 
-const texturedCard = ({ imageUri }) => {
-  const width = 0.088;
-  const height = 0.126;
-  const thickness = 0.002;
-  const face = basic({ color: "white", side: THREE.DoubleSide });
-  face.name = "Building cost card face";
+const businessCardTexture = async () => {
+  const imageName = "business-card.png";
+  const htmlPath = join(modelsDir, "business-card.html");
+  const imagePath = join(modelsDir, imageName);
+  await writeFile(htmlPath, `<!doctype html>
+<meta charset="utf-8">
+<style>
+  ${monoFontCss}
+  html, body {
+    margin: 0;
+    width: 900px;
+    height: 550px;
+    overflow: hidden;
+    background: transparent;
+  }
+  .card {
+    width: 900px;
+    height: 550px;
+    box-sizing: border-box;
+    padding: 46px 58px;
+    background: #f7f3e8;
+    color: #111;
+    font-family: "SettlersUnifont", "SettlersMonoEmoji", monospace;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  h1 {
+    margin: 0 0 28px;
+    font-size: 58px;
+    line-height: 1;
+  }
+  .name {
+    font-size: 36px;
+    line-height: 1;
+  }
+  .meta {
+    margin-top: 44px;
+    font-size: 36px;
+    line-height: 1;
+  }
+  .license {
+    margin-top: 12px;
+    font-size: 36px;
+    line-height: 1;
+  }
+  .rule {
+    height: 56px;
+    margin: 0;
+  }
+  .footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 36px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .emoji {
+    font-family: "SettlersMonoEmoji", "SettlersUnifont", monospace;
+    font-size: 36px;
+  }
+</style>
+<div class="card">
+  <h1>SETTLERS PROTOTYPE</h1>
+  <div class="name">NEFTALY HERNANDEZ</div>
+  <div class="meta">DATE: 2026-06-18</div>
+  <div class="license">LICENSE: CC BY-SA 4.0</div>
+  <div class="rule"></div>
+  <div class="footer"><span class="emoji">&#x1F5D1;&#xFE0E;&#x1F4A7;</span><span>https://garbo.succus.games/</span></div>
+</div>
+`);
+  await exec("chromium", [
+    "--headless=new",
+    "--disable-gpu",
+    "--no-sandbox",
+    `--screenshot=${imagePath}`,
+    "--window-size=900,550",
+    pathToFileURL(htmlPath).href,
+  ]);
+  await rm(htmlPath, { force: true });
+  return imageName;
+};
+
+const businessCardBackTexture = async () => {
+  const imageName = "business-card-back.png";
+  const htmlPath = join(modelsDir, "business-card-back.html");
+  const imagePath = join(modelsDir, imageName);
+  await writeFile(htmlPath, `<!doctype html>
+<meta charset="utf-8">
+<style>
+  ${monoFontCss}
+  html, body {
+    margin: 0;
+    width: 900px;
+    height: 550px;
+    overflow: hidden;
+    background: transparent;
+  }
+  .card {
+    width: 900px;
+    height: 550px;
+    box-sizing: border-box;
+    background: #050807;
+    color: #31d66f;
+    font-family: "SettlersMonoEmoji", "SettlersUnifont", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .emoji {
+    font-size: 183px;
+    line-height: 1;
+  }
+</style>
+<div class="card"><div class="emoji">&#x1F5D1;&#xFE0E;&#x1F4A7;</div></div>
+`);
+  await exec("chromium", [
+    "--headless=new",
+    "--disable-gpu",
+    "--no-sandbox",
+    `--screenshot=${imagePath}`,
+    "--window-size=900,550",
+    pathToFileURL(htmlPath).href,
+  ]);
+  await rm(htmlPath, { force: true });
+  return imageName;
+};
+
+const dotCounts = new Map([[2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [8, 5], [9, 4], [10, 3], [11, 2], [12, 1]]);
+const counterValues = [2, 3, 4, 5, 6, 8, 9, 10, 11, 12];
+
+const counterTexture = async (value) => {
+  const imageName = `counter-${value}.png`;
+  const htmlPath = join(modelsDir, `counter-${value}.html`);
+  const imagePath = join(modelsDir, imageName);
+  const color = value === 6 || value === 8 ? "firebrick" : "black";
+  const count = dotCounts.get(value) ?? 0;
+  const dots = "•".repeat(count);
+
+  await writeFile(htmlPath, `<!doctype html>
+<meta charset="utf-8">
+<style>
+  html, body {
+    margin: 0;
+    width: 250px;
+    height: 250px;
+    overflow: hidden;
+    background: transparent;
+  }
+  svg {
+    display: block;
+  }
+</style>
+<svg width="250" height="250" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="125" cy="125" r="122" fill="linen"/>
+  <text x="125" y="126" text-anchor="middle" dominant-baseline="middle"
+    font-family="SettlersUnifont, monospace" font-size="88" font-weight="700" fill="${color}">${value}</text>
+  <text x="125" y="168" text-anchor="middle" dominant-baseline="middle"
+    font-family="SettlersUnifont, monospace" font-size="38" font-weight="700" letter-spacing="2" fill="${color}">${dots}</text>
+</svg>
+`);
+  await exec("chromium", [
+    "--headless=new",
+    "--disable-gpu",
+    "--no-sandbox",
+    `--screenshot=${imagePath}`,
+    "--window-size=250,250",
+    pathToFileURL(htmlPath).href,
+  ]);
+  await rm(htmlPath, { force: true });
+  return imageName;
+};
+
+const texturedCard = ({
+  imageUri,
+  frontImageUri = imageUri,
+  backImageUri = imageUri,
+  width = 0.088,
+  height = 0.126,
+  thickness = 0.002,
+  materialName = "Textured card face",
+  frontMaterialName = `${materialName} front`,
+  backMaterialName = `${materialName} back`,
+  frontMaterial = standard("white", { roughness: 0.8, metalness: 0 }),
+  backMaterial = standard("white", { roughness: 0.8, metalness: 0 }),
+}) => {
+  frontMaterial.name = frontMaterialName;
+  frontMaterial.side = THREE.DoubleSide;
+  backMaterial.name = backMaterialName;
+  backMaterial.side = THREE.DoubleSide;
   const result = group(
     mesh(new THREE.BoxGeometry(width, thickness, height), "linen"),
-    orientedTexturePlane(width, height, face, [0, thickness / 2 + 0.00002, 0]),
-    orientedTexturePlane(width, height, face, [0, -thickness / 2 - 0.00002, 0], [Math.PI / 2, 0, 0]),
+    orientedTexturePlane(width, height, frontMaterial, [0, thickness / 2 + 0.00002, 0]),
+    orientedTexturePlane(width, height, backMaterial, [0, -thickness / 2 - 0.00002, 0], [Math.PI / 2, 0, 0]),
+  );
+  result.userData.texturePatches = [
+    { materialName: frontMaterial.name, imageUri: frontImageUri },
+    { materialName: backMaterial.name, imageUri: backImageUri },
+  ];
+  return result;
+};
+
+const texturedHex = ({ color, imageUri, materialName }) => {
+  const side = standard(color);
+  const face = basic({ color: "white" });
+  side.name = `${materialName} side`;
+  face.name = materialName;
+  const geometry = correctHexTextureUVs(new THREE.CylinderGeometry(0.045, 0.045, 0.002, 6));
+  const result = group(
+    mesh(geometry, [side, face, side]),
   );
   result.userData.texturePatch = { materialName: face.name, imageUri };
   return result;
 };
 
-const tile = ({ label, color }) =>
-  group(
-    mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.002, 6), color),
-    textMesh({ text: label, fit: [0.043, 0.01], position: [0, 0.00102, 0.021] }),
-  );
+const tile = (key, { color }) => texturedHex({
+  color,
+  imageUri: `tile-${key}.png`,
+  materialName: `Tile ${key} face`,
+});
 
-const counter = (value) =>
-  group(
+const harbor = ({ key }) => {
+  return texturedHex({
+    color: portColor,
+    imageUri: `harbor-${key}.png`,
+    materialName: `Harbor ${key} face`,
+  });
+};
+
+const counter = (value, imageUri) => {
+  const face = basic({ color: "white", side: THREE.DoubleSide });
+  face.name = `Counter ${value} face`;
+  const result = group(
     mesh(new THREE.CylinderGeometry(0.0125, 0.0125, 0.002, 24), "linen"),
-    textMesh({
-      text: String(value),
-      color: value === 6 || value === 8 ? "firebrick" : "black",
-      fit: [value >= 10 ? 0.016 : 0.011, 0.009],
-      position: [0, 0.00202, 0],
-    }),
+    orientedTextureCircle(0.01245, face, [0, 0.00103, 0]),
   );
+  result.userData.texturePatch = { materialName: face.name, imageUri };
+  return result;
+};
 
 const flatProfile = (points, depth) => {
   const shape = new THREE.Shape();
@@ -360,31 +893,33 @@ const exportGltf = async (name, object) => {
   scene.add(object);
 
   const output = await exporter.parseAsync(scene, { binary: false });
-  const baseName = name.replace(/\.gltf$/u, "");
-  const texturePatch = object.userData.texturePatch;
+  const texturePatches = object.userData.texturePatches ?? (object.userData.texturePatch ? [object.userData.texturePatch] : []);
 
-  if (texturePatch) {
-    const materialIndex = output.materials?.findIndex((material) => material.name === texturePatch.materialName);
-    if (materialIndex === undefined || materialIndex < 0) {
-      throw new Error(`Missing texture patch material ${texturePatch.materialName}`);
-    }
+  if (texturePatches.length > 0) {
     output.images ??= [];
     output.textures ??= [];
     output.samplers ??= [];
-    const samplerIndex = output.samplers.push({
-      magFilter: 9729,
-      minFilter: 9729,
-      wrapS: 33071,
-      wrapT: 33071,
-    }) - 1;
-    const imageIndex = output.images.push({ uri: texturePatch.imageUri }) - 1;
-    const textureIndex = output.textures.push({ sampler: samplerIndex, source: imageIndex }) - 1;
-    output.materials[materialIndex].pbrMetallicRoughness ??= {};
-    output.materials[materialIndex].pbrMetallicRoughness.baseColorFactor = [1, 1, 1, 1];
-    output.materials[materialIndex].pbrMetallicRoughness.baseColorTexture = { index: textureIndex };
-    output.materials[materialIndex].doubleSided = true;
+    for (const texturePatch of texturePatches) {
+      const materialIndex = output.materials?.findIndex((material) => material.name === texturePatch.materialName);
+      if (materialIndex === undefined || materialIndex < 0) {
+        throw new Error(`Missing texture patch material ${texturePatch.materialName}`);
+      }
+      const samplerIndex = output.samplers.push({
+        magFilter: 9729,
+        minFilter: 9729,
+        wrapS: 33071,
+        wrapT: 33071,
+      }) - 1;
+      const imageIndex = output.images.push({ uri: texturePatch.imageUri }) - 1;
+      const textureIndex = output.textures.push({ sampler: samplerIndex, source: imageIndex }) - 1;
+      output.materials[materialIndex].pbrMetallicRoughness ??= {};
+      output.materials[materialIndex].pbrMetallicRoughness.baseColorFactor = [1, 1, 1, 1];
+      output.materials[materialIndex].pbrMetallicRoughness.baseColorTexture = { index: textureIndex };
+      output.materials[materialIndex].doubleSided = true;
+    }
     for (const node of output.nodes ?? []) {
       delete node.extras?.texturePatch;
+      delete node.extras?.texturePatches;
       if (node.extras && Object.keys(node.extras).length === 0) delete node.extras;
     }
   }
@@ -392,7 +927,8 @@ const exportGltf = async (name, object) => {
   for (const [index, buffer] of (output.buffers ?? []).entries()) {
     if (!buffer.uri?.startsWith("data:")) continue;
     const bin = dataUriToBuffer(buffer.uri);
-    const binName = output.buffers.length === 1 ? `${baseName}.bin` : `${baseName}-${index}.bin`;
+    const hash = createHash("sha256").update(bin).digest("hex").slice(0, 16);
+    const binName = `buffer-${hash}.bin`;
     await writeFile(join(modelsDir, binName), bin);
     buffer.uri = binName;
     buffer.byteLength = bin.byteLength;
@@ -402,31 +938,57 @@ const exportGltf = async (name, object) => {
 };
 
 const resources = {
-  brick: { label: "BRICK", color: "peru", text: "saddlebrown" },
-  grain: { label: "GRAIN", color: "gold", text: "darkgoldenrod" },
-  lumber: { label: "LUMBER", color: "seagreen", text: "darkgreen" },
-  ore: { label: "ORE", color: "slategray", text: "black" },
-  wool: { label: "WOOL", color: "yellowgreen", text: "darkolivegreen" },
+  brick: { label: "BRICK", color: "peru", text: "saddlebrown", emoji: "🧱" },
+  grain: { label: "GRAIN", color: "gold", text: "darkgoldenrod", emoji: "🌾" },
+  lumber: { label: "LUMBER", color: "seagreen", text: "darkgreen", emoji: "🪵" },
+  ore: { label: "ORE", color: "slategray", text: "black", emoji: "🪨" },
+  wool: { label: "WOOL", color: "yellowgreen", text: "darkolivegreen", emoji: "🐑" },
 };
+const developmentCards = {
+  knight: { title: "KNIGHT", lines: ["MOVE ROBBER", "STEAL 1 CARD", "FROM NEIGHBOR"] },
+  "road-building": { title: "ROAD BUILDING", lines: ["PLACE 2 ROADS", "FOR FREE"] },
+  "year-of-plenty": { title: "YEAR OF PLENTY", lines: ["TAKE ANY 2", "RESOURCE CARDS", "FROM PILE"] },
+  monopoly: { title: "MONOPOLY", lines: ["NAME RESOURCE", "ALL PLAYERS", "GIVE YOU THEIRS"] },
+  chapel: { title: "CHAPEL", lines: ["KEEP HIDDEN", "+1 POINT"] },
+  "great-hall": { title: "GREAT HALL", lines: ["KEEP HIDDEN", "+1 POINT"] },
+  library: { title: "LIBRARY", lines: ["KEEP HIDDEN", "+1 POINT"] },
+  market: { title: "MARKET", lines: ["KEEP HIDDEN", "+1 POINT"] },
+  university: { title: "UNIVERSITY", lines: ["KEEP HIDDEN", "+1 POINT"] },
+};
+const awardCards = {
+  "largest-army": { title: "LARGEST ARMY", color: "lightpink" },
+  "longest-road": { title: "LONGEST ROAD", color: "paleturquoise" },
+};
+const harbors = [
+  { key: "3-1", label: "ANY 3:1" },
+  { key: "brick", label: "BRICK 2:1" },
+  { key: "grain", label: "GRAIN 2:1" },
+  { key: "lumber", label: "LUMBER 2:1" },
+  { key: "ore", label: "ORE 2:1" },
+  { key: "wool", label: "WOOL 2:1" },
+];
+const oceanColor = "steelblue";
+const portColor = "cadetblue";
 
 const assets = [
-  ["ocean.gltf", () => group(mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.002, 6), standard("steelblue", { roughness: 0.7, metalness: 0 })))],
-  ...Object.entries(resources).map(([key, spec]) => [`resource-card-${key}.gltf`, () => resourceCard(spec)]),
-  ["knight-card.gltf", () => actionCard({ title: "Knight", lines: ["Move robber", "Steal 1 card", "from neighbor"] })],
-  ["road-building-card.gltf", () => actionCard({ title: "Road Building", lines: ["Place 2 roads", "for free"] })],
-  ["year-of-plenty-card.gltf", () => actionCard({ title: "Year of Plenty", lines: ["Take any 2", "resource cards", "from pile"] })],
-  ["monopoly-card.gltf", () => actionCard({ title: "Monopoly", lines: ["Name resource", "All players", "give you theirs"] })],
-  ["victory-point-card.gltf", () => actionCard({ title: "Victory Point", lines: ["Keep hidden", "+1 point"] })],
-  ["largest-army-card.gltf", () => awardCard({ title: "Largest Army", color: "lightpink" })],
-  ["longest-road-card.gltf", () => awardCard({ title: "Longest Road", color: "paleturquoise" })],
-  ["building-cost-card.gltf", () => texturedCard({ imageUri: "building-cost-card.png" })],
-  ["tile-brick.gltf", () => tile(resources.brick)],
-  ["tile-desert.gltf", () => tile({ label: "DESERT", color: "tan" })],
-  ["tile-grain.gltf", () => tile(resources.grain)],
-  ["tile-lumber.gltf", () => tile(resources.lumber)],
-  ["tile-ore.gltf", () => tile(resources.ore)],
-  ["tile-wool.gltf", () => tile(resources.wool)],
-  ...[2, 3, 4, 5, 6, 8, 9, 10, 11, 12].map((value) => [`counter-${value}.gltf`, () => counter(value)]),
+  ["ocean.gltf", () => group(mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.002, 6), standard(oceanColor, { roughness: 0.7, metalness: 0 })))],
+  ...Object.keys(resources).map((key) => [`resource-card-${key}.gltf`, () => resourceCard(key)]),
+  ...Object.keys(developmentCards).map((key) => [`${key}-card.gltf`, () => actionCard(key)]),
+  ...Object.keys(awardCards).map((key) => [`${key}-card.gltf`, () => awardCard(key)]),
+  ["building-cost-card.gltf", () => texturedCard({ imageUri: "building-cost-card.png", materialName: "Building cost card face" })],
+  ["business-card.gltf", () => texturedCard({
+    frontImageUri: "business-card.png",
+    backImageUri: "business-card-back.png",
+    width: 0.09,
+    height: 0.055,
+    thickness: 0.00035,
+    materialName: "Business card face",
+    backMaterial: standard("white", { roughness: 0.28, metalness: 0 }),
+  })],
+  ...Object.entries(resources).map(([key, spec]) => [`tile-${key}.gltf`, () => tile(key, spec)]),
+  ["tile-desert.gltf", () => tile("desert", { label: "DESERT", color: "tan" })],
+  ...harbors.map(({ key }) => [`harbor-${key}.gltf`, () => harbor({ key })]),
+  ...counterValues.map((value) => [`counter-${value}.gltf`, () => counter(value, `counter-${value}.png`)]),
   ["robber.gltf", robber],
   ["road.gltf", road],
   ["settlement.gltf", settlement],
@@ -436,6 +998,17 @@ const assets = [
 await rm(modelsDir, { recursive: true, force: true });
 await mkdir(modelsDir, { recursive: true });
 await buildingCostTexture();
+await businessCardTexture();
+await businessCardBackTexture();
+await resourceCardFrontTexture();
+await Promise.all(Object.entries(resources).map(([key, spec]) => resourceCardBackTexture(key, spec)));
+await developmentCardFrontTexture();
+await Promise.all(Object.entries(developmentCards).map(([key, spec]) => developmentCardBackTexture(key, spec)));
+await Promise.all(Object.entries(awardCards).map(([key, spec]) => awardCardTexture(key, spec)));
+await Promise.all(Object.entries(resources).map(([key, spec]) => tileTexture(key, spec)));
+await tileTexture("desert", { label: "DESERT" });
+await Promise.all(harbors.map(harborTexture));
+await Promise.all(counterValues.map(counterTexture));
 await Promise.all(assets.map(([name, build]) => exportGltf(name, build())));
 
 console.log(`Generated ${assets.length} GLTF assets in dist/models/`);

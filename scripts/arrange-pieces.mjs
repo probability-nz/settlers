@@ -16,6 +16,12 @@ const halfYByTemplate = new Map([
   ["tileLumber", 0.001],
   ["tileOre", 0.001],
   ["tileWool", 0.001],
+  ["harbor31", 0.001],
+  ["harborBrick", 0.001],
+  ["harborGrain", 0.001],
+  ["harborLumber", 0.001],
+  ["harborOre", 0.001],
+  ["harborWool", 0.001],
   ["counter2", 0.001],
   ["counter3", 0.001],
   ["counter4", 0.001],
@@ -35,10 +41,15 @@ const halfYByTemplate = new Map([
   ["roadBuildingCard", 0.0003],
   ["yearOfPlentyCard", 0.0003],
   ["monopolyCard", 0.0003],
-  ["victoryPointCard", 0.0003],
+  ["chapelCard", 0.0003],
+  ["greatHallCard", 0.0003],
+  ["libraryCard", 0.0003],
+  ["marketCard", 0.0003],
+  ["universityCard", 0.0003],
   ["largestArmyCard", 0.001],
   ["longestRoadCard", 0.001],
   ["buildingCostCard", 0.001],
+  ["businessCard", 0.000175],
   ["road", 0.002],
   ["house", 0.006],
   ["settlement", 0.0085],
@@ -48,7 +59,7 @@ const halfYByTemplate = new Map([
 const halfY = (template) => halfYByTemplate.get(template) ?? 0;
 const localY = (template, parentTemplate = null) =>
   Number((halfY(parentTemplate) + halfY(template)).toFixed(6));
-const position = (template, x, z, parentTemplate = null) => [x, localY(template, parentTemplate), z];
+const position = (template, x, z, parentTemplate = null) => [x, null, z];
 
 const stackChildren = ({ template, name, level = 2, count, tint, rotation }) => {
   if (level > count) return undefined;
@@ -108,48 +119,66 @@ const logStack = ({ label, x, z, columns = 5, height = 3, spacing = 0.005, tint 
   row({ template: "road", name: `${label} log stack`, count: columns, x, z, spacing, tint })
     .map((piece, index) => ({
       ...piece,
-      name: `${label} log ${index + 1}-1`,
-      children: stackChildren({ template: "road", name: `${label} log ${index + 1}`, count: height, tint }),
+      name: `${label} ROAD ${index + 1}-1`,
+      children: stackChildren({ template: "road", name: `${label} ROAD ${index + 1}`, count: height, tint }),
     }));
 
 const woodenSupply = ({ label, tint, x, z }) => [
   ...logStack({ label, tint, x, z }),
-  ...row({ template: "house", name: `${label} house`, count: 5, x, z: z + 0.1, spacing: 0.012, tint }),
-  ...row({ template: "settlement", name: `${label} settlement`, count: 4, x, z: z + 0.19, spacing: 0.012, tint }),
+  ...row({ template: "settlement", name: `${label} SETTLEMENT`, count: 5, x, z: z + 0.1, spacing: 0.012, tint }),
+  ...row({ template: "house", name: `${label} CITY`, count: 4, x, z: z + 0.19, spacing: 0.012, tint }),
 ];
 
 const templates = {
-  ocean: { name: "Ocean board", src: "models/ocean.gltf", locked: true },
-  tileBrick: { name: "Brick tile", src: "models/tile-brick.gltf", locked: true },
-  tileDesert: { name: "Desert tile", src: "models/tile-desert.gltf", locked: true },
-  tileGrain: { name: "Grain tile", src: "models/tile-grain.gltf", locked: true },
-  tileLumber: { name: "Lumber tile", src: "models/tile-lumber.gltf", locked: true },
-  tileOre: { name: "Ore tile", src: "models/tile-ore.gltf", locked: true },
-  tileWool: { name: "Wool tile", src: "models/tile-wool.gltf", locked: true },
-  robber: { name: "Robber", src: "models/robber.gltf" },
-  road: { name: "Road", src: "models/road.gltf" },
-  settlement: { name: "Settlement", src: "models/settlement.gltf" },
-  house: { name: "House", src: "models/house.gltf" },
+  ocean: { name: "OCEAN BOARD", src: "models/ocean.gltf", locked: true },
+  tileBrick: { name: "BRICK TILE", src: "models/tile-brick.gltf", locked: true },
+  tileDesert: { name: "DESERT TILE", src: "models/tile-desert.gltf", locked: true },
+  tileGrain: { name: "GRAIN TILE", src: "models/tile-grain.gltf", locked: true },
+  tileLumber: { name: "LUMBER TILE", src: "models/tile-lumber.gltf", locked: true },
+  tileOre: { name: "ORE TILE", src: "models/tile-ore.gltf", locked: true },
+  tileWool: { name: "WOOL TILE", src: "models/tile-wool.gltf", locked: true },
+  harbor31: { name: "3:1 HARBOR", src: "models/harbor-3-1.gltf", locked: true },
+  harborBrick: { name: "BRICK 2:1 HARBOR", src: "models/harbor-brick.gltf", locked: true },
+  harborGrain: { name: "GRAIN 2:1 HARBOR", src: "models/harbor-grain.gltf", locked: true },
+  harborLumber: { name: "LUMBER 2:1 HARBOR", src: "models/harbor-lumber.gltf", locked: true },
+  harborOre: { name: "ORE 2:1 HARBOR", src: "models/harbor-ore.gltf", locked: true },
+  harborWool: { name: "WOOL 2:1 HARBOR", src: "models/harbor-wool.gltf", locked: true },
+  robber: { name: "ROBBER", src: "models/robber.gltf" },
+  road: { name: "ROAD", src: "models/road.gltf" },
+  settlement: { name: "SETTLEMENT", src: "models/settlement.gltf" },
+  house: { name: "CITY", src: "models/house.gltf" },
   ...Object.fromEntries([2, 3, 4, 5, 6, 8, 9, 10, 11, 12].map((value) => [
     `counter${value}`,
-    { name: `${value} counter`, src: `models/counter-${value}.gltf`, locked: true },
+    { name: `${value} COUNTER`, src: `models/counter-${value}.gltf`, locked: true },
   ])),
-  resourceCardBrick: { name: "Brick resource card", src: "models/resource-card-brick.gltf" },
-  resourceCardGrain: { name: "Grain resource card", src: "models/resource-card-grain.gltf" },
-  resourceCardLumber: { name: "Lumber resource card", src: "models/resource-card-lumber.gltf" },
-  resourceCardOre: { name: "Ore resource card", src: "models/resource-card-ore.gltf" },
-  resourceCardWool: { name: "Wool resource card", src: "models/resource-card-wool.gltf" },
-  knightCard: { name: "Knight card", src: "models/knight-card.gltf" },
-  roadBuildingCard: { name: "Road Building card", src: "models/road-building-card.gltf" },
-  yearOfPlentyCard: { name: "Year of Plenty card", src: "models/year-of-plenty-card.gltf" },
-  monopolyCard: { name: "Monopoly card", src: "models/monopoly-card.gltf" },
-  victoryPointCard: { name: "Victory Point card", src: "models/victory-point-card.gltf" },
-  largestArmyCard: { name: "Largest Army card", src: "models/largest-army-card.gltf" },
-  longestRoadCard: { name: "Longest Road card", src: "models/longest-road-card.gltf" },
-  buildingCostCard: { name: "Building Cost card", src: "models/building-cost-card.gltf" },
+  resourceCardBrick: { name: "BRICK RESOURCE CARD", src: "models/resource-card-brick.gltf" },
+  resourceCardGrain: { name: "GRAIN RESOURCE CARD", src: "models/resource-card-grain.gltf" },
+  resourceCardLumber: { name: "LUMBER RESOURCE CARD", src: "models/resource-card-lumber.gltf" },
+  resourceCardOre: { name: "ORE RESOURCE CARD", src: "models/resource-card-ore.gltf" },
+  resourceCardWool: { name: "WOOL RESOURCE CARD", src: "models/resource-card-wool.gltf" },
+  knightCard: { name: "KNIGHT CARD", src: "models/knight-card.gltf" },
+  roadBuildingCard: { name: "ROAD BUILDING CARD", src: "models/road-building-card.gltf" },
+  yearOfPlentyCard: { name: "YEAR OF PLENTY CARD", src: "models/year-of-plenty-card.gltf" },
+  monopolyCard: { name: "MONOPOLY CARD", src: "models/monopoly-card.gltf" },
+  chapelCard: { name: "CHAPEL CARD", src: "models/chapel-card.gltf" },
+  greatHallCard: { name: "GREAT HALL CARD", src: "models/great-hall-card.gltf" },
+  libraryCard: { name: "LIBRARY CARD", src: "models/library-card.gltf" },
+  marketCard: { name: "MARKET CARD", src: "models/market-card.gltf" },
+  universityCard: { name: "UNIVERSITY CARD", src: "models/university-card.gltf" },
+  largestArmyCard: { name: "LARGEST ARMY CARD", src: "models/largest-army-card.gltf" },
+  longestRoadCard: { name: "LONGEST ROAD CARD", src: "models/longest-road-card.gltf" },
+  buildingCostCard: { name: "BUILDING COST CARD", src: "models/building-cost-card.gltf" },
+  businessCard: { name: "BUSINESS CARD", src: "models/business-card.gltf" },
 };
 
 const tileTemplate = (resource) => `tile${resource}`;
+const hexXStep = 0.0789;
+const hexZStep = 0.0683;
+const hex = (q, r) => [
+  Number((hexXStep * (q + r / 2)).toFixed(4)),
+  Number((hexZStep * r).toFixed(4)),
+];
+
 const boardTiles = [
   ["Ore", 5, -0.0789, -0.1366],
   ["Grain", 2, 0, -0.1366],
@@ -167,24 +196,40 @@ const boardTiles = [
   ["Lumber", 10, -0.0394, 0.0683],
   ["Wool", 9, 0.0394, 0.0683],
   ["Brick", 12, 0.1183, 0.0683],
-  ["Ore", 6, -0.0789, 0.1366],
+  ["Wool", 6, -0.0789, 0.1366],
   ["Grain", 5, 0, 0.1366],
-  ["Brick", 11, 0.0789, 0.1366],
+  ["Lumber", 11, 0.0789, 0.1366],
 ];
 
+const harbors = [
+  ["harbor31", "Generic harbor 1", 0, -3],
+  ["harborBrick", "Brick harbor", 2, -3],
+  ["harbor31", "Generic harbor 2", 3, -2],
+  ["harborLumber", "Lumber harbor", 3, 0],
+  ["harborWool", "Wool harbor", 1, 2],
+  ["harborOre", "Ore harbor", -1, 3],
+  ["harbor31", "Generic harbor 3", -3, 3],
+  ["harborGrain", "Grain harbor", -3, 1],
+  ["harbor31", "Generic harbor 4", -2, -1],
+].map(([template, name, q, r]) => {
+  const [x, z] = hex(q, r);
+  return { template, name, position: position(template, x, z, "ocean") };
+});
+
 const tilePiece = ([resource, counter, x, z]) => {
+  const displayResource = resource.toUpperCase();
   const piece = {
     template: tileTemplate(resource),
-    name: counter === null ? "Desert" : `${resource} ${counter}`,
+    name: counter === null ? "DESERT" : `${displayResource} ${counter}`,
     position: position(tileTemplate(resource), x, z, "ocean"),
     children: [],
   };
   if (counter === null) {
-    piece.children.push({ template: "robber", name: "Robber", position: position("robber", 0, 0, tileTemplate(resource)) });
+    piece.children.push({ template: "robber", name: "ROBBER", position: position("robber", 0, 0, tileTemplate(resource)) });
   } else {
     piece.children.push({
       template: `counter${counter}`,
-      name: `${resource} ${counter} counter`,
+      name: `${displayResource} ${counter} COUNTER`,
       position: position(`counter${counter}`, 0, 0, tileTemplate(resource)),
     });
   }
@@ -192,30 +237,35 @@ const tilePiece = ([resource, counter, x, z]) => {
 };
 
 const cardStacks = [
-  ["resourceCardBrick", "Brick resource card", 19, -0.18],
-  ["resourceCardLumber", "Lumber resource card", 19, -0.09],
-  ["resourceCardWool", "Wool resource card", 19, 0],
-  ["resourceCardGrain", "Grain resource card", 19, 0.09],
-  ["resourceCardOre", "Ore resource card", 19, 0.18],
-].map(([template, name, count, z]) => stack({ template, name, count, x: 0.31, z, rotation: [180, 0, 0] }));
+  ["resourceCardBrick", "BRICK RESOURCE CARD", 19, -0.18],
+  ["resourceCardLumber", "LUMBER RESOURCE CARD", 19, -0.09],
+  ["resourceCardWool", "WOOL RESOURCE CARD", 19, 0],
+  ["resourceCardGrain", "GRAIN RESOURCE CARD", 19, 0.09],
+  ["resourceCardOre", "ORE RESOURCE CARD", 19, 0.18],
+].map(([template, name, count, z]) => stack({ template, name, count, x: 0.34, z, rotation: [180, 0, 0] }));
 
 const actionCardStack = mixedStack({
-  x: 0.31,
+  x: 0.34,
   z: 0.31,
   cards: [
-    ...repeatedCards("knightCard", "Knight card", 14),
-    ...repeatedCards("roadBuildingCard", "Road Building card", 2),
-    ...repeatedCards("yearOfPlentyCard", "Year of Plenty card", 2),
-    ...repeatedCards("monopolyCard", "Monopoly card", 2),
-    ...repeatedCards("victoryPointCard", "Victory Point card", 5),
+    ...repeatedCards("knightCard", "KNIGHT CARD", 14),
+    ...repeatedCards("roadBuildingCard", "ROAD BUILDING CARD", 2),
+    ...repeatedCards("yearOfPlentyCard", "YEAR OF PLENTY CARD", 2),
+    ...repeatedCards("monopolyCard", "MONOPOLY CARD", 2),
+    { template: "chapelCard", name: "CHAPEL CARD", count: 1 },
+    { template: "greatHallCard", name: "GREAT HALL CARD", count: 1 },
+    { template: "libraryCard", name: "LIBRARY CARD", count: 1 },
+    { template: "marketCard", name: "MARKET CARD", count: 1 },
+    { template: "universityCard", name: "UNIVERSITY CARD", count: 1 },
   ],
 });
 
 const awardCards = [
-  ["largestArmyCard", "Largest Army card", -0.08],
-  ["longestRoadCard", "Longest Road card", 0.08],
-  ["buildingCostCard", "Building Cost card", 0.25],
-].map(([template, name, z]) => stack({ template, name, count: 1, x: -0.31, z }));
+  ["businessCard", "BUSINESS CARD", -0.21],
+  ["largestArmyCard", "LARGEST ARMY CARD", -0.08, [180, 0, 0]],
+  ["longestRoadCard", "LONGEST ROAD CARD", 0.08, [180, 0, 0]],
+  ["buildingCostCard", "BUILDING COST CARD", 0.25, [180, 0, 0]],
+].map(([template, name, z, rotation]) => stack({ template, name, count: 1, x: -0.35, z, rotation }));
 
 const explicitY = (pieces, parentTemplate = null) => {
   for (const piece of pieces) {
@@ -232,30 +282,33 @@ const sidePieces = [
   ...cardStacks,
   actionCardStack,
   ...awardCards,
-  ...woodenSupply({ label: "Red", tint: "red", x: 0.43, z: -0.12 }),
-  ...woodenSupply({ label: "Blue", tint: "blue", x: 0.5, z: -0.12 }),
-  ...woodenSupply({ label: "Magenta", tint: "magenta", x: 0.57, z: -0.12 }),
-  ...woodenSupply({ label: "Orange", tint: "orange", x: 0.64, z: -0.12 }),
+  ...woodenSupply({ label: "RED", tint: "red", x: 0.43, z: -0.12 }),
+  ...woodenSupply({ label: "BLUE", tint: "blue", x: 0.5, z: -0.12 }),
+  ...woodenSupply({ label: "WHITE", tint: "white", x: 0.57, z: -0.12 }),
+  ...woodenSupply({ label: "ORANGE", tint: "orange", x: 0.64, z: -0.12 }),
 ];
 
 const manifest = {
   $schema: SCHEMA_URL,
   templates,
   scenarios: [{
-    name: "Premade Settlers Board",
+    name: "PREMADE SETTLERS BOARD",
     children: [
       {
         template: "ocean",
-        name: "Ocean",
+        name: "OCEAN",
         position: position("ocean", 0, 0),
-        children: boardTiles.map(tilePiece),
+        children: [
+          ...boardTiles.map(tilePiece),
+          ...harbors,
+        ],
       },
       ...sidePieces,
     ],
   }],
 };
 
-explicitY(manifest.scenarios[0].children);
+// explicitY(manifest.scenarios[0].children);
 
 await mkdir(distDir, { recursive: true });
 await writeFile(outputManifestPath, `${JSON.stringify(manifest, null, 2)}\n`);

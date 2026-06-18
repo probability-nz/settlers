@@ -30,7 +30,20 @@ if (!Array.isArray(manifest.scenarios) || manifest.scenarios.length !== 1) {
 
 const templateNames = new Set(Object.keys(manifest.templates));
 const assetPaths = new Set();
-const tileTemplates = new Set(["tileBrick", "tileDesert", "tileGrain", "tileLumber", "tileOre", "tileWool"]);
+const tileTemplates = new Set([
+  "tileBrick",
+  "tileDesert",
+  "tileGrain",
+  "tileLumber",
+  "tileOre",
+  "tileWool",
+  "harbor31",
+  "harborBrick",
+  "harborGrain",
+  "harborLumber",
+  "harborOre",
+  "harborWool",
+]);
 const offBoardTemplates = new Set([
   "resourceCardBrick",
   "resourceCardGrain",
@@ -41,10 +54,15 @@ const offBoardTemplates = new Set([
   "roadBuildingCard",
   "yearOfPlentyCard",
   "monopolyCard",
-  "victoryPointCard",
+  "chapelCard",
+  "greatHallCard",
+  "libraryCard",
+  "marketCard",
+  "universityCard",
   "largestArmyCard",
   "longestRoadCard",
   "buildingCostCard",
+  "businessCard",
   "road",
   "settlement",
   "house",
