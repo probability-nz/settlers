@@ -5,7 +5,7 @@
   },
   "scenes": [
     {
-      "name": "harbor-grain",
+      "name": "harbor-corn",
       "nodes": [
         0
       ]
@@ -165,7 +165,7 @@
         "metallicFactor": 0.02,
         "roughnessFactor": 0.85
       },
-      "name": "Harbor grain face side"
+      "name": "Harbor corn face side"
     },
     {
       "pbrMetallicRoughness": {
@@ -181,7 +181,7 @@
           "index": 0
         }
       },
-      "name": "Harbor grain face",
+      "name": "Harbor corn face",
       "extensions": {
         "KHR_materials_unlit": {}
       },
@@ -229,7 +229,7 @@
   ],
   "images": [
     {
-      "uri": "harbor-grain.png"
+      "uri": "harbor-corn.png"
     }
   ],
   "textures": [

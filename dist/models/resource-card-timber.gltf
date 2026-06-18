@@ -5,7 +5,7 @@
   },
   "scenes": [
     {
-      "name": "resource-card-grain",
+      "name": "resource-card-timber",
       "nodes": [
         0
       ]
@@ -359,7 +359,7 @@
         }
       },
       "doubleSided": true,
-      "name": "Resource card grain face front"
+      "name": "Resource card timber face front"
     },
     {
       "pbrMetallicRoughness": {
@@ -376,7 +376,7 @@
         }
       },
       "doubleSided": true,
-      "name": "Resource card grain face back"
+      "name": "Resource card timber face back"
     }
   ],
   "meshes": [
@@ -428,7 +428,7 @@
       "uri": "resource-card-front.png"
     },
     {
-      "uri": "resource-card-grain.png"
+      "uri": "resource-card-timber.png"
     }
   ],
   "textures": [

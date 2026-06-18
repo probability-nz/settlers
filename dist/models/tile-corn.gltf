@@ -5,7 +5,7 @@
   },
   "scenes": [
     {
-      "name": "tile-grain",
+      "name": "tile-corn",
       "nodes": [
         0
       ]
@@ -165,7 +165,7 @@
         "metallicFactor": 0.02,
         "roughnessFactor": 0.85
       },
-      "name": "Tile grain face side"
+      "name": "Tile corn face side"
     },
     {
       "pbrMetallicRoughness": {
@@ -181,7 +181,7 @@
           "index": 0
         }
       },
-      "name": "Tile grain face",
+      "name": "Tile corn face",
       "extensions": {
         "KHR_materials_unlit": {}
       },
@@ -229,7 +229,7 @@
   ],
   "images": [
     {
-      "uri": "tile-grain.png"
+      "uri": "tile-corn.png"
     }
   ],
   "textures": [

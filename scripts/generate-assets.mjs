@@ -410,12 +410,12 @@ const tileTexture = async (key, { label, emoji }) => {
     line-height: 1;
   }
   .emoji {
-    top: 180px;
+    top: 150px;
     font-family: "SettlersMonoEmoji", "SettlersUnifont", monospace;
     font-size: 170px;
   }
   .label {
-    bottom: 180px;
+    bottom: 150px;
     font-size: 92px;
   }
 </style>
@@ -545,11 +545,11 @@ const buildingCostTexture = async () => {
     <div class="label">ROAD:</div>
     <div class="icons">🧱🪵</div>
     <div class="label">SETTLEMENT:</div>
-    <div class="icons">🧱🪵🐑🌾</div>
+    <div class="icons">🧱🪵🐑🌽</div>
     <div class="label">CITY:</div>
-    <div class="icons">🌾🌾🪨🪨🪨</div>
+    <div class="icons">🌽🌽🪨🪨🪨</div>
     <div class="label">DEVELOPMENT CARD:</div>
-    <div class="icons">🐑🌾🪨</div>
+    <div class="icons">🐑🌽🪨</div>
   </div>
 </div>
 `);
@@ -807,6 +807,120 @@ const counter = (value, imageUri) => {
   return result;
 };
 
+const lShapeGeometry = ({ length, armWidth, thickness, insideBrace, bevelStartFromBottom }) => {
+  const bevelRise = thickness - bevelStartFromBottom;
+  const topChamfer = bevelRise;
+  const bottomY = -thickness / 2;
+  const bevelStartY = bottomY + bevelStartFromBottom;
+  const topY = thickness / 2;
+  const bottom = [
+    [0, 0],
+    [length, 0],
+    [length, armWidth],
+    [armWidth + insideBrace, armWidth],
+    [armWidth, armWidth + insideBrace],
+    [armWidth, length],
+    [0, length],
+  ];
+  const top = [
+    [topChamfer, topChamfer],
+    [length, topChamfer],
+    [length, armWidth],
+    [armWidth + insideBrace, armWidth],
+    [armWidth, armWidth + insideBrace],
+    [armWidth, length],
+    [topChamfer, length],
+  ];
+  const positions = [];
+  const indices = [];
+  const point = ([x, z], y) => positions.push(x - length / 2, y, z - length / 2) / 3 - 1;
+  const bottomIndices = bottom.map((p) => point(p, bottomY));
+  const middleIndices = bottom.map((p) => point(p, bevelStartY));
+  const topIndices = top.map((p) => point(p, topY));
+  const triangles = THREE.ShapeUtils.triangulateShape(bottom.map(([x, z]) => new THREE.Vector2(x, z)), []);
+  const topTriangles = THREE.ShapeUtils.triangulateShape(top.map(([x, z]) => new THREE.Vector2(x, z)), []);
+
+  for (const [a, b, c] of triangles) {
+    indices.push(bottomIndices[a], bottomIndices[b], bottomIndices[c]);
+  }
+
+  for (const [a, b, c] of topTriangles) {
+    indices.push(topIndices[c], topIndices[b], topIndices[a]);
+  }
+
+  for (let index = 0; index < bottom.length; index += 1) {
+    const next = (index + 1) % bottom.length;
+    indices.push(bottomIndices[index], middleIndices[next], bottomIndices[next]);
+    indices.push(bottomIndices[index], middleIndices[index], middleIndices[next]);
+    indices.push(middleIndices[index], topIndices[next], middleIndices[next]);
+    indices.push(middleIndices[index], topIndices[index], topIndices[next]);
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return geometry;
+};
+
+const raisedRect = ({ material, x, z, width, depth, y, rotation = 0 }) =>
+  mesh(new THREE.BoxGeometry(width, 0.00016, depth), material, [x, y, z], [0, rotation, 0]);
+
+const ruler = () => {
+  const length = 0.205;
+  const armWidth = 0.03;
+  const thickness = 0.0015;
+  const insideBrace = 0.01;
+  const bevelStartFromBottom = thickness / 2;
+  const measuredLength = 0.2;
+  const origin = -length / 2;
+  const markDepth = 0.00016;
+  const bottom = -thickness / 2 + markDepth / 2;
+  const acrylic = standard("lightskyblue", {
+    color: "lightskyblue",
+    transparent: true,
+    opacity: 0.34,
+    roughness: 0.28,
+    metalness: 0,
+    depthWrite: false,
+  });
+  const marks = basic({ color: "black" });
+  const tickWidth = 0.00018;
+  const ticks = [];
+
+  for (let mm = 1; mm <= measuredLength * 1000; mm += 1) {
+    const isCm = mm % 10 === 0;
+    const isHalfCm = mm % 5 === 0;
+    const distance = mm / 1000;
+    const fullTickLength = isCm ? 0.01 : isHalfCm ? 0.006 : 0.003;
+    const tickLength = mm > 0 && mm <= 5 ? distance : fullTickLength;
+    const x = origin + distance;
+    const z = origin + distance;
+
+    ticks.push(raisedRect({
+      material: marks,
+      x,
+      z: origin + tickLength / 2,
+      width: tickWidth,
+      depth: tickLength,
+      y: bottom,
+    }));
+    ticks.push(raisedRect({
+      material: marks,
+      x: origin + tickLength / 2,
+      z,
+      width: tickLength,
+      depth: tickWidth,
+      y: bottom,
+    }));
+  }
+
+  return group(
+    mesh(lShapeGeometry({ length, armWidth, thickness, insideBrace, bevelStartFromBottom }), acrylic),
+    ...ticks,
+  );
+};
+
 const flatProfile = (points, depth) => {
   const shape = new THREE.Shape();
   shape.moveTo(...points[0]);
@@ -814,6 +928,8 @@ const flatProfile = (points, depth) => {
   shape.closePath();
 
   const geometry = new THREE.ExtrudeGeometry(shape, { bevelEnabled: false, depth });
+  geometry.rotateX(Math.PI / 2);
+  geometry.rotateY(Math.PI);
   geometry.computeBoundingBox();
   const { min, max } = geometry.boundingBox;
   geometry.translate(-(min.x + max.x) / 2, -(min.y + max.y) / 2, -(min.z + max.z) / 2);
@@ -939,8 +1055,8 @@ const exportGltf = async (name, object) => {
 
 const resources = {
   brick: { label: "BRICK", color: "peru", text: "saddlebrown", emoji: "🧱" },
-  grain: { label: "GRAIN", color: "gold", text: "darkgoldenrod", emoji: "🌾" },
-  lumber: { label: "LUMBER", color: "seagreen", text: "darkgreen", emoji: "🪵" },
+  corn: { label: "CORN", color: "gold", text: "darkgoldenrod", emoji: "🌽" },
+  timber: { label: "TIMBER", color: "seagreen", text: "darkgreen", emoji: "🪵" },
   ore: { label: "ORE", color: "slategray", text: "black", emoji: "🪨" },
   wool: { label: "WOOL", color: "yellowgreen", text: "darkolivegreen", emoji: "🐑" },
 };
@@ -962,8 +1078,8 @@ const awardCards = {
 const harbors = [
   { key: "3-1", label: "ANY 3:1" },
   { key: "brick", label: "BRICK 2:1" },
-  { key: "grain", label: "GRAIN 2:1" },
-  { key: "lumber", label: "LUMBER 2:1" },
+  { key: "corn", label: "CORN 2:1" },
+  { key: "timber", label: "TIMBER 2:1" },
   { key: "ore", label: "ORE 2:1" },
   { key: "wool", label: "WOOL 2:1" },
 ];
@@ -993,6 +1109,7 @@ const assets = [
   ["road.gltf", road],
   ["settlement.gltf", settlement],
   ["house.gltf", house],
+  ["ruler.gltf", ruler],
 ];
 
 await rm(modelsDir, { recursive: true, force: true });

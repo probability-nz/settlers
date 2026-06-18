@@ -33,21 +33,21 @@ const assetPaths = new Set();
 const tileTemplates = new Set([
   "tileBrick",
   "tileDesert",
-  "tileGrain",
-  "tileLumber",
+  "tileCorn",
+  "tileTimber",
   "tileOre",
   "tileWool",
   "harbor31",
   "harborBrick",
-  "harborGrain",
-  "harborLumber",
+  "harborCorn",
+  "harborTimber",
   "harborOre",
   "harborWool",
 ]);
 const offBoardTemplates = new Set([
   "resourceCardBrick",
-  "resourceCardGrain",
-  "resourceCardLumber",
+  "resourceCardCorn",
+  "resourceCardTimber",
   "resourceCardOre",
   "resourceCardWool",
   "knightCard",
@@ -66,6 +66,7 @@ const offBoardTemplates = new Set([
   "road",
   "settlement",
   "house",
+  "ruler",
 ]);
 
 for (const [name, template] of Object.entries(manifest.templates)) {

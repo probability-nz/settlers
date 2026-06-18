@@ -16,14 +16,14 @@
       "src": "models/tile-desert.gltf",
       "locked": true
     },
-    "tileGrain": {
-      "name": "GRAIN TILE",
-      "src": "models/tile-grain.gltf",
+    "tileCorn": {
+      "name": "CORN TILE",
+      "src": "models/tile-corn.gltf",
       "locked": true
     },
-    "tileLumber": {
-      "name": "LUMBER TILE",
-      "src": "models/tile-lumber.gltf",
+    "tileTimber": {
+      "name": "TIMBER TILE",
+      "src": "models/tile-timber.gltf",
       "locked": true
     },
     "tileOre": {
@@ -46,14 +46,14 @@
       "src": "models/harbor-brick.gltf",
       "locked": true
     },
-    "harborGrain": {
-      "name": "GRAIN 2:1 HARBOR",
-      "src": "models/harbor-grain.gltf",
+    "harborCorn": {
+      "name": "CORN 2:1 HARBOR",
+      "src": "models/harbor-corn.gltf",
       "locked": true
     },
-    "harborLumber": {
-      "name": "LUMBER 2:1 HARBOR",
-      "src": "models/harbor-lumber.gltf",
+    "harborTimber": {
+      "name": "TIMBER 2:1 HARBOR",
+      "src": "models/harbor-timber.gltf",
       "locked": true
     },
     "harborOre": {
@@ -81,6 +81,10 @@
     "house": {
       "name": "CITY",
       "src": "models/house.gltf"
+    },
+    "ruler": {
+      "name": "L-SHAPED RULER",
+      "src": "models/ruler.gltf"
     },
     "counter2": {
       "name": "2 COUNTER",
@@ -136,13 +140,13 @@
       "name": "BRICK RESOURCE CARD",
       "src": "models/resource-card-brick.gltf"
     },
-    "resourceCardGrain": {
-      "name": "GRAIN RESOURCE CARD",
-      "src": "models/resource-card-grain.gltf"
+    "resourceCardCorn": {
+      "name": "CORN RESOURCE CARD",
+      "src": "models/resource-card-corn.gltf"
     },
-    "resourceCardLumber": {
-      "name": "LUMBER RESOURCE CARD",
-      "src": "models/resource-card-lumber.gltf"
+    "resourceCardTimber": {
+      "name": "TIMBER RESOURCE CARD",
+      "src": "models/resource-card-timber.gltf"
     },
     "resourceCardOre": {
       "name": "ORE RESOURCE CARD",
@@ -222,9 +226,9 @@
               "template": "tileOre",
               "name": "ORE 5",
               "position": [
-                -0.0789,
+                -0.082,
                 null,
-                -0.1366
+                -0.142
               ],
               "children": [
                 {
@@ -239,17 +243,17 @@
               ]
             },
             {
-              "template": "tileGrain",
-              "name": "GRAIN 2",
+              "template": "tileCorn",
+              "name": "CORN 2",
               "position": [
                 0,
                 null,
-                -0.1366
+                -0.142
               ],
               "children": [
                 {
                   "template": "counter2",
-                  "name": "GRAIN 2 COUNTER",
+                  "name": "CORN 2 COUNTER",
                   "position": [
                     0,
                     null,
@@ -259,17 +263,17 @@
               ]
             },
             {
-              "template": "tileLumber",
-              "name": "LUMBER 6",
+              "template": "tileTimber",
+              "name": "TIMBER 6",
               "position": [
-                0.0789,
+                0.082,
                 null,
-                -0.1366
+                -0.142
               ],
               "children": [
                 {
                   "template": "counter6",
-                  "name": "LUMBER 6 COUNTER",
+                  "name": "TIMBER 6 COUNTER",
                   "position": [
                     0,
                     null,
@@ -282,9 +286,9 @@
               "template": "tileWool",
               "name": "WOOL 3",
               "position": [
-                -0.1183,
+                -0.123,
                 null,
-                -0.0683
+                -0.071
               ],
               "children": [
                 {
@@ -302,9 +306,9 @@
               "template": "tileBrick",
               "name": "BRICK 8",
               "position": [
-                -0.0394,
+                -0.041,
                 null,
-                -0.0683
+                -0.071
               ],
               "children": [
                 {
@@ -322,9 +326,9 @@
               "template": "tileOre",
               "name": "ORE 10",
               "position": [
-                0.0394,
+                0.041,
                 null,
-                -0.0683
+                -0.071
               ],
               "children": [
                 {
@@ -339,17 +343,17 @@
               ]
             },
             {
-              "template": "tileGrain",
-              "name": "GRAIN 9",
+              "template": "tileCorn",
+              "name": "CORN 9",
               "position": [
-                0.1183,
+                0.123,
                 null,
-                -0.0683
+                -0.071
               ],
               "children": [
                 {
                   "template": "counter9",
-                  "name": "GRAIN 9 COUNTER",
+                  "name": "CORN 9 COUNTER",
                   "position": [
                     0,
                     null,
@@ -359,17 +363,17 @@
               ]
             },
             {
-              "template": "tileLumber",
-              "name": "LUMBER 11",
+              "template": "tileTimber",
+              "name": "TIMBER 11",
               "position": [
-                -0.1577,
+                -0.164,
                 null,
                 0
               ],
               "children": [
                 {
                   "template": "counter11",
-                  "name": "LUMBER 11 COUNTER",
+                  "name": "TIMBER 11 COUNTER",
                   "position": [
                     0,
                     null,
@@ -382,7 +386,7 @@
               "template": "tileWool",
               "name": "WOOL 4",
               "position": [
-                -0.0789,
+                -0.082,
                 null,
                 0
               ],
@@ -422,7 +426,7 @@
               "template": "tileBrick",
               "name": "BRICK 3",
               "position": [
-                0.0789,
+                0.082,
                 null,
                 0
               ],
@@ -442,7 +446,7 @@
               "template": "tileOre",
               "name": "ORE 8",
               "position": [
-                0.1577,
+                0.164,
                 null,
                 0
               ],
@@ -459,17 +463,17 @@
               ]
             },
             {
-              "template": "tileGrain",
-              "name": "GRAIN 4",
+              "template": "tileCorn",
+              "name": "CORN 4",
               "position": [
-                -0.1183,
+                -0.123,
                 null,
-                0.0683
+                0.071
               ],
               "children": [
                 {
                   "template": "counter4",
-                  "name": "GRAIN 4 COUNTER",
+                  "name": "CORN 4 COUNTER",
                   "position": [
                     0,
                     null,
@@ -479,17 +483,17 @@
               ]
             },
             {
-              "template": "tileLumber",
-              "name": "LUMBER 10",
+              "template": "tileTimber",
+              "name": "TIMBER 10",
               "position": [
-                -0.0394,
+                -0.041,
                 null,
-                0.0683
+                0.071
               ],
               "children": [
                 {
                   "template": "counter10",
-                  "name": "LUMBER 10 COUNTER",
+                  "name": "TIMBER 10 COUNTER",
                   "position": [
                     0,
                     null,
@@ -502,9 +506,9 @@
               "template": "tileWool",
               "name": "WOOL 9",
               "position": [
-                0.0394,
+                0.041,
                 null,
-                0.0683
+                0.071
               ],
               "children": [
                 {
@@ -522,9 +526,9 @@
               "template": "tileBrick",
               "name": "BRICK 12",
               "position": [
-                0.1183,
+                0.123,
                 null,
-                0.0683
+                0.071
               ],
               "children": [
                 {
@@ -542,9 +546,9 @@
               "template": "tileWool",
               "name": "WOOL 6",
               "position": [
-                -0.0789,
+                -0.082,
                 null,
-                0.1366
+                0.142
               ],
               "children": [
                 {
@@ -559,17 +563,17 @@
               ]
             },
             {
-              "template": "tileGrain",
-              "name": "GRAIN 5",
+              "template": "tileCorn",
+              "name": "CORN 5",
               "position": [
                 0,
                 null,
-                0.1366
+                0.142
               ],
               "children": [
                 {
                   "template": "counter5",
-                  "name": "GRAIN 5 COUNTER",
+                  "name": "CORN 5 COUNTER",
                   "position": [
                     0,
                     null,
@@ -579,17 +583,17 @@
               ]
             },
             {
-              "template": "tileLumber",
-              "name": "LUMBER 11",
+              "template": "tileTimber",
+              "name": "TIMBER 11",
               "position": [
-                0.0789,
+                0.082,
                 null,
-                0.1366
+                0.142
               ],
               "children": [
                 {
                   "template": "counter11",
-                  "name": "LUMBER 11 COUNTER",
+                  "name": "TIMBER 11 COUNTER",
                   "position": [
                     0,
                     null,
@@ -602,34 +606,34 @@
               "template": "harbor31",
               "name": "Generic harbor 1",
               "position": [
-                -0.1183,
+                -0.123,
                 null,
-                -0.2049
+                -0.213
               ]
             },
             {
               "template": "harborBrick",
               "name": "Brick harbor",
               "position": [
-                0.0394,
+                0.041,
                 null,
-                -0.2049
+                -0.213
               ]
             },
             {
               "template": "harbor31",
               "name": "Generic harbor 2",
               "position": [
-                0.1578,
+                0.164,
                 null,
-                -0.1366
+                -0.142
               ]
             },
             {
-              "template": "harborLumber",
-              "name": "Lumber harbor",
+              "template": "harborTimber",
+              "name": "Timber harbor",
               "position": [
-                0.2367,
+                0.246,
                 null,
                 0
               ]
@@ -638,45 +642,45 @@
               "template": "harborWool",
               "name": "Wool harbor",
               "position": [
-                0.1578,
+                0.164,
                 null,
-                0.1366
+                0.142
               ]
             },
             {
               "template": "harborOre",
               "name": "Ore harbor",
               "position": [
-                0.0394,
+                0.041,
                 null,
-                0.2049
+                0.213
               ]
             },
             {
               "template": "harbor31",
               "name": "Generic harbor 3",
               "position": [
-                -0.1183,
+                -0.123,
                 null,
-                0.2049
+                0.213
               ]
             },
             {
-              "template": "harborGrain",
-              "name": "Grain harbor",
+              "template": "harborCorn",
+              "name": "Corn harbor",
               "position": [
-                -0.1972,
+                -0.205,
                 null,
-                0.0683
+                0.071
               ]
             },
             {
               "template": "harbor31",
               "name": "Generic harbor 4",
               "position": [
-                -0.1972,
+                -0.205,
                 null,
-                -0.0683
+                -0.071
               ]
             }
           ]
@@ -984,8 +988,8 @@
           ]
         },
         {
-          "template": "resourceCardLumber",
-          "name": "LUMBER RESOURCE CARD-1",
+          "template": "resourceCardTimber",
+          "name": "TIMBER RESOURCE CARD-1",
           "position": [
             0.34,
             null,
@@ -998,8 +1002,8 @@
           ],
           "children": [
             {
-              "template": "resourceCardLumber",
-              "name": "LUMBER RESOURCE CARD-2",
+              "template": "resourceCardTimber",
+              "name": "TIMBER RESOURCE CARD-2",
               "position": [
                 0,
                 null,
@@ -1012,8 +1016,8 @@
               ],
               "children": [
                 {
-                  "template": "resourceCardLumber",
-                  "name": "LUMBER RESOURCE CARD-3",
+                  "template": "resourceCardTimber",
+                  "name": "TIMBER RESOURCE CARD-3",
                   "position": [
                     0,
                     null,
@@ -1026,8 +1030,8 @@
                   ],
                   "children": [
                     {
-                      "template": "resourceCardLumber",
-                      "name": "LUMBER RESOURCE CARD-4",
+                      "template": "resourceCardTimber",
+                      "name": "TIMBER RESOURCE CARD-4",
                       "position": [
                         0,
                         null,
@@ -1040,8 +1044,8 @@
                       ],
                       "children": [
                         {
-                          "template": "resourceCardLumber",
-                          "name": "LUMBER RESOURCE CARD-5",
+                          "template": "resourceCardTimber",
+                          "name": "TIMBER RESOURCE CARD-5",
                           "position": [
                             0,
                             null,
@@ -1054,8 +1058,8 @@
                           ],
                           "children": [
                             {
-                              "template": "resourceCardLumber",
-                              "name": "LUMBER RESOURCE CARD-6",
+                              "template": "resourceCardTimber",
+                              "name": "TIMBER RESOURCE CARD-6",
                               "position": [
                                 0,
                                 null,
@@ -1068,8 +1072,8 @@
                               ],
                               "children": [
                                 {
-                                  "template": "resourceCardLumber",
-                                  "name": "LUMBER RESOURCE CARD-7",
+                                  "template": "resourceCardTimber",
+                                  "name": "TIMBER RESOURCE CARD-7",
                                   "position": [
                                     0,
                                     null,
@@ -1082,8 +1086,8 @@
                                   ],
                                   "children": [
                                     {
-                                      "template": "resourceCardLumber",
-                                      "name": "LUMBER RESOURCE CARD-8",
+                                      "template": "resourceCardTimber",
+                                      "name": "TIMBER RESOURCE CARD-8",
                                       "position": [
                                         0,
                                         null,
@@ -1096,8 +1100,8 @@
                                       ],
                                       "children": [
                                         {
-                                          "template": "resourceCardLumber",
-                                          "name": "LUMBER RESOURCE CARD-9",
+                                          "template": "resourceCardTimber",
+                                          "name": "TIMBER RESOURCE CARD-9",
                                           "position": [
                                             0,
                                             null,
@@ -1110,8 +1114,8 @@
                                           ],
                                           "children": [
                                             {
-                                              "template": "resourceCardLumber",
-                                              "name": "LUMBER RESOURCE CARD-10",
+                                              "template": "resourceCardTimber",
+                                              "name": "TIMBER RESOURCE CARD-10",
                                               "position": [
                                                 0,
                                                 null,
@@ -1124,8 +1128,8 @@
                                               ],
                                               "children": [
                                                 {
-                                                  "template": "resourceCardLumber",
-                                                  "name": "LUMBER RESOURCE CARD-11",
+                                                  "template": "resourceCardTimber",
+                                                  "name": "TIMBER RESOURCE CARD-11",
                                                   "position": [
                                                     0,
                                                     null,
@@ -1138,8 +1142,8 @@
                                                   ],
                                                   "children": [
                                                     {
-                                                      "template": "resourceCardLumber",
-                                                      "name": "LUMBER RESOURCE CARD-12",
+                                                      "template": "resourceCardTimber",
+                                                      "name": "TIMBER RESOURCE CARD-12",
                                                       "position": [
                                                         0,
                                                         null,
@@ -1152,8 +1156,8 @@
                                                       ],
                                                       "children": [
                                                         {
-                                                          "template": "resourceCardLumber",
-                                                          "name": "LUMBER RESOURCE CARD-13",
+                                                          "template": "resourceCardTimber",
+                                                          "name": "TIMBER RESOURCE CARD-13",
                                                           "position": [
                                                             0,
                                                             null,
@@ -1166,8 +1170,8 @@
                                                           ],
                                                           "children": [
                                                             {
-                                                              "template": "resourceCardLumber",
-                                                              "name": "LUMBER RESOURCE CARD-14",
+                                                              "template": "resourceCardTimber",
+                                                              "name": "TIMBER RESOURCE CARD-14",
                                                               "position": [
                                                                 0,
                                                                 null,
@@ -1180,8 +1184,8 @@
                                                               ],
                                                               "children": [
                                                                 {
-                                                                  "template": "resourceCardLumber",
-                                                                  "name": "LUMBER RESOURCE CARD-15",
+                                                                  "template": "resourceCardTimber",
+                                                                  "name": "TIMBER RESOURCE CARD-15",
                                                                   "position": [
                                                                     0,
                                                                     null,
@@ -1194,8 +1198,8 @@
                                                                   ],
                                                                   "children": [
                                                                     {
-                                                                      "template": "resourceCardLumber",
-                                                                      "name": "LUMBER RESOURCE CARD-16",
+                                                                      "template": "resourceCardTimber",
+                                                                      "name": "TIMBER RESOURCE CARD-16",
                                                                       "position": [
                                                                         0,
                                                                         null,
@@ -1208,8 +1212,8 @@
                                                                       ],
                                                                       "children": [
                                                                         {
-                                                                          "template": "resourceCardLumber",
-                                                                          "name": "LUMBER RESOURCE CARD-17",
+                                                                          "template": "resourceCardTimber",
+                                                                          "name": "TIMBER RESOURCE CARD-17",
                                                                           "position": [
                                                                             0,
                                                                             null,
@@ -1222,8 +1226,8 @@
                                                                           ],
                                                                           "children": [
                                                                             {
-                                                                              "template": "resourceCardLumber",
-                                                                              "name": "LUMBER RESOURCE CARD-18",
+                                                                              "template": "resourceCardTimber",
+                                                                              "name": "TIMBER RESOURCE CARD-18",
                                                                               "position": [
                                                                                 0,
                                                                                 null,
@@ -1236,8 +1240,8 @@
                                                                               ],
                                                                               "children": [
                                                                                 {
-                                                                                  "template": "resourceCardLumber",
-                                                                                  "name": "LUMBER RESOURCE CARD-19",
+                                                                                  "template": "resourceCardTimber",
+                                                                                  "name": "TIMBER RESOURCE CARD-19",
                                                                                   "position": [
                                                                                     0,
                                                                                     null,
@@ -1588,8 +1592,8 @@
           ]
         },
         {
-          "template": "resourceCardGrain",
-          "name": "GRAIN RESOURCE CARD-1",
+          "template": "resourceCardCorn",
+          "name": "CORN RESOURCE CARD-1",
           "position": [
             0.34,
             null,
@@ -1602,8 +1606,8 @@
           ],
           "children": [
             {
-              "template": "resourceCardGrain",
-              "name": "GRAIN RESOURCE CARD-2",
+              "template": "resourceCardCorn",
+              "name": "CORN RESOURCE CARD-2",
               "position": [
                 0,
                 null,
@@ -1616,8 +1620,8 @@
               ],
               "children": [
                 {
-                  "template": "resourceCardGrain",
-                  "name": "GRAIN RESOURCE CARD-3",
+                  "template": "resourceCardCorn",
+                  "name": "CORN RESOURCE CARD-3",
                   "position": [
                     0,
                     null,
@@ -1630,8 +1634,8 @@
                   ],
                   "children": [
                     {
-                      "template": "resourceCardGrain",
-                      "name": "GRAIN RESOURCE CARD-4",
+                      "template": "resourceCardCorn",
+                      "name": "CORN RESOURCE CARD-4",
                       "position": [
                         0,
                         null,
@@ -1644,8 +1648,8 @@
                       ],
                       "children": [
                         {
-                          "template": "resourceCardGrain",
-                          "name": "GRAIN RESOURCE CARD-5",
+                          "template": "resourceCardCorn",
+                          "name": "CORN RESOURCE CARD-5",
                           "position": [
                             0,
                             null,
@@ -1658,8 +1662,8 @@
                           ],
                           "children": [
                             {
-                              "template": "resourceCardGrain",
-                              "name": "GRAIN RESOURCE CARD-6",
+                              "template": "resourceCardCorn",
+                              "name": "CORN RESOURCE CARD-6",
                               "position": [
                                 0,
                                 null,
@@ -1672,8 +1676,8 @@
                               ],
                               "children": [
                                 {
-                                  "template": "resourceCardGrain",
-                                  "name": "GRAIN RESOURCE CARD-7",
+                                  "template": "resourceCardCorn",
+                                  "name": "CORN RESOURCE CARD-7",
                                   "position": [
                                     0,
                                     null,
@@ -1686,8 +1690,8 @@
                                   ],
                                   "children": [
                                     {
-                                      "template": "resourceCardGrain",
-                                      "name": "GRAIN RESOURCE CARD-8",
+                                      "template": "resourceCardCorn",
+                                      "name": "CORN RESOURCE CARD-8",
                                       "position": [
                                         0,
                                         null,
@@ -1700,8 +1704,8 @@
                                       ],
                                       "children": [
                                         {
-                                          "template": "resourceCardGrain",
-                                          "name": "GRAIN RESOURCE CARD-9",
+                                          "template": "resourceCardCorn",
+                                          "name": "CORN RESOURCE CARD-9",
                                           "position": [
                                             0,
                                             null,
@@ -1714,8 +1718,8 @@
                                           ],
                                           "children": [
                                             {
-                                              "template": "resourceCardGrain",
-                                              "name": "GRAIN RESOURCE CARD-10",
+                                              "template": "resourceCardCorn",
+                                              "name": "CORN RESOURCE CARD-10",
                                               "position": [
                                                 0,
                                                 null,
@@ -1728,8 +1732,8 @@
                                               ],
                                               "children": [
                                                 {
-                                                  "template": "resourceCardGrain",
-                                                  "name": "GRAIN RESOURCE CARD-11",
+                                                  "template": "resourceCardCorn",
+                                                  "name": "CORN RESOURCE CARD-11",
                                                   "position": [
                                                     0,
                                                     null,
@@ -1742,8 +1746,8 @@
                                                   ],
                                                   "children": [
                                                     {
-                                                      "template": "resourceCardGrain",
-                                                      "name": "GRAIN RESOURCE CARD-12",
+                                                      "template": "resourceCardCorn",
+                                                      "name": "CORN RESOURCE CARD-12",
                                                       "position": [
                                                         0,
                                                         null,
@@ -1756,8 +1760,8 @@
                                                       ],
                                                       "children": [
                                                         {
-                                                          "template": "resourceCardGrain",
-                                                          "name": "GRAIN RESOURCE CARD-13",
+                                                          "template": "resourceCardCorn",
+                                                          "name": "CORN RESOURCE CARD-13",
                                                           "position": [
                                                             0,
                                                             null,
@@ -1770,8 +1774,8 @@
                                                           ],
                                                           "children": [
                                                             {
-                                                              "template": "resourceCardGrain",
-                                                              "name": "GRAIN RESOURCE CARD-14",
+                                                              "template": "resourceCardCorn",
+                                                              "name": "CORN RESOURCE CARD-14",
                                                               "position": [
                                                                 0,
                                                                 null,
@@ -1784,8 +1788,8 @@
                                                               ],
                                                               "children": [
                                                                 {
-                                                                  "template": "resourceCardGrain",
-                                                                  "name": "GRAIN RESOURCE CARD-15",
+                                                                  "template": "resourceCardCorn",
+                                                                  "name": "CORN RESOURCE CARD-15",
                                                                   "position": [
                                                                     0,
                                                                     null,
@@ -1798,8 +1802,8 @@
                                                                   ],
                                                                   "children": [
                                                                     {
-                                                                      "template": "resourceCardGrain",
-                                                                      "name": "GRAIN RESOURCE CARD-16",
+                                                                      "template": "resourceCardCorn",
+                                                                      "name": "CORN RESOURCE CARD-16",
                                                                       "position": [
                                                                         0,
                                                                         null,
@@ -1812,8 +1816,8 @@
                                                                       ],
                                                                       "children": [
                                                                         {
-                                                                          "template": "resourceCardGrain",
-                                                                          "name": "GRAIN RESOURCE CARD-17",
+                                                                          "template": "resourceCardCorn",
+                                                                          "name": "CORN RESOURCE CARD-17",
                                                                           "position": [
                                                                             0,
                                                                             null,
@@ -1826,8 +1830,8 @@
                                                                           ],
                                                                           "children": [
                                                                             {
-                                                                              "template": "resourceCardGrain",
-                                                                              "name": "GRAIN RESOURCE CARD-18",
+                                                                              "template": "resourceCardCorn",
+                                                                              "name": "CORN RESOURCE CARD-18",
                                                                               "position": [
                                                                                 0,
                                                                                 null,
@@ -1840,8 +1844,8 @@
                                                                               ],
                                                                               "children": [
                                                                                 {
-                                                                                  "template": "resourceCardGrain",
-                                                                                  "name": "GRAIN RESOURCE CARD-19",
+                                                                                  "template": "resourceCardCorn",
+                                                                                  "name": "CORN RESOURCE CARD-19",
                                                                                   "position": [
                                                                                     0,
                                                                                     null,
@@ -2516,6 +2520,15 @@
           ]
         },
         {
+          "template": "ruler",
+          "name": "L-SHAPED RULER",
+          "position": [
+            -0.35,
+            null,
+            0.39
+          ]
+        },
+        {
           "template": "road",
           "name": "RED ROAD 1-1",
           "position": [
@@ -2701,7 +2714,7 @@
           "position": [
             0.43,
             null,
-            -0.008
+            0
           ],
           "tint": "red"
         },
@@ -2711,7 +2724,7 @@
           "position": [
             0.43,
             null,
-            0.004
+            0.02
           ],
           "tint": "red"
         },
@@ -2721,7 +2734,7 @@
           "position": [
             0.43,
             null,
-            0.016
+            0.04
           ],
           "tint": "red"
         },
@@ -2731,7 +2744,17 @@
           "position": [
             0.43,
             null,
-            0.028
+            0.06
+          ],
+          "tint": "red"
+        },
+        {
+          "template": "settlement",
+          "name": "RED SETTLEMENT 6",
+          "position": [
+            0.43,
+            null,
+            0.08
           ],
           "tint": "red"
         },
@@ -2741,7 +2764,7 @@
           "position": [
             0.43,
             null,
-            0.07
+            0.12
           ],
           "tint": "red"
         },
@@ -2751,7 +2774,7 @@
           "position": [
             0.43,
             null,
-            0.082
+            0.136
           ],
           "tint": "red"
         },
@@ -2761,17 +2784,7 @@
           "position": [
             0.43,
             null,
-            0.094
-          ],
-          "tint": "red"
-        },
-        {
-          "template": "house",
-          "name": "RED CITY 4",
-          "position": [
-            0.43,
-            null,
-            0.106
+            0.152
           ],
           "tint": "red"
         },
@@ -2961,7 +2974,7 @@
           "position": [
             0.5,
             null,
-            -0.008
+            0
           ],
           "tint": "blue"
         },
@@ -2971,7 +2984,7 @@
           "position": [
             0.5,
             null,
-            0.004
+            0.02
           ],
           "tint": "blue"
         },
@@ -2981,7 +2994,7 @@
           "position": [
             0.5,
             null,
-            0.016
+            0.04
           ],
           "tint": "blue"
         },
@@ -2991,7 +3004,17 @@
           "position": [
             0.5,
             null,
-            0.028
+            0.06
+          ],
+          "tint": "blue"
+        },
+        {
+          "template": "settlement",
+          "name": "BLUE SETTLEMENT 6",
+          "position": [
+            0.5,
+            null,
+            0.08
           ],
           "tint": "blue"
         },
@@ -3001,7 +3024,7 @@
           "position": [
             0.5,
             null,
-            0.07
+            0.12
           ],
           "tint": "blue"
         },
@@ -3011,7 +3034,7 @@
           "position": [
             0.5,
             null,
-            0.082
+            0.136
           ],
           "tint": "blue"
         },
@@ -3021,17 +3044,7 @@
           "position": [
             0.5,
             null,
-            0.094
-          ],
-          "tint": "blue"
-        },
-        {
-          "template": "house",
-          "name": "BLUE CITY 4",
-          "position": [
-            0.5,
-            null,
-            0.106
+            0.152
           ],
           "tint": "blue"
         },
@@ -3221,7 +3234,7 @@
           "position": [
             0.57,
             null,
-            -0.008
+            0
           ],
           "tint": "white"
         },
@@ -3231,7 +3244,7 @@
           "position": [
             0.57,
             null,
-            0.004
+            0.02
           ],
           "tint": "white"
         },
@@ -3241,7 +3254,7 @@
           "position": [
             0.57,
             null,
-            0.016
+            0.04
           ],
           "tint": "white"
         },
@@ -3251,7 +3264,17 @@
           "position": [
             0.57,
             null,
-            0.028
+            0.06
+          ],
+          "tint": "white"
+        },
+        {
+          "template": "settlement",
+          "name": "WHITE SETTLEMENT 6",
+          "position": [
+            0.57,
+            null,
+            0.08
           ],
           "tint": "white"
         },
@@ -3261,7 +3284,7 @@
           "position": [
             0.57,
             null,
-            0.07
+            0.12
           ],
           "tint": "white"
         },
@@ -3271,7 +3294,7 @@
           "position": [
             0.57,
             null,
-            0.082
+            0.136
           ],
           "tint": "white"
         },
@@ -3281,17 +3304,7 @@
           "position": [
             0.57,
             null,
-            0.094
-          ],
-          "tint": "white"
-        },
-        {
-          "template": "house",
-          "name": "WHITE CITY 4",
-          "position": [
-            0.57,
-            null,
-            0.106
+            0.152
           ],
           "tint": "white"
         },
@@ -3481,7 +3494,7 @@
           "position": [
             0.64,
             null,
-            -0.008
+            0
           ],
           "tint": "orange"
         },
@@ -3491,7 +3504,7 @@
           "position": [
             0.64,
             null,
-            0.004
+            0.02
           ],
           "tint": "orange"
         },
@@ -3501,7 +3514,7 @@
           "position": [
             0.64,
             null,
-            0.016
+            0.04
           ],
           "tint": "orange"
         },
@@ -3511,7 +3524,17 @@
           "position": [
             0.64,
             null,
-            0.028
+            0.06
+          ],
+          "tint": "orange"
+        },
+        {
+          "template": "settlement",
+          "name": "ORANGE SETTLEMENT 6",
+          "position": [
+            0.64,
+            null,
+            0.08
           ],
           "tint": "orange"
         },
@@ -3521,7 +3544,7 @@
           "position": [
             0.64,
             null,
-            0.07
+            0.12
           ],
           "tint": "orange"
         },
@@ -3531,7 +3554,7 @@
           "position": [
             0.64,
             null,
-            0.082
+            0.136
           ],
           "tint": "orange"
         },
@@ -3541,17 +3564,7 @@
           "position": [
             0.64,
             null,
-            0.094
-          ],
-          "tint": "orange"
-        },
-        {
-          "template": "house",
-          "name": "ORANGE CITY 4",
-          "position": [
-            0.64,
-            null,
-            0.106
+            0.152
           ],
           "tint": "orange"
         }

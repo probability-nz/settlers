@@ -12,14 +12,14 @@ const halfYByTemplate = new Map([
   ["ocean", 0.001],
   ["tileBrick", 0.001],
   ["tileDesert", 0.001],
-  ["tileGrain", 0.001],
-  ["tileLumber", 0.001],
+  ["tileCorn", 0.001],
+  ["tileTimber", 0.001],
   ["tileOre", 0.001],
   ["tileWool", 0.001],
   ["harbor31", 0.001],
   ["harborBrick", 0.001],
-  ["harborGrain", 0.001],
-  ["harborLumber", 0.001],
+  ["harborCorn", 0.001],
+  ["harborTimber", 0.001],
   ["harborOre", 0.001],
   ["harborWool", 0.001],
   ["counter2", 0.001],
@@ -33,8 +33,8 @@ const halfYByTemplate = new Map([
   ["counter11", 0.001],
   ["counter12", 0.001],
   ["resourceCardBrick", 0.0003],
-  ["resourceCardGrain", 0.0003],
-  ["resourceCardLumber", 0.0003],
+  ["resourceCardCorn", 0.0003],
+  ["resourceCardTimber", 0.0003],
   ["resourceCardOre", 0.0003],
   ["resourceCardWool", 0.0003],
   ["knightCard", 0.0003],
@@ -51,8 +51,9 @@ const halfYByTemplate = new Map([
   ["buildingCostCard", 0.001],
   ["businessCard", 0.000175],
   ["road", 0.002],
-  ["house", 0.006],
-  ["settlement", 0.0085],
+  ["house", 0.005],
+  ["settlement", 0.005],
+  ["ruler", 0.0015],
   ["robber", 0],
 ]);
 
@@ -125,35 +126,36 @@ const logStack = ({ label, x, z, columns = 5, height = 3, spacing = 0.005, tint 
 
 const woodenSupply = ({ label, tint, x, z }) => [
   ...logStack({ label, tint, x, z }),
-  ...row({ template: "settlement", name: `${label} SETTLEMENT`, count: 5, x, z: z + 0.1, spacing: 0.012, tint }),
-  ...row({ template: "house", name: `${label} CITY`, count: 4, x, z: z + 0.19, spacing: 0.012, tint }),
+  ...row({ template: "settlement", name: `${label} SETTLEMENT`, count: 6, x, z: z + 0.1, spacing: 0.02, tint }),
+  ...row({ template: "house", name: `${label} CITY`, count: 3, x, z: z + 0.24, spacing: 0.016, tint }),
 ];
 
 const templates = {
   ocean: { name: "OCEAN BOARD", src: "models/ocean.gltf", locked: true },
   tileBrick: { name: "BRICK TILE", src: "models/tile-brick.gltf", locked: true },
   tileDesert: { name: "DESERT TILE", src: "models/tile-desert.gltf", locked: true },
-  tileGrain: { name: "GRAIN TILE", src: "models/tile-grain.gltf", locked: true },
-  tileLumber: { name: "LUMBER TILE", src: "models/tile-lumber.gltf", locked: true },
+  tileCorn: { name: "CORN TILE", src: "models/tile-corn.gltf", locked: true },
+  tileTimber: { name: "TIMBER TILE", src: "models/tile-timber.gltf", locked: true },
   tileOre: { name: "ORE TILE", src: "models/tile-ore.gltf", locked: true },
   tileWool: { name: "WOOL TILE", src: "models/tile-wool.gltf", locked: true },
   harbor31: { name: "3:1 HARBOR", src: "models/harbor-3-1.gltf", locked: true },
   harborBrick: { name: "BRICK 2:1 HARBOR", src: "models/harbor-brick.gltf", locked: true },
-  harborGrain: { name: "GRAIN 2:1 HARBOR", src: "models/harbor-grain.gltf", locked: true },
-  harborLumber: { name: "LUMBER 2:1 HARBOR", src: "models/harbor-lumber.gltf", locked: true },
+  harborCorn: { name: "CORN 2:1 HARBOR", src: "models/harbor-corn.gltf", locked: true },
+  harborTimber: { name: "TIMBER 2:1 HARBOR", src: "models/harbor-timber.gltf", locked: true },
   harborOre: { name: "ORE 2:1 HARBOR", src: "models/harbor-ore.gltf", locked: true },
   harborWool: { name: "WOOL 2:1 HARBOR", src: "models/harbor-wool.gltf", locked: true },
   robber: { name: "ROBBER", src: "models/robber.gltf" },
   road: { name: "ROAD", src: "models/road.gltf" },
   settlement: { name: "SETTLEMENT", src: "models/settlement.gltf" },
   house: { name: "CITY", src: "models/house.gltf" },
+  ruler: { name: "L-SHAPED RULER", src: "models/ruler.gltf" },
   ...Object.fromEntries([2, 3, 4, 5, 6, 8, 9, 10, 11, 12].map((value) => [
     `counter${value}`,
     { name: `${value} COUNTER`, src: `models/counter-${value}.gltf`, locked: true },
   ])),
   resourceCardBrick: { name: "BRICK RESOURCE CARD", src: "models/resource-card-brick.gltf" },
-  resourceCardGrain: { name: "GRAIN RESOURCE CARD", src: "models/resource-card-grain.gltf" },
-  resourceCardLumber: { name: "LUMBER RESOURCE CARD", src: "models/resource-card-lumber.gltf" },
+  resourceCardCorn: { name: "CORN RESOURCE CARD", src: "models/resource-card-corn.gltf" },
+  resourceCardTimber: { name: "TIMBER RESOURCE CARD", src: "models/resource-card-timber.gltf" },
   resourceCardOre: { name: "ORE RESOURCE CARD", src: "models/resource-card-ore.gltf" },
   resourceCardWool: { name: "WOOL RESOURCE CARD", src: "models/resource-card-wool.gltf" },
   knightCard: { name: "KNIGHT CARD", src: "models/knight-card.gltf" },
@@ -172,51 +174,88 @@ const templates = {
 };
 
 const tileTemplate = (resource) => `tile${resource}`;
-const hexXStep = 0.0789;
-const hexZStep = 0.0683;
+const hexXStep = 0.082;
+const hexZStep = 0.071;
 const hex = (q, r) => [
   Number((hexXStep * (q + r / 2)).toFixed(4)),
   Number((hexZStep * r).toFixed(4)),
 ];
 
+const axialRing = (radius) => {
+  const directions = [
+    [1, 0],
+    [0, 1],
+    [-1, 1],
+    [-1, 0],
+    [0, -1],
+    [1, -1],
+  ];
+  const result = [];
+  let q = 0;
+  let r = -radius;
+  for (const [dq, dr] of directions) {
+    for (let index = 0; index < radius; index += 1) {
+      result.push([q, r]);
+      q += dq;
+      r += dr;
+    }
+  }
+  return result;
+};
+
+const trackedRingSlots = (radius) => {
+  const ring = axialRing(radius);
+  const used = new Set();
+  return (slot) => {
+    if (slot < 0 || slot >= ring.length) throw new Error(`Invalid harbor slot ${slot}`);
+    if (used.has(slot)) throw new Error(`Duplicate harbor slot ${slot}`);
+    used.add(slot);
+    return ring[slot];
+  };
+};
+
 const boardTiles = [
-  ["Ore", 5, -0.0789, -0.1366],
-  ["Grain", 2, 0, -0.1366],
-  ["Lumber", 6, 0.0789, -0.1366],
-  ["Wool", 3, -0.1183, -0.0683],
-  ["Brick", 8, -0.0394, -0.0683],
-  ["Ore", 10, 0.0394, -0.0683],
-  ["Grain", 9, 0.1183, -0.0683],
-  ["Lumber", 11, -0.1577, 0],
-  ["Wool", 4, -0.0789, 0],
+  ["Ore", 5, 0, -2],
+  ["Corn", 2, 1, -2],
+  ["Timber", 6, 2, -2],
+  ["Wool", 3, -1, -1],
+  ["Brick", 8, 0, -1],
+  ["Ore", 10, 1, -1],
+  ["Corn", 9, 2, -1],
+  ["Timber", 11, -2, 0],
+  ["Wool", 4, -1, 0],
   ["Desert", null, 0, 0],
-  ["Brick", 3, 0.0789, 0],
-  ["Ore", 8, 0.1577, 0],
-  ["Grain", 4, -0.1183, 0.0683],
-  ["Lumber", 10, -0.0394, 0.0683],
-  ["Wool", 9, 0.0394, 0.0683],
-  ["Brick", 12, 0.1183, 0.0683],
-  ["Wool", 6, -0.0789, 0.1366],
-  ["Grain", 5, 0, 0.1366],
-  ["Lumber", 11, 0.0789, 0.1366],
+  ["Brick", 3, 1, 0],
+  ["Ore", 8, 2, 0],
+  ["Corn", 4, -2, 1],
+  ["Timber", 10, -1, 1],
+  ["Wool", 9, 0, 1],
+  ["Brick", 12, 1, 1],
+  ["Wool", 6, -2, 2],
+  ["Corn", 5, -1, 2],
+  ["Timber", 11, 0, 2],
 ];
 
+const harborHex = trackedRingSlots(3);
+
 const harbors = [
-  ["harbor31", "Generic harbor 1", 0, -3],
-  ["harborBrick", "Brick harbor", 2, -3],
-  ["harbor31", "Generic harbor 2", 3, -2],
-  ["harborLumber", "Lumber harbor", 3, 0],
-  ["harborWool", "Wool harbor", 1, 2],
-  ["harborOre", "Ore harbor", -1, 3],
-  ["harbor31", "Generic harbor 3", -3, 3],
-  ["harborGrain", "Grain harbor", -3, 1],
-  ["harbor31", "Generic harbor 4", -2, -1],
-].map(([template, name, q, r]) => {
+  ["harbor31", "Generic harbor 1", 0],
+  ["harborBrick", "Brick harbor", 2],
+  ["harbor31", "Generic harbor 2", 4],
+  ["harborTimber", "Timber harbor", 6],
+  ["harborWool", "Wool harbor", 8],
+  ["harborOre", "Ore harbor", 10],
+  ["harbor31", "Generic harbor 3", 12],
+  ["harborCorn", "Corn harbor", 14],
+  ["harbor31", "Generic harbor 4", 16],
+].map(([template, name, slot]) => {
+  const [q, r] = harborHex(slot);
   const [x, z] = hex(q, r);
   return { template, name, position: position(template, x, z, "ocean") };
 });
 
-const tilePiece = ([resource, counter, x, z]) => {
+const tilePiece = ([resource, counter, q, r]) => {
+  const [x, z] = hex(q, r);
   const displayResource = resource.toUpperCase();
   const piece = {
     template: tileTemplate(resource),
@@ -238,9 +277,9 @@ const tilePiece = ([resource, counter, x, z]) => {
 
 const cardStacks = [
   ["resourceCardBrick", "BRICK RESOURCE CARD", 19, -0.18],
-  ["resourceCardLumber", "LUMBER RESOURCE CARD", 19, -0.09],
+  ["resourceCardTimber", "TIMBER RESOURCE CARD", 19, -0.09],
   ["resourceCardWool", "WOOL RESOURCE CARD", 19, 0],
-  ["resourceCardGrain", "GRAIN RESOURCE CARD", 19, 0.09],
+  ["resourceCardCorn", "CORN RESOURCE CARD", 19, 0.09],
   ["resourceCardOre", "ORE RESOURCE CARD", 19, 0.18],
 ].map(([template, name, count, z]) => stack({ template, name, count, x: 0.34, z, rotation: [180, 0, 0] }));
 
@@ -282,6 +321,7 @@ const sidePieces = [
   ...cardStacks,
   actionCardStack,
   ...awardCards,
+  { template: "ruler", name: "L-SHAPED RULER", position: position("ruler", -0.35, 0.39) },
   ...woodenSupply({ label: "RED", tint: "red", x: 0.43, z: -0.12 }),
   ...woodenSupply({ label: "BLUE", tint: "blue", x: 0.5, z: -0.12 }),
   ...woodenSupply({ label: "WHITE", tint: "white", x: 0.57, z: -0.12 }),
