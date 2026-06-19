@@ -8,66 +8,47 @@ const distDir = join(root, "dist");
 const outputManifestPath = join(distDir, "probability.json");
 const outputPackagePath = join(distDir, "package.json");
 
-const halfYByTemplate = new Map([
-  ["ocean", 0.001],
-  ["tileBrick", 0.001],
-  ["tileDesert", 0.001],
-  ["tileCorn", 0.001],
-  ["tileTimber", 0.001],
-  ["tileOre", 0.001],
-  ["tileWool", 0.001],
-  ["harbor31", 0.001],
-  ["harborBrick", 0.001],
-  ["harborCorn", 0.001],
-  ["harborTimber", 0.001],
-  ["harborOre", 0.001],
-  ["harborWool", 0.001],
-  ["counter2", 0.001],
-  ["counter3", 0.001],
-  ["counter4", 0.001],
-  ["counter5", 0.001],
-  ["counter6", 0.001],
-  ["counter8", 0.001],
-  ["counter9", 0.001],
-  ["counter10", 0.001],
-  ["counter11", 0.001],
-  ["counter12", 0.001],
-  ["resourceCardBrick", 0.0003],
-  ["resourceCardCorn", 0.0003],
-  ["resourceCardTimber", 0.0003],
-  ["resourceCardOre", 0.0003],
-  ["resourceCardWool", 0.0003],
-  ["knightCard", 0.0003],
-  ["roadBuildingCard", 0.0003],
-  ["yearOfPlentyCard", 0.0003],
-  ["monopolyCard", 0.0003],
-  ["chapelCard", 0.0003],
-  ["greatHallCard", 0.0003],
-  ["libraryCard", 0.0003],
-  ["marketCard", 0.0003],
-  ["universityCard", 0.0003],
-  ["largestArmyCard", 0.001],
-  ["longestRoadCard", 0.001],
-  ["buildingCostCard", 0.001],
-  ["businessCard", 0.000175],
-  ["road", 0.002],
-  ["house", 0.005],
-  ["settlement", 0.005],
-  ["ruler", 0.0015],
-  ["robber", 0],
-]);
-
-const halfY = (template) => halfYByTemplate.get(template) ?? 0;
-const localY = (template, parentTemplate = null) =>
-  Number((halfY(parentTemplate) + halfY(template)).toFixed(6));
-const position = (template, x, z, parentTemplate = null) => [x, null, z];
+const position = (x, z) => [x, null, z];
+const matHalfWidth = 0.841 / 2;
+const tokenSideGap = 0.055;
+const leftTokenX = Number(-(matHalfWidth + tokenSideGap).toFixed(4));
+const rightTokenX = Number((matHalfWidth + tokenSideGap).toFixed(4));
+const rotatedLog = [0, 90, 0];
+const woodenTypeGap = 0.02;
+const woodenColorGap = 0.03;
+const woodenStackSpacing = 0.02;
+const roadPileDepth = 0.025;
+const cityPileDepth = 0.03;
+const housePileDepth = 0.05;
+const cityPileZOffset = roadPileDepth / 2 + woodenTypeGap + cityPileDepth / 2;
+const housePileZOffset = cityPileZOffset + cityPileDepth / 2 + woodenTypeGap + housePileDepth / 2;
+const woodenSupplyDepth = roadPileDepth / 2 + housePileZOffset + housePileDepth / 2;
+const upperTokenZ = -0.12;
+const lowerTokenZ = Number((upperTokenZ + woodenSupplyDepth + woodenColorGap).toFixed(4));
+const rulerLength = 0.205;
+const rulerArmWidth = 0.03;
+const rulerX = Number((leftTokenX + rulerLength / 2 - rulerArmWidth / 2).toFixed(4));
+const rulerZ = Number((upperTokenZ - roadPileDepth / 2 - woodenColorGap - rulerLength / 2).toFixed(4));
+const cardColumnGap = 0.11;
+const smallCardHeight = 0.088;
+const bigCardHeight = 0.126;
+const cardEdgeGap = cardColumnGap - smallCardHeight;
+const leftCardX = -0.35;
+const resourceCardX = 0.34;
+const businessCardX = 0.19;
+const playerTints = {
+  red: "indianred",
+  blue: "cornflowerblue",
+  white: "white",
+  orange: "orange",
+};
 
 const stackChildren = ({ template, name, level = 2, count, tint, rotation }) => {
   if (level > count) return undefined;
   return [{
     template,
     name: `${name}-${level}`,
-    position: position(template, 0, 0, template),
+    position: position(0, 0),
     tint,
     rotation,
     children: stackChildren({ template, name, level: level + 1, count, tint, rotation }),
@@ -77,7 +58,7 @@ const stackChildren = ({ template, name, level = 2, count, tint, rotation }) => 
 const stack = ({ template, name, count, x, z, tint, rotation }) => ({
   template,
   name: `${name}-1`,
-  position: position(template, x, z),
+  position: position(x, z),
   tint,
   rotation,
   children: stackChildren({ template, name, count, tint, rotation }),
@@ -90,7 +71,7 @@ const mixedStackChildren = (cards, index = 1) => {
   return [{
     template: card.template,
     name: `${card.name}-${card.count}`,
-    position: position(card.template, 0, 0, parent.template),
+    position: position(0, 0),
     children: mixedStackChildren(cards, index + 1),
   }];
 };
@@ -100,7 +81,7 @@ const mixedStack = ({ cards, x, z }) => {
   return {
     template: first.template,
     name: `${first.name}-${first.count}`,
-    position: position(first.template, x, z),
+    position: position(x, z),
     children: mixedStackChildren(cards),
   };
 };
@@ -108,26 +89,47 @@ const mixedStack = ({ cards, x, z }) => {
 const repeatedCards = (template, name, count) =>
   Array.from({ length: count }, (_, index) => ({ template, name, count: index + 1 }));
 
+const stackedCenters = (heights, gap) => {
+  const totalHeight = heights.reduce((sum, height) => sum + height, 0) + gap * (heights.length - 1);
+  let edge = -totalHeight / 2;
+  return heights.map((height) => {
+    const center = edge + height / 2;
+    edge += height + gap;
+    return Number(center.toFixed(4));
+  });
+};
+
 const row = ({ template, name, count, x, z, spacing, tint = "red" }) =>
   Array.from({ length: count }, (_, index) => ({
     template,
     name: `${name} ${index + 1}`,
-    position: position(template, x, Number((z + index * spacing).toFixed(4))),
+    position: position(x, Number((z + index * spacing).toFixed(4))),
     tint,
   }));
 
-const logStack = ({ label, x, z, columns = 5, height = 3, spacing = 0.005, tint }) =>
-  row({ template: "road", name: `${label} log stack`, count: columns, x, z, spacing, tint })
-    .map((piece, index) => ({
-      ...piece,
-      name: `${label} ROAD ${index + 1}-1`,
-      children: stackChildren({ template: "road", name: `${label} ROAD ${index + 1}`, count: height, tint }),
-    }));
+const logStack = ({ label, x, z, columns = 3, height = 5, spacing = 0.0065, tint }) =>
+  Array.from({ length: columns }, (_, index) => ({
+    template: "road",
+    name: `${label} ROAD ${index + 1}-1`,
+    position: position(Number((x + (index - (columns - 1) / 2) * spacing).toFixed(4)), z),
+    tint,
+    rotation: rotatedLog,
+    children: stackChildren({ template: "road", name: `${label} ROAD ${index + 1}`, count: height, tint, rotation: rotatedLog }),
+  }));
+
+const pieceStacks = ({ template, label, kind, x, z, stacks, spacing = woodenStackSpacing, tint }) =>
+  stacks.map((height, index) => ({
+    template,
+    name: `${label} ${kind} ${index + 1}-1`,
+    position: position(x, Number((z + (index - (stacks.length - 1) / 2) * spacing).toFixed(4))),
+    tint,
+    children: stackChildren({ template, name: `${label} ${kind} ${index + 1}`, count: height, tint }),
+  }));
 
 const woodenSupply = ({ label, tint, x, z }) => [
   ...logStack({ label, tint, x, z }),
-  ...row({ template: "settlement", name: `${label} SETTLEMENT`, count: 6, x, z: z + 0.1, spacing: 0.02, tint }),
-  ...row({ template: "house", name: `${label} CITY`, count: 3, x, z: z + 0.24, spacing: 0.016, tint }),
+  ...pieceStacks({ template: "settlement", label, kind: "CITY", x, z: z + cityPileZOffset, stacks: [2, 2], tint }),
+  ...pieceStacks({ template: "house", label, kind: "HOUSE", x, z: z + housePileZOffset, stacks: [2, 2, 1], tint }),
 ];
 
 const templates = {
@@ -146,8 +148,8 @@ const templates = {
   harborWool: { name: "WOOL 2:1 HARBOR", src: "models/harbor-wool.gltf", locked: true },
   robber: { name: "ROBBER", src: "models/robber.gltf" },
   road: { name: "ROAD", src: "models/road.gltf" },
-  settlement: { name: "SETTLEMENT", src: "models/settlement.gltf" },
-  house: { name: "CITY", src: "models/house.gltf" },
+  settlement: { name: "CITY", src: "models/settlement.gltf" },
+  house: { name: "HOUSE", src: "models/house.gltf" },
   ruler: { name: "L-SHAPED RULER", src: "models/ruler.gltf" },
   ...Object.fromEntries([2, 3, 4, 5, 6, 8, 9, 10, 11, 12].map((value) => [
     `counter${value}`,
@@ -251,7 +253,7 @@ const harbors = [
 ].map(([template, name, slot]) => {
   const [q, r] = harborHex(slot);
   const [x, z] = hex(q, r);
-  return { template, name, position: position(template, x, z, "ocean") };
+  return { template, name, position: position(x, z) };
 });
 
 const tilePiece = ([resource, counter, q, r]) => {
@@ -260,32 +262,39 @@ const tilePiece = ([resource, counter, q, r]) => {
   const piece = {
     template: tileTemplate(resource),
     name: counter === null ? "DESERT" : `${displayResource} ${counter}`,
-    position: position(tileTemplate(resource), x, z, "ocean"),
+    position: position(x, z),
     children: [],
   };
   if (counter === null) {
-    piece.children.push({ template: "robber", name: "ROBBER", position: position("robber", 0, 0, tileTemplate(resource)) });
+    piece.children.push({ template: "robber", name: "ROBBER", position: position(0, 0) });
   } else {
     piece.children.push({
       template: `counter${counter}`,
       name: `${displayResource} ${counter} COUNTER`,
-      position: position(`counter${counter}`, 0, 0, tileTemplate(resource)),
+      position: position(0, 0),
     });
   }
   return piece;
 };
 
 const cardStacks = [
-  ["resourceCardBrick", "BRICK RESOURCE CARD", 19, -0.18],
-  ["resourceCardTimber", "TIMBER RESOURCE CARD", 19, -0.09],
+  ["resourceCardBrick", "BRICK RESOURCE CARD", 19, -2 * cardColumnGap],
+  ["resourceCardTimber", "TIMBER RESOURCE CARD", 19, -cardColumnGap],
   ["resourceCardWool", "WOOL RESOURCE CARD", 19, 0],
-  ["resourceCardCorn", "CORN RESOURCE CARD", 19, 0.09],
-  ["resourceCardOre", "ORE RESOURCE CARD", 19, 0.18],
-].map(([template, name, count, z]) => stack({ template, name, count, x: 0.34, z, rotation: [180, 0, 0] }));
+  ["resourceCardCorn", "CORN RESOURCE CARD", 19, cardColumnGap],
+  ["resourceCardOre", "ORE RESOURCE CARD", 19, 2 * cardColumnGap],
+].map(([template, name, count, z]) => stack({ template, name, count, x: resourceCardX, z, rotation: [180, 0, 0] }));
+
+const [
+  largestArmyCardZ,
+  longestRoadCardZ,
+  buildingCostCardZ,
+  actionCardStackZ,
+] = stackedCenters([bigCardHeight, bigCardHeight, bigCardHeight, smallCardHeight], cardEdgeGap);
 
 const actionCardStack = mixedStack({
-  x: 0.34,
-  z: 0.31,
+  x: leftCardX,
+  z: actionCardStackZ,
   cards: [
     ...repeatedCards("knightCard", "KNIGHT CARD", 14),
     ...repeatedCards("roadBuildingCard", "ROAD BUILDING CARD", 2),
@@ -300,32 +309,26 @@ const actionCardStack = mixedStack({
 });
 
 const awardCards = [
-  ["businessCard", "BUSINESS CARD", -0.21],
-  ["largestArmyCard", "LARGEST ARMY CARD", -0.08, [180, 0, 0]],
-  ["longestRoadCard", "LONGEST ROAD CARD", 0.08, [180, 0, 0]],
-  ["buildingCostCard", "BUILDING COST CARD", 0.25, [180, 0, 0]],
-].map(([template, name, z, rotation]) => stack({ template, name, count: 1, x: -0.35, z, rotation }));
+  ["largestArmyCard", "LARGEST ARMY CARD", largestArmyCardZ, [180, 0, 0]],
+  ["longestRoadCard", "LONGEST ROAD CARD", longestRoadCardZ, [180, 0, 0]],
+  ["buildingCostCard", "BUILDING COST CARD", buildingCostCardZ, [180, 0, 0]],
+].map(([template, name, z, rotation]) => stack({ template, name, count: 1, x: leftCardX, z, rotation }));
 
-const explicitY = (pieces, parentTemplate = null) => {
-  for (const piece of pieces) {
-    if (Array.isArray(piece.position)) {
-      piece.position[1] = localY(piece.template, parentTemplate);
-    }
-    if (piece.children) {
-      explicitY(piece.children, piece.template);
-    }
-  }
-};
-
-const sidePieces = [
+const matPieces = [
+  ...boardTiles.map(tilePiece),
+  ...harbors,
   ...cardStacks,
   actionCardStack,
   ...awardCards,
-  { template: "ruler", name: "L-SHAPED RULER", position: position("ruler", -0.35, 0.39) },
-  ...woodenSupply({ label: "RED", tint: "red", x: 0.43, z: -0.12 }),
-  ...woodenSupply({ label: "BLUE", tint: "blue", x: 0.5, z: -0.12 }),
-  ...woodenSupply({ label: "WHITE", tint: "white", x: 0.57, z: -0.12 }),
-  ...woodenSupply({ label: "ORANGE", tint: "orange", x: 0.64, z: -0.12 }),
+  { template: "businessCard", name: "BUSINESS CARD-1", position: position(businessCardX, 0.255) },
+];
+
+const sidePieces = [
+  { template: "ruler", name: "L-SHAPED RULER", position: position(rulerX, rulerZ) },
+  ...woodenSupply({ label: "RED", tint: playerTints.red, x: rightTokenX, z: upperTokenZ }),
+  ...woodenSupply({ label: "BLUE", tint: playerTints.blue, x: rightTokenX, z: lowerTokenZ }),
+  ...woodenSupply({ label: "WHITE", tint: playerTints.white, x: leftTokenX, z: upperTokenZ }),
+  ...woodenSupply({ label: "ORANGE", tint: playerTints.orange, x: leftTokenX, z: lowerTokenZ }),
 ];
 
 const manifest = {
@@ -337,18 +340,13 @@ const manifest = {
       {
         template: "ocean",
         name: "OCEAN",
-        position: position("ocean", 0, 0),
-        children: [
-          ...boardTiles.map(tilePiece),
-          ...harbors,
-        ],
+        position: position(0, 0),
+        children: matPieces,
       },
       ...sidePieces,
     ],
   }],
 };
-
-// explicitY(manifest.scenarios[0].children);
 
 await mkdir(distDir, { recursive: true });
 await writeFile(outputManifestPath, `${JSON.stringify(manifest, null, 2)}\n`);

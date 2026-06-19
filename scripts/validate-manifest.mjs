@@ -44,7 +44,8 @@ const tileTemplates = new Set([
   "harborOre",
   "harborWool",
 ]);
-const offBoardTemplates = new Set([
+const matTemplates = new Set([
+  ...tileTemplates,
   "resourceCardBrick",
   "resourceCardCorn",
   "resourceCardTimber",
@@ -63,6 +64,8 @@ const offBoardTemplates = new Set([
   "longestRoadCard",
   "buildingCostCard",
   "businessCard",
+]);
+const groundSupplyTemplates = new Set([
   "road",
   "settlement",
   "house",
@@ -99,13 +102,13 @@ if (ocean?.template !== "ocean") {
   fail("scenario must start with one top-level ocean piece");
 }
 for (const [index, piece] of offBoardPieces.entries()) {
-  if (!offBoardTemplates.has(piece.template)) {
-    fail(`scenario root child ${index + 1} must be an off-board supply piece, got ${piece.template ?? "inline piece"}`);
+  if (!groundSupplyTemplates.has(piece.template)) {
+    fail(`scenario root child ${index + 1} must be a ground supply piece, got ${piece.template ?? "inline piece"}`);
   }
 }
 for (const [index, child] of (ocean.children ?? []).entries()) {
-  if (!tileTemplates.has(child.template)) {
-    fail(`ocean.children[${index}] must be a tile, got ${child.template ?? "inline piece"}`);
+  if (!matTemplates.has(child.template)) {
+    fail(`ocean.children[${index}] must be a mat piece, got ${child.template ?? "inline piece"}`);
   }
 }
 
@@ -119,6 +122,9 @@ for (const src of assetPaths) {
   if (src.endsWith(".gltf")) {
     const gltf = JSON.parse(await readFile(assetPath, "utf8"));
     for (const [index, buffer] of (gltf.buffers ?? []).entries()) {
+      if (buffer.extensions?.EXT_meshopt_compression?.fallback === true && buffer.uri === undefined) {
+        continue;
+      }
       if (typeof buffer.uri !== "string" || buffer.uri.startsWith("data:")) {
         fail(`${src} buffer ${index} must use an external uri`);
       }

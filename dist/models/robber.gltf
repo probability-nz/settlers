@@ -1,276 +1,122 @@
 {
   "asset": {
-    "version": "2.0",
-    "generator": "THREE.GLTFExporter r184"
+    "generator": "glTF-Transform v4.4.0",
+    "version": "2.0"
   },
-  "scenes": [
+  "accessors": [
     {
-      "name": "robber",
-      "nodes": [
-        0
-      ]
-    }
-  ],
-  "scene": 0,
-  "nodes": [
-    {
-      "matrix": [
-        0.75,
-        0,
-        0,
-        0,
-        0,
-        0.75,
-        0,
-        0,
-        0,
-        0,
-        0.75,
-        0,
-        0,
-        0,
-        0,
-        1
-      ],
-      "children": [
-        1,
-        2
-      ]
+      "type": "SCALAR",
+      "componentType": 5123,
+      "count": 504,
+      "normalized": false,
+      "byteOffset": 0,
+      "bufferView": 0
     },
     {
-      "matrix": [
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0.0275,
-        0,
-        1
-      ],
-      "mesh": 0
+      "type": "VEC3",
+      "componentType": 5120,
+      "count": 142,
+      "normalized": true,
+      "byteOffset": 0,
+      "bufferView": 1
     },
     {
-      "matrix": [
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0.0503,
-        0,
-        1
+      "type": "VEC3",
+      "componentType": 5122,
+      "count": 142,
+      "max": [
+        19874,
+        32767,
+        20382
       ],
-      "mesh": 1
+      "min": [
+        -19874,
+        -32767,
+        -20382
+      ],
+      "normalized": true,
+      "byteOffset": 0,
+      "bufferView": 2
     }
   ],
   "bufferViews": [
     {
-      "buffer": 0,
+      "buffer": 1,
       "byteOffset": 0,
-      "byteLength": 996,
+      "byteLength": 1008,
+      "target": 34963,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "buffer": 0,
+          "byteOffset": 0,
+          "byteLength": 224,
+          "mode": "TRIANGLES",
+          "byteStride": 2,
+          "count": 504
+        }
+      }
+    },
+    {
+      "buffer": 1,
+      "byteOffset": 1008,
+      "byteLength": 568,
       "target": 34962,
-      "byteStride": 12
+      "byteStride": 4,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "buffer": 0,
+          "byteOffset": 224,
+          "byteLength": 289,
+          "mode": "ATTRIBUTES",
+          "filter": "OCTAHEDRAL",
+          "byteStride": 4,
+          "count": 142
+        }
+      }
     },
     {
-      "buffer": 0,
-      "byteOffset": 996,
-      "byteLength": 996,
+      "buffer": 1,
+      "byteOffset": 1576,
+      "byteLength": 1136,
       "target": 34962,
-      "byteStride": 12
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 1992,
-      "byteLength": 664,
-      "target": 34962,
-      "byteStride": 8
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 2656,
-      "byteLength": 240,
-      "target": 34963
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 2896,
-      "byteLength": 2652,
-      "target": 34962,
-      "byteStride": 12
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 5548,
-      "byteLength": 2652,
-      "target": 34962,
-      "byteStride": 12
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 8200,
-      "byteLength": 1768,
-      "target": 34962,
-      "byteStride": 8
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 9968,
-      "byteLength": 2112,
-      "target": 34963
+      "byteStride": 8,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "buffer": 0,
+          "byteOffset": 516,
+          "byteLength": 858,
+          "mode": "ATTRIBUTES",
+          "byteStride": 8,
+          "count": 142
+        }
+      }
     }
   ],
   "buffers": [
     {
-      "byteLength": 12080,
-      "uri": "buffer-6aefc006a358f54e.bin"
-    }
-  ],
-  "accessors": [
-    {
-      "bufferView": 0,
-      "componentType": 5126,
-      "count": 83,
-      "max": [
-        0.019999999552965164,
-        0.027499999850988388,
-        0.019999999552965164
-      ],
-      "min": [
-        -0.019999999552965164,
-        -0.027499999850988388,
-        -0.019999999552965164
-      ],
-      "type": "VEC3"
+      "uri": "buffer-d3e0d46bc36b29a5.bin",
+      "byteLength": 1376
     },
     {
-      "bufferView": 1,
-      "componentType": 5126,
-      "count": 83,
-      "max": [
-        0.9397934079170227,
-        0.3417430520057678,
-        0.9397934079170227
-      ],
-      "min": [
-        -0.9397934079170227,
-        -1,
-        -0.9397934079170227
-      ],
-      "type": "VEC3"
-    },
-    {
-      "bufferView": 2,
-      "componentType": 5126,
-      "count": 83,
-      "max": [
-        1,
-        1
-      ],
-      "min": [
-        0,
-        0
-      ],
-      "type": "VEC2"
-    },
-    {
-      "bufferView": 3,
-      "componentType": 5123,
-      "count": 120,
-      "max": [
-        82
-      ],
-      "min": [
-        1
-      ],
-      "type": "SCALAR"
-    },
-    {
-      "bufferView": 4,
-      "componentType": 5126,
-      "count": 221,
-      "max": [
-        0.014000000432133675,
-        0.014000000432133675,
-        0.014000000432133675
-      ],
-      "min": [
-        -0.014000000432133675,
-        -0.014000000432133675,
-        -0.014000000432133675
-      ],
-      "type": "VEC3"
-    },
-    {
-      "bufferView": 5,
-      "componentType": 5126,
-      "count": 221,
-      "max": [
-        1,
-        1,
-        1
-      ],
-      "min": [
-        -1,
-        -1,
-        -1
-      ],
-      "type": "VEC3"
-    },
-    {
-      "bufferView": 6,
-      "componentType": 5126,
-      "count": 221,
-      "max": [
-        1.03125,
-        1
-      ],
-      "min": [
-        -0.03125,
-        0
-      ],
-      "type": "VEC2"
-    },
-    {
-      "bufferView": 7,
-      "componentType": 5123,
-      "count": 1056,
-      "max": [
-        220
-      ],
-      "min": [
-        0
-      ],
-      "type": "SCALAR"
+      "byteLength": 2712,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "fallback": true
+        }
+      }
     }
   ],
   "materials": [
     {
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          0.06480326668529614,
-          0.04666508633021928,
-          0.25818285291079235,
+          0.07036009568874305,
+          0,
+          0.22322795730611386,
           1
         ],
-        "metallicFactor": 0,
-        "roughnessFactor": 0.72
+        "roughnessFactor": 0.72,
+        "metallicFactor": 0
       },
       "extensions": {
         "KHR_materials_clearcoat": {
@@ -284,33 +130,48 @@
     {
       "primitives": [
         {
-          "mode": 4,
           "attributes": {
-            "POSITION": 0,
             "NORMAL": 1,
-            "TEXCOORD_0": 2
+            "POSITION": 2
           },
-          "indices": 3,
-          "material": 0
-        }
-      ]
-    },
-    {
-      "primitives": [
-        {
           "mode": 4,
-          "attributes": {
-            "POSITION": 4,
-            "NORMAL": 5,
-            "TEXCOORD_0": 6
-          },
-          "indices": 7,
-          "material": 0
+          "material": 0,
+          "indices": 0
         }
       ]
     }
   ],
+  "nodes": [
+    {
+      "translation": [
+        0,
+        0.024112500362098218,
+        0
+      ],
+      "scale": [
+        0.024112500250339508,
+        0.024112500250339508,
+        0.024112500250339508
+      ],
+      "mesh": 0
+    }
+  ],
+  "scenes": [
+    {
+      "name": "robber",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "scene": 0,
   "extensionsUsed": [
-    "KHR_materials_clearcoat"
+    "EXT_meshopt_compression",
+    "KHR_materials_clearcoat",
+    "KHR_mesh_quantization"
+  ],
+  "extensionsRequired": [
+    "EXT_meshopt_compression",
+    "KHR_mesh_quantization"
   ]
 }

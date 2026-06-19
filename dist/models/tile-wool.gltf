@@ -1,8 +1,266 @@
 {
   "asset": {
-    "version": "2.0",
-    "generator": "THREE.GLTFExporter r184"
+    "generator": "glTF-Transform v4.4.0",
+    "version": "2.0"
   },
+  "accessors": [
+    {
+      "type": "SCALAR",
+      "componentType": 5123,
+      "count": 18,
+      "normalized": false,
+      "byteOffset": 0,
+      "bufferView": 0
+    },
+    {
+      "type": "SCALAR",
+      "componentType": 5123,
+      "count": 54,
+      "normalized": false,
+      "byteOffset": 36,
+      "bufferView": 0
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5120,
+      "count": 22,
+      "normalized": true,
+      "byteOffset": 0,
+      "bufferView": 1
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5122,
+      "count": 8,
+      "max": [
+        28379,
+        728,
+        32767
+      ],
+      "min": [
+        -28379,
+        728,
+        -32767
+      ],
+      "normalized": true,
+      "byteOffset": 0,
+      "bufferView": 2
+    },
+    {
+      "type": "VEC2",
+      "componentType": 5123,
+      "count": 8,
+      "normalized": true,
+      "byteOffset": 0,
+      "bufferView": 3
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5122,
+      "count": 22,
+      "max": [
+        28379,
+        728,
+        32767
+      ],
+      "min": [
+        -28379,
+        -728,
+        -32767
+      ],
+      "normalized": true,
+      "byteOffset": 0,
+      "bufferView": 4
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 1,
+      "byteOffset": 0,
+      "byteLength": 144,
+      "target": 34963,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "buffer": 0,
+          "byteOffset": 0,
+          "byteLength": 42,
+          "mode": "TRIANGLES",
+          "byteStride": 2,
+          "count": 72
+        }
+      }
+    },
+    {
+      "buffer": 1,
+      "byteOffset": 144,
+      "byteLength": 88,
+      "target": 34962,
+      "byteStride": 4,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "buffer": 0,
+          "byteOffset": 44,
+          "byteLength": 55,
+          "mode": "ATTRIBUTES",
+          "filter": "OCTAHEDRAL",
+          "byteStride": 4,
+          "count": 22
+        }
+      }
+    },
+    {
+      "buffer": 1,
+      "byteOffset": 232,
+      "byteLength": 64,
+      "target": 34962,
+      "byteStride": 8,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "buffer": 0,
+          "byteOffset": 100,
+          "byteLength": 80,
+          "mode": "ATTRIBUTES",
+          "byteStride": 8,
+          "count": 8
+        }
+      }
+    },
+    {
+      "buffer": 1,
+      "byteOffset": 296,
+      "byteLength": 32,
+      "target": 34962,
+      "byteStride": 4,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "buffer": 0,
+          "byteOffset": 180,
+          "byteLength": 78,
+          "mode": "ATTRIBUTES",
+          "byteStride": 4,
+          "count": 8
+        }
+      }
+    },
+    {
+      "buffer": 1,
+      "byteOffset": 328,
+      "byteLength": 176,
+      "target": 34962,
+      "byteStride": 8,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "buffer": 0,
+          "byteOffset": 260,
+          "byteLength": 139,
+          "mode": "ATTRIBUTES",
+          "byteStride": 8,
+          "count": 22
+        }
+      }
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 33071,
+      "wrapT": 33071
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "extensions": {
+        "EXT_texture_avif": {
+          "source": 0
+        }
+      }
+    }
+  ],
+  "images": [
+    {
+      "mimeType": "image/avif",
+      "uri": "tile-wool.avif"
+    }
+  ],
+  "buffers": [
+    {
+      "uri": "buffer-dc515f5f09ab4830.bin",
+      "byteLength": 400
+    },
+    {
+      "byteLength": 504,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "fallback": true
+        }
+      }
+    }
+  ],
+  "materials": [
+    {
+      "name": "Tile wool face side",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.3231432091022285,
+          0.6104955708001716,
+          0.031896033067374104,
+          1
+        ],
+        "roughnessFactor": 0.85,
+        "metallicFactor": 0.02
+      }
+    },
+    {
+      "name": "Tile wool face",
+      "doubleSided": true,
+      "pbrMetallicRoughness": {
+        "roughnessFactor": 0.9,
+        "metallicFactor": 0,
+        "baseColorTexture": {
+          "index": 0
+        }
+      },
+      "extensions": {
+        "KHR_materials_unlit": {}
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 3,
+            "TEXCOORD_0": 4
+          },
+          "mode": 4,
+          "material": 1,
+          "indices": 0
+        },
+        {
+          "attributes": {
+            "NORMAL": 2,
+            "POSITION": 5
+          },
+          "mode": 4,
+          "material": 0,
+          "indices": 1
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "scale": [
+        0.04500000178813934,
+        0.04500000178813934,
+        0.04500000178813934
+      ],
+      "mesh": 0
+    }
+  ],
   "scenes": [
     {
       "name": "tile-wool",
@@ -12,238 +270,15 @@
     }
   ],
   "scene": 0,
-  "nodes": [
-    {
-      "children": [
-        1
-      ]
-    },
-    {
-      "mesh": 0
-    }
-  ],
-  "bufferViews": [
-    {
-      "buffer": 0,
-      "byteOffset": 0,
-      "byteLength": 480,
-      "target": 34962,
-      "byteStride": 12
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 480,
-      "byteLength": 480,
-      "target": 34962,
-      "byteStride": 12
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 960,
-      "byteLength": 320,
-      "target": 34962,
-      "byteStride": 8
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 1280,
-      "byteLength": 72,
-      "target": 34963
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 1352,
-      "byteLength": 36,
-      "target": 34963
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 1388,
-      "byteLength": 36,
-      "target": 34963
-    }
-  ],
-  "buffers": [
-    {
-      "byteLength": 1424,
-      "uri": "buffer-6d6b053eca8baba8.bin"
-    }
-  ],
-  "accessors": [
-    {
-      "bufferView": 0,
-      "componentType": 5126,
-      "count": 40,
-      "max": [
-        0.03897114470601082,
-        0.0010000000474974513,
-        0.04500000178813934
-      ],
-      "min": [
-        -0.03897114470601082,
-        -0.0010000000474974513,
-        -0.04500000178813934
-      ],
-      "type": "VEC3"
-    },
-    {
-      "bufferView": 1,
-      "componentType": 5126,
-      "count": 40,
-      "max": [
-        0.8660253882408142,
-        1,
-        1
-      ],
-      "min": [
-        -0.8660253882408142,
-        -1,
-        -1
-      ],
-      "type": "VEC3"
-    },
-    {
-      "bufferView": 2,
-      "componentType": 5126,
-      "count": 40,
-      "max": [
-        1,
-        1
-      ],
-      "min": [
-        0,
-        0
-      ],
-      "type": "VEC2"
-    },
-    {
-      "bufferView": 3,
-      "componentType": 5123,
-      "count": 36,
-      "max": [
-        13
-      ],
-      "min": [
-        0
-      ],
-      "type": "SCALAR"
-    },
-    {
-      "bufferView": 4,
-      "componentType": 5123,
-      "count": 18,
-      "max": [
-        26
-      ],
-      "min": [
-        14
-      ],
-      "type": "SCALAR"
-    },
-    {
-      "bufferView": 5,
-      "componentType": 5123,
-      "count": 18,
-      "max": [
-        39
-      ],
-      "min": [
-        27
-      ],
-      "type": "SCALAR"
-    }
-  ],
-  "materials": [
-    {
-      "pbrMetallicRoughness": {
-        "baseColorFactor": [
-          0.3231432091022285,
-          0.6104955708001716,
-          0.031896033067374104,
-          1
-        ],
-        "metallicFactor": 0.02,
-        "roughnessFactor": 0.85
-      },
-      "name": "Tile wool face side"
-    },
-    {
-      "pbrMetallicRoughness": {
-        "metallicFactor": 0,
-        "roughnessFactor": 0.9,
-        "baseColorFactor": [
-          1,
-          1,
-          1,
-          1
-        ],
-        "baseColorTexture": {
-          "index": 0
-        }
-      },
-      "name": "Tile wool face",
-      "extensions": {
-        "KHR_materials_unlit": {}
-      },
-      "doubleSided": true
-    }
-  ],
-  "meshes": [
-    {
-      "primitives": [
-        {
-          "mode": 4,
-          "attributes": {
-            "POSITION": 0,
-            "NORMAL": 1,
-            "TEXCOORD_0": 2
-          },
-          "indices": 3,
-          "material": 0
-        },
-        {
-          "mode": 4,
-          "attributes": {
-            "POSITION": 0,
-            "NORMAL": 1,
-            "TEXCOORD_0": 2
-          },
-          "indices": 4,
-          "material": 1
-        },
-        {
-          "mode": 4,
-          "attributes": {
-            "POSITION": 0,
-            "NORMAL": 1,
-            "TEXCOORD_0": 2
-          },
-          "indices": 5,
-          "material": 0
-        }
-      ]
-    }
-  ],
   "extensionsUsed": [
-    "KHR_materials_unlit"
+    "EXT_meshopt_compression",
+    "EXT_texture_avif",
+    "KHR_materials_unlit",
+    "KHR_mesh_quantization"
   ],
-  "images": [
-    {
-      "uri": "tile-wool.png"
-    }
-  ],
-  "textures": [
-    {
-      "sampler": 0,
-      "source": 0
-    }
-  ],
-  "samplers": [
-    {
-      "magFilter": 9729,
-      "minFilter": 9729,
-      "wrapS": 33071,
-      "wrapT": 33071
-    }
+  "extensionsRequired": [
+    "EXT_meshopt_compression",
+    "EXT_texture_avif",
+    "KHR_mesh_quantization"
   ]
 }

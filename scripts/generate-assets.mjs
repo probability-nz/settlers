@@ -12,12 +12,23 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const modelsDir = join(root, "dist", "models");
 const exporter = new GLTFExporter();
 const exec = promisify(execFile);
-const fontPath = join(root, "unifont-17.0.04.otf");
-const monoTextFontUrl = pathToFileURL(fontPath).href;
+const monoTextRegularFontUrl = pathToFileURL(join(root, "AtkinsonHyperlegibleMono-Regular.ttf")).href;
+const monoTextBoldFontUrl = pathToFileURL(join(root, "AtkinsonHyperlegibleMono-Bold.ttf")).href;
 const monoEmojiFontUrl = pathToFileURL(join(root, "OpenMoji-black-glyf.ttf")).href;
+const monoTextFontStack = `"Atkinson Hyperlegible Mono", monospace`;
+const monoTextEmojiFontStack = `"Atkinson Hyperlegible Mono", "SettlersMonoEmoji", monospace`;
+const monoEmojiTextFontStack = `"SettlersMonoEmoji", "Atkinson Hyperlegible Mono", monospace`;
 const monoFontCss = `@font-face {
-    font-family: "SettlersUnifont";
-    src: url("${monoTextFontUrl}") format("opentype");
+    font-family: "Atkinson Hyperlegible Mono";
+    src: url("${monoTextRegularFontUrl}") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: "Atkinson Hyperlegible Mono";
+    src: url("${monoTextBoldFontUrl}") format("truetype");
+    font-style: normal;
+    font-weight: 700;
   }
   @font-face {
     font-family: "SettlersMonoEmoji";
@@ -51,6 +62,33 @@ const standard = (color, props = {}) =>
   new THREE.MeshStandardMaterial({ color, roughness: 0.85, metalness: 0.02, ...props });
 
 const basic = (props) => new THREE.MeshBasicMaterial({ color: "white", ...props });
+const GLTF_LINEAR_FILTER = 9729;
+const GLTF_LINEAR_MIPMAP_LINEAR_FILTER = 9987;
+const GLTF_CLAMP_TO_EDGE = 33071;
+const AVIF_QUALITY = "60";
+
+const avifName = (name) => name.replace(/\.png$/u, ".avif");
+
+const captureTexture = async ({ htmlPath, imagePath, windowSize }) => {
+  const finalImagePath = avifName(imagePath);
+  const pngPath = `${finalImagePath}.png`;
+  await exec("chromium", [
+    "--headless=new",
+    "--disable-gpu",
+    "--no-sandbox",
+    `--screenshot=${pngPath}`,
+    `--window-size=${windowSize}`,
+    pathToFileURL(htmlPath).href,
+  ]);
+  await exec("magick", [
+    pngPath,
+    "-quality",
+    AVIF_QUALITY,
+    finalImagePath,
+  ]);
+  await rm(htmlPath, { force: true });
+  await rm(pngPath, { force: true });
+};
 
 const mesh = (geometry, material, position = [0, 0, 0], rotation = [0, 0, 0]) => {
   const m = material instanceof THREE.Material || Array.isArray(material) ? material : standard(material);
@@ -62,24 +100,177 @@ const mesh = (geometry, material, position = [0, 0, 0], rotation = [0, 0, 0]) =>
   return result;
 };
 
-const orientedTexturePlane = (width, height, material, position, rotation = [-Math.PI / 2, 0, 0]) => {
-  const geometry = new THREE.PlaneGeometry(width, height);
-  const uv = geometry.getAttribute("uv");
-  for (let i = 0; i < uv.count; i += 1) {
-    uv.setY(i, 1 - uv.getY(i));
-  }
-  uv.needsUpdate = true;
-  return mesh(geometry, material, position, rotation);
+const cardGeometry = (width, height, thickness) => {
+  const x = width / 2;
+  const y = thickness / 2;
+  const z = height / 2;
+  const positions = [];
+  const normals = [];
+  const uvs = [];
+  const indices = [];
+
+  const addFace = ({ corners, normal, materialIndex, faceUvs = [[0, 0], [1, 0], [1, 1], [0, 1]] }) => {
+    const start = indices.length;
+    const offset = positions.length / 3;
+    for (const [index, corner] of corners.entries()) {
+      positions.push(...corner);
+      normals.push(...normal);
+      uvs.push(...faceUvs[index]);
+    }
+    indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
+    geometry.addGroup(start, 6, materialIndex);
+  };
+
+  const geometry = new THREE.BufferGeometry();
+  const frontUvs = [[0, 1], [1, 1], [1, 0], [0, 0]];
+  const backUvs = [[0, 1], [1, 1], [1, 0], [0, 0]];
+  addFace({
+    corners: [[-x, y, z], [x, y, z], [x, y, -z], [-x, y, -z]],
+    normal: [0, 1, 0],
+    materialIndex: 1,
+    faceUvs: frontUvs,
+  });
+  addFace({
+    corners: [[-x, -y, -z], [x, -y, -z], [x, -y, z], [-x, -y, z]],
+    normal: [0, -1, 0],
+    materialIndex: 2,
+    faceUvs: backUvs,
+  });
+  addFace({
+    corners: [[x, -y, -z], [x, y, -z], [x, y, z], [x, -y, z]],
+    normal: [1, 0, 0],
+    materialIndex: 0,
+  });
+  addFace({
+    corners: [[-x, -y, z], [-x, y, z], [-x, y, -z], [-x, -y, -z]],
+    normal: [-1, 0, 0],
+    materialIndex: 0,
+  });
+  addFace({
+    corners: [[-x, -y, z], [x, -y, z], [x, y, z], [-x, y, z]],
+    normal: [0, 0, 1],
+    materialIndex: 0,
+  });
+  addFace({
+    corners: [[x, -y, -z], [-x, -y, -z], [-x, y, -z], [x, y, -z]],
+    normal: [0, 0, -1],
+    materialIndex: 0,
+  });
+
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
+  geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+  geometry.setIndex(indices);
+  return geometry;
 };
 
-const orientedTextureCircle = (radius, material, position, rotation = [-Math.PI / 2, 0, 0]) => {
-  const geometry = new THREE.CircleGeometry(radius, 48);
-  const uv = geometry.getAttribute("uv");
-  for (let i = 0; i < uv.count; i += 1) {
-    uv.setY(i, 1 - uv.getY(i));
+const coinGeometry = ({ radius, thickness, segments = 20 }) => {
+  const y = thickness / 2;
+  const positions = [];
+  const normals = [];
+  const uvs = [];
+  const indices = [];
+  const geometry = new THREE.BufferGeometry();
+
+  const addVertex = ({ position, normal, uv }) => {
+    positions.push(...position);
+    normals.push(...normal);
+    uvs.push(...uv);
+    return positions.length / 3 - 1;
+  };
+
+  const topCenter = addVertex({ position: [0, y, 0], normal: [0, 1, 0], uv: [0.5, 0.5] });
+  const bottomCenter = addVertex({ position: [0, -y, 0], normal: [0, -1, 0], uv: [0.5, 0.5] });
+  const top = [];
+  const bottom = [];
+  const sideTop = [];
+  const sideBottom = [];
+
+  for (let index = 0; index < segments; index += 1) {
+    const angle = (index / segments) * Math.PI * 2;
+    const x = Math.cos(angle) * radius;
+    const z = Math.sin(angle) * radius;
+    const u = 0.5 + Math.cos(angle) * 0.5;
+    const v = 0.5 + Math.sin(angle) * 0.5;
+    const sideNormal = [Math.cos(angle), 0, Math.sin(angle)];
+    top.push(addVertex({ position: [x, y, z], normal: [0, 1, 0], uv: [u, v] }));
+    bottom.push(addVertex({ position: [x, -y, z], normal: [0, -1, 0], uv: [u, v] }));
+    sideTop.push(addVertex({ position: [x, y, z], normal: sideNormal, uv: [index / segments, 1] }));
+    sideBottom.push(addVertex({ position: [x, -y, z], normal: sideNormal, uv: [index / segments, 0] }));
   }
-  uv.needsUpdate = true;
-  return mesh(geometry, material, position, rotation);
+
+  geometry.addGroup(0, segments * 3, 1);
+  for (let index = 0; index < segments; index += 1) {
+    const next = (index + 1) % segments;
+    indices.push(topCenter, top[next], top[index]);
+  }
+
+  geometry.addGroup(indices.length, segments * 9, 0);
+  for (let index = 0; index < segments; index += 1) {
+    const next = (index + 1) % segments;
+    indices.push(bottomCenter, bottom[index], bottom[next]);
+    indices.push(sideBottom[index], sideBottom[next], sideTop[next]);
+    indices.push(sideBottom[index], sideTop[next], sideTop[index]);
+  }
+
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
+  geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+  geometry.setIndex(indices);
+  return geometry;
+};
+
+const cuttingMatGeometry = ({ width, height, thickness, grid = 0.01 }) => {
+  const positions = [];
+  const indices = [];
+  const addRect = ({ x, z, width, depth, y }) => {
+    const left = x - width / 2;
+    const right = x + width / 2;
+    const top = z - depth / 2;
+    const bottom = z + depth / 2;
+    const offset = positions.length / 3;
+    positions.push(
+      left, y, top,
+      right, y, top,
+      right, y, bottom,
+      left, y, bottom,
+    );
+    indices.push(offset, offset + 2, offset + 1, offset, offset + 3, offset + 2);
+  };
+
+  const y = thickness / 2 + 0.00012;
+  const lineWidth = 0.00035;
+  const majorLineWidth = 0.0009;
+  const cellsX = 81;
+  const cellsZ = 56;
+  const gridWidth = cellsX * grid;
+  const gridHeight = cellsZ * grid;
+
+  for (let index = 0; index <= cellsX; index += 1) {
+    const width = index > 0 && index % 10 === 0 ? majorLineWidth : lineWidth;
+    addRect({ x: -gridWidth / 2 + index * grid, z: 0, width, depth: gridHeight, y });
+  }
+  for (let index = 0; index <= cellsZ; index += 1) {
+    const depth = index > 0 && index % 10 === 0 ? majorLineWidth : lineWidth;
+    addRect({ x: 0, z: -gridHeight / 2 + index * grid, width: gridWidth, depth, y });
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return geometry;
+};
+
+const cuttingMat = ({ width = 0.841, height = 0.594, thickness = 0.002 } = {}) => {
+  const base = standard(oceanColor, { roughness: 0.7, metalness: 0 });
+  const grid = basic({ color: "white", transparent: true, opacity: 0.65 });
+  grid.side = THREE.DoubleSide;
+  grid.depthWrite = false;
+  return group(
+    mesh(new THREE.BoxGeometry(width, thickness, height), base),
+    mesh(cuttingMatGeometry({ width, height, thickness }), grid),
+  );
 };
 
 const correctHexTextureUVs = (geometry) => {
@@ -146,7 +337,7 @@ const resourceCardFrontTexture = async () => {
     box-sizing: border-box;
     background: oldlace;
     color: black;
-    font-family: "SettlersUnifont", "SettlersMonoEmoji", monospace;
+    font-family: ${monoTextEmojiFontStack};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -156,15 +347,7 @@ const resourceCardFrontTexture = async () => {
 </style>
 <div class="card">RESOURCE</div>
 `);
-  await exec("chromium", [
-    "--headless=new",
-    "--disable-gpu",
-    "--no-sandbox",
-    `--screenshot=${imagePath}`,
-    "--window-size=630,880",
-    pathToFileURL(htmlPath).href,
-  ]);
-  await rm(htmlPath, { force: true });
+  await captureTexture({ htmlPath, imagePath, windowSize: "630,880" });
   return imageName;
 };
 
@@ -189,7 +372,7 @@ const resourceCardBackTexture = async (key, { label, color, emoji }) => {
     box-sizing: border-box;
     background: ${color};
     color: black;
-    font-family: "SettlersUnifont", "SettlersMonoEmoji", monospace;
+    font-family: ${monoTextEmojiFontStack};
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -202,22 +385,14 @@ const resourceCardBackTexture = async (key, { label, color, emoji }) => {
   }
   .emoji {
     margin-top: 96px;
-    font-family: "SettlersMonoEmoji", "SettlersUnifont", monospace;
+    font-family: ${monoEmojiTextFontStack};
     font-size: 150px;
     line-height: 1;
   }
 </style>
 <div class="card"><div class="label">${label}</div><div class="emoji">${emoji}</div></div>
 `);
-  await exec("chromium", [
-    "--headless=new",
-    "--disable-gpu",
-    "--no-sandbox",
-    `--screenshot=${imagePath}`,
-    "--window-size=630,880",
-    pathToFileURL(htmlPath).href,
-  ]);
-  await rm(htmlPath, { force: true });
+  await captureTexture({ htmlPath, imagePath, windowSize: "630,880" });
   return imageName;
 };
 
@@ -240,9 +415,9 @@ const developmentCardFrontTexture = async () => {
     width: 630px;
     height: 880px;
     box-sizing: border-box;
-    background: navy;
+    background: steelblue;
     color: white;
-    font-family: "SettlersUnifont", monospace;
+    font-family: ${monoTextFontStack};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -252,15 +427,7 @@ const developmentCardFrontTexture = async () => {
 </style>
 <div class="card">DEVELOPMENT</div>
 `);
-  await exec("chromium", [
-    "--headless=new",
-    "--disable-gpu",
-    "--no-sandbox",
-    `--screenshot=${imagePath}`,
-    "--window-size=630,880",
-    pathToFileURL(htmlPath).href,
-  ]);
-  await rm(htmlPath, { force: true });
+  await captureTexture({ htmlPath, imagePath, windowSize: "630,880" });
   return imageName;
 };
 
@@ -286,7 +453,7 @@ const developmentCardBackTexture = async (key, { title, lines }) => {
     padding: 120px 48px;
     background: oldlace;
     color: black;
-    font-family: "SettlersUnifont", monospace;
+    font-family: ${monoTextFontStack};
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -310,15 +477,7 @@ const developmentCardBackTexture = async (key, { title, lines }) => {
   ${lines.map((line) => `<div class="line">${line.toUpperCase()}</div>`).join("")}
 </div>
 `);
-  await exec("chromium", [
-    "--headless=new",
-    "--disable-gpu",
-    "--no-sandbox",
-    `--screenshot=${imagePath}`,
-    "--window-size=630,880",
-    pathToFileURL(htmlPath).href,
-  ]);
-  await rm(htmlPath, { force: true });
+  await captureTexture({ htmlPath, imagePath, windowSize: "630,880" });
   return imageName;
 };
 
@@ -343,7 +502,7 @@ const awardCardTexture = async (key, { title, color }) => {
     box-sizing: border-box;
     background: ${color};
     color: black;
-    font-family: "SettlersUnifont", monospace;
+    font-family: ${monoTextFontStack};
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -365,15 +524,7 @@ const awardCardTexture = async (key, { title, color }) => {
 </style>
 <div class="card"><div class="title">${title.toUpperCase()}</div><div class="points">2 VICTORY POINTS</div></div>
 `);
-  await exec("chromium", [
-    "--headless=new",
-    "--disable-gpu",
-    "--no-sandbox",
-    `--screenshot=${imagePath}`,
-    "--window-size=880,1260",
-    pathToFileURL(htmlPath).href,
-  ]);
-  await rm(htmlPath, { force: true });
+  await captureTexture({ htmlPath, imagePath, windowSize: "880,1260" });
   return imageName;
 };
 
@@ -399,7 +550,7 @@ const tileTexture = async (key, { label, emoji }) => {
     height: 900px;
     background: ${background};
     color: black;
-    font-family: "SettlersUnifont", "SettlersMonoEmoji", monospace;
+    font-family: ${monoTextEmojiFontStack};
   }
   .emoji, .label {
     position: absolute;
@@ -410,8 +561,8 @@ const tileTexture = async (key, { label, emoji }) => {
     line-height: 1;
   }
   .emoji {
-    top: 150px;
-    font-family: "SettlersMonoEmoji", "SettlersUnifont", monospace;
+    top: 100px;
+    font-family: ${monoEmojiTextFontStack};
     font-size: 170px;
   }
   .label {
@@ -421,15 +572,7 @@ const tileTexture = async (key, { label, emoji }) => {
 </style>
 <div class="face">${emoji ? `<div class="emoji">${emoji}</div>` : ""}<div class="label">${label}</div></div>
 `);
-  await exec("chromium", [
-    "--headless=new",
-    "--disable-gpu",
-    "--no-sandbox",
-    `--screenshot=${imagePath}`,
-    "--window-size=900,900",
-    pathToFileURL(htmlPath).href,
-  ]);
-  await rm(htmlPath, { force: true });
+  await captureTexture({ htmlPath, imagePath, windowSize: "900,900" });
   return imageName;
 };
 
@@ -454,7 +597,7 @@ const harborTexture = async ({ key, label }) => {
     height: 900px;
     background: ${portColor};
     color: white;
-    font-family: "SettlersUnifont", monospace;
+    font-family: ${monoTextFontStack};
     font-weight: 700;
     text-align: center;
     display: flex;
@@ -474,15 +617,7 @@ const harborTexture = async ({ key, label }) => {
 </style>
 <div class="face"><div class="port">PORT</div><div class="trade">${lines.join("<br>")}</div></div>
 `);
-  await exec("chromium", [
-    "--headless=new",
-    "--disable-gpu",
-    "--no-sandbox",
-    `--screenshot=${imagePath}`,
-    "--window-size=900,900",
-    pathToFileURL(htmlPath).href,
-  ]);
-  await rm(htmlPath, { force: true });
+  await captureTexture({ htmlPath, imagePath, windowSize: "900,900" });
   return imageName;
 };
 
@@ -508,7 +643,7 @@ const buildingCostTexture = async () => {
     padding: 76px 70px;
     background: #fff3c7;
     color: #111;
-    font-family: "SettlersUnifont", "SettlersMonoEmoji", monospace;
+    font-family: ${monoTextEmojiFontStack};
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -520,6 +655,7 @@ const buildingCostTexture = async () => {
     font-weight: 700;
     line-height: 1;
     letter-spacing: 0;
+    text-align: center;
   }
   .cost {
     width: 100%;
@@ -533,7 +669,7 @@ const buildingCostTexture = async () => {
   }
   .icons {
     margin: 12px 0 24px;
-    font-family: "SettlersMonoEmoji", "SettlersUnifont", monospace;
+    font-family: ${monoEmojiTextFontStack};
     font-size: 74px;
     line-height: 1;
     white-space: nowrap;
@@ -544,7 +680,7 @@ const buildingCostTexture = async () => {
   <div class="cost">
     <div class="label">ROAD:</div>
     <div class="icons">🧱🪵</div>
-    <div class="label">SETTLEMENT:</div>
+    <div class="label">HOUSE:</div>
     <div class="icons">🧱🪵🐑🌽</div>
     <div class="label">CITY:</div>
     <div class="icons">🌽🌽🪨🪨🪨</div>
@@ -553,15 +689,7 @@ const buildingCostTexture = async () => {
   </div>
 </div>
 `);
-  await exec("chromium", [
-    "--headless=new",
-    "--disable-gpu",
-    "--no-sandbox",
-    `--screenshot=${imagePath}`,
-    "--window-size=880,1260",
-    pathToFileURL(htmlPath).href,
-  ]);
-  await rm(htmlPath, { force: true });
+  await captureTexture({ htmlPath, imagePath, windowSize: "880,1260" });
   return imageName;
 };
 
@@ -587,7 +715,7 @@ const businessCardTexture = async () => {
     padding: 46px 58px;
     background: #f7f3e8;
     color: #111;
-    font-family: "SettlersUnifont", "SettlersMonoEmoji", monospace;
+    font-family: ${monoTextEmojiFontStack};
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -625,28 +753,20 @@ const businessCardTexture = async () => {
     white-space: nowrap;
   }
   .emoji {
-    font-family: "SettlersMonoEmoji", "SettlersUnifont", monospace;
+    font-family: ${monoEmojiTextFontStack};
     font-size: 36px;
   }
 </style>
 <div class="card">
   <h1>SETTLERS PROTOTYPE</h1>
   <div class="name">NEFTALY HERNANDEZ</div>
-  <div class="meta">DATE: 2026-06-18</div>
+  <div class="meta">DATE: 2026-06-20</div>
   <div class="license">LICENSE: CC BY-SA 4.0</div>
   <div class="rule"></div>
   <div class="footer"><span class="emoji">&#x1F5D1;&#xFE0E;&#x1F4A7;</span><span>https://garbo.succus.games/</span></div>
 </div>
 `);
-  await exec("chromium", [
-    "--headless=new",
-    "--disable-gpu",
-    "--no-sandbox",
-    `--screenshot=${imagePath}`,
-    "--window-size=900,550",
-    pathToFileURL(htmlPath).href,
-  ]);
-  await rm(htmlPath, { force: true });
+  await captureTexture({ htmlPath, imagePath, windowSize: "900,550" });
   return imageName;
 };
 
@@ -671,7 +791,7 @@ const businessCardBackTexture = async () => {
     box-sizing: border-box;
     background: #050807;
     color: #31d66f;
-    font-family: "SettlersMonoEmoji", "SettlersUnifont", sans-serif;
+    font-family: ${monoEmojiTextFontStack};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -683,15 +803,7 @@ const businessCardBackTexture = async () => {
 </style>
 <div class="card"><div class="emoji">&#x1F5D1;&#xFE0E;&#x1F4A7;</div></div>
 `);
-  await exec("chromium", [
-    "--headless=new",
-    "--disable-gpu",
-    "--no-sandbox",
-    `--screenshot=${imagePath}`,
-    "--window-size=900,550",
-    pathToFileURL(htmlPath).href,
-  ]);
-  await rm(htmlPath, { force: true });
+  await captureTexture({ htmlPath, imagePath, windowSize: "900,550" });
   return imageName;
 };
 
@@ -709,6 +821,7 @@ const counterTexture = async (value) => {
   await writeFile(htmlPath, `<!doctype html>
 <meta charset="utf-8">
 <style>
+  ${monoFontCss}
   html, body {
     margin: 0;
     width: 250px;
@@ -723,20 +836,12 @@ const counterTexture = async (value) => {
 <svg width="250" height="250" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
   <circle cx="125" cy="125" r="122" fill="linen"/>
   <text x="125" y="126" text-anchor="middle" dominant-baseline="middle"
-    font-family="SettlersUnifont, monospace" font-size="88" font-weight="700" fill="${color}">${value}</text>
+    style='font-family: ${monoTextFontStack}; font-size: 88px; font-weight: 700; fill: ${color};'>${value}</text>
   <text x="125" y="168" text-anchor="middle" dominant-baseline="middle"
-    font-family="SettlersUnifont, monospace" font-size="38" font-weight="700" letter-spacing="2" fill="${color}">${dots}</text>
+    style='font-family: ${monoTextFontStack}; font-size: 38px; font-weight: 700; letter-spacing: 2px; fill: ${color};'>${dots}</text>
 </svg>
 `);
-  await exec("chromium", [
-    "--headless=new",
-    "--disable-gpu",
-    "--no-sandbox",
-    `--screenshot=${imagePath}`,
-    "--window-size=250,250",
-    pathToFileURL(htmlPath).href,
-  ]);
-  await rm(htmlPath, { force: true });
+  await captureTexture({ htmlPath, imagePath, windowSize: "250,250" });
   return imageName;
 };
 
@@ -750,6 +855,7 @@ const texturedCard = ({
   materialName = "Textured card face",
   frontMaterialName = `${materialName} front`,
   backMaterialName = `${materialName} back`,
+  edgeMaterial = standard("linen", { roughness: 0.86, metalness: 0 }),
   frontMaterial = standard("white", { roughness: 0.8, metalness: 0 }),
   backMaterial = standard("white", { roughness: 0.8, metalness: 0 }),
 }) => {
@@ -757,11 +863,11 @@ const texturedCard = ({
   frontMaterial.side = THREE.DoubleSide;
   backMaterial.name = backMaterialName;
   backMaterial.side = THREE.DoubleSide;
-  const result = group(
-    mesh(new THREE.BoxGeometry(width, thickness, height), "linen"),
-    orientedTexturePlane(width, height, frontMaterial, [0, thickness / 2 + 0.00002, 0]),
-    orientedTexturePlane(width, height, backMaterial, [0, -thickness / 2 - 0.00002, 0], [Math.PI / 2, 0, 0]),
-  );
+  const result = mesh(cardGeometry(width, height, thickness), [
+    edgeMaterial,
+    frontMaterial,
+    backMaterial,
+  ]);
   result.userData.texturePatches = [
     { materialName: frontMaterial.name, imageUri: frontImageUri },
     { materialName: backMaterial.name, imageUri: backImageUri },
@@ -797,12 +903,9 @@ const harbor = ({ key }) => {
 };
 
 const counter = (value, imageUri) => {
-  const face = basic({ color: "white", side: THREE.DoubleSide });
+  const face = basic({ color: "white" });
   face.name = `Counter ${value} face`;
-  const result = group(
-    mesh(new THREE.CylinderGeometry(0.0125, 0.0125, 0.002, 24), "linen"),
-    orientedTextureCircle(0.01245, face, [0, 0.00103, 0]),
-  );
+  const result = mesh(coinGeometry({ radius: 0.0125, thickness: 0.002 }), [standard("linen"), face]);
   result.userData.texturePatch = { materialName: face.name, imageUri };
   return result;
 };
@@ -863,8 +966,31 @@ const lShapeGeometry = ({ length, armWidth, thickness, insideBrace, bevelStartFr
   return geometry;
 };
 
-const raisedRect = ({ material, x, z, width, depth, y, rotation = 0 }) =>
-  mesh(new THREE.BoxGeometry(width, 0.00016, depth), material, [x, y, z], [0, rotation, 0]);
+const tickMarksGeometry = (rects, y) => {
+  const positions = [];
+  const indices = [];
+
+  for (const { x, z, width, depth } of rects) {
+    const left = x - width / 2;
+    const right = x + width / 2;
+    const top = z - depth / 2;
+    const bottom = z + depth / 2;
+    const offset = positions.length / 3;
+    positions.push(
+      left, y, top,
+      right, y, top,
+      right, y, bottom,
+      left, y, bottom,
+    );
+    indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return geometry;
+};
 
 const ruler = () => {
   const length = 0.205;
@@ -885,6 +1011,7 @@ const ruler = () => {
     depthWrite: false,
   });
   const marks = basic({ color: "black" });
+  marks.side = THREE.DoubleSide;
   const tickWidth = 0.00018;
   const ticks = [];
 
@@ -897,27 +1024,23 @@ const ruler = () => {
     const x = origin + distance;
     const z = origin + distance;
 
-    ticks.push(raisedRect({
-      material: marks,
+    ticks.push({
       x,
       z: origin + tickLength / 2,
       width: tickWidth,
       depth: tickLength,
-      y: bottom,
-    }));
-    ticks.push(raisedRect({
-      material: marks,
+    });
+    ticks.push({
       x: origin + tickLength / 2,
       z,
       width: tickLength,
       depth: tickWidth,
-      y: bottom,
-    }));
+    });
   }
 
   return group(
     mesh(lShapeGeometry({ length, armWidth, thickness, insideBrace, bevelStartFromBottom }), acrylic),
-    ...ticks,
+    mesh(tickMarksGeometry(ticks, bottom), marks),
   );
 };
 
@@ -939,13 +1062,14 @@ const flatProfile = (points, depth) => {
 const roofFlatHalfLength = (halfLength, rise) =>
   (Math.sqrt(4 * halfLength ** 2 + 3 * rise ** 2) - halfLength) / 3;
 
-const woodFace = standard("white", { roughness: 0.9, metalness: 0 });
-const paintedWood = standard("white", { roughness: 0.86, metalness: 0 });
-const woodMaterials = [woodFace, paintedWood];
+const woodFace = standard("white", { roughness: 0.78, metalness: 0 });
+const woodSide = standard("gainsboro", { roughness: 0.88, metalness: 0 });
+const woodEnd = standard("whitesmoke", { roughness: 0.82, metalness: 0 });
+const woodMaterials = [woodFace, woodSide];
 
 const road = () => {
   const geometry = new THREE.BoxGeometry(0.025, 0.004, 0.004);
-  return group(mesh(geometry, [woodFace, woodFace, paintedWood, paintedWood, paintedWood, paintedWood]));
+  return group(mesh(geometry, [woodEnd, woodEnd, woodFace, woodSide, woodSide, woodSide]));
 };
 
 const house = () => {
@@ -984,15 +1108,15 @@ const settlement = () => {
 
 const robber = () => {
   const plastic = new THREE.MeshPhysicalMaterial({
-    color: "darkslateblue",
+    color: "indigo",
     clearcoat: 0.25,
     clearcoatRoughness: 0.5,
     metalness: 0,
     roughness: 0.72,
   });
   const result = group(
-    mesh(new THREE.ConeGeometry(0.02, 0.055, 20), plastic, [0, 0.0275, 0]),
-    mesh(new THREE.SphereGeometry(0.014, 16, 12), plastic, [0, 0.0503, 0]),
+    mesh(new THREE.ConeGeometry(0.02, 0.055, 14), plastic, [0, 0.0275, 0]),
+    mesh(new THREE.SphereGeometry(0.014, 10, 8), plastic, [0, 0.0503, 0]),
   );
   result.scale.setScalar(0.75);
   return result;
@@ -1015,19 +1139,32 @@ const exportGltf = async (name, object) => {
     output.images ??= [];
     output.textures ??= [];
     output.samplers ??= [];
+    output.extensionsUsed ??= [];
+    output.extensionsRequired ??= [];
+    if (!output.extensionsUsed.includes("EXT_texture_avif")) {
+      output.extensionsUsed.push("EXT_texture_avif");
+    }
+    if (!output.extensionsRequired.includes("EXT_texture_avif")) {
+      output.extensionsRequired.push("EXT_texture_avif");
+    }
     for (const texturePatch of texturePatches) {
       const materialIndex = output.materials?.findIndex((material) => material.name === texturePatch.materialName);
       if (materialIndex === undefined || materialIndex < 0) {
         throw new Error(`Missing texture patch material ${texturePatch.materialName}`);
       }
       const samplerIndex = output.samplers.push({
-        magFilter: 9729,
-        minFilter: 9729,
-        wrapS: 33071,
-        wrapT: 33071,
+        magFilter: GLTF_LINEAR_FILTER,
+        minFilter: GLTF_LINEAR_MIPMAP_LINEAR_FILTER,
+        wrapS: GLTF_CLAMP_TO_EDGE,
+        wrapT: GLTF_CLAMP_TO_EDGE,
       }) - 1;
-      const imageIndex = output.images.push({ uri: texturePatch.imageUri }) - 1;
-      const textureIndex = output.textures.push({ sampler: samplerIndex, source: imageIndex }) - 1;
+      const imageIndex = output.images.push({ uri: avifName(texturePatch.imageUri) }) - 1;
+      const textureIndex = output.textures.push({
+        sampler: samplerIndex,
+        extensions: {
+          EXT_texture_avif: { source: imageIndex },
+        },
+      }) - 1;
       output.materials[materialIndex].pbrMetallicRoughness ??= {};
       output.materials[materialIndex].pbrMetallicRoughness.baseColorFactor = [1, 1, 1, 1];
       output.materials[materialIndex].pbrMetallicRoughness.baseColorTexture = { index: textureIndex };
@@ -1087,7 +1224,7 @@ const oceanColor = "steelblue";
 const portColor = "cadetblue";
 
 const assets = [
-  ["ocean.gltf", () => group(mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.002, 6), standard(oceanColor, { roughness: 0.7, metalness: 0 })))],
+  ["ocean.gltf", () => cuttingMat()],
   ...Object.keys(resources).map((key) => [`resource-card-${key}.gltf`, () => resourceCard(key)]),
   ...Object.keys(developmentCards).map((key) => [`${key}-card.gltf`, () => actionCard(key)]),
   ...Object.keys(awardCards).map((key) => [`${key}-card.gltf`, () => awardCard(key)]),
