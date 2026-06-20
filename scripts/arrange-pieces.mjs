@@ -1,12 +1,12 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { SCHEMA_URL } from "@probability-nz/types";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const distDir = join(root, "dist");
 const outputManifestPath = join(distDir, "probability.json");
 const outputPackagePath = join(distDir, "package.json");
+const SCHEMA_URL = "https://registry.probabilityusercontent.nz/npm/@probability-nz/types/-/types-0.0.0.tgz/dist/analog.json";
 
 const position = (x, z) => [x, null, z];
 const matHalfWidth = 0.841 / 2;

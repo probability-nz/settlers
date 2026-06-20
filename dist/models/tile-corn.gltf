@@ -15,7 +15,7 @@
     {
       "type": "SCALAR",
       "componentType": 5123,
-      "count": 54,
+      "count": 234,
       "normalized": false,
       "byteOffset": 36,
       "bufferView": 0
@@ -23,7 +23,7 @@
     {
       "type": "VEC3",
       "componentType": 5120,
-      "count": 22,
+      "count": 91,
       "normalized": true,
       "byteOffset": 0,
       "bufferView": 1
@@ -31,7 +31,7 @@
     {
       "type": "VEC3",
       "componentType": 5122,
-      "count": 8,
+      "count": 7,
       "max": [
         28379,
         728,
@@ -49,7 +49,7 @@
     {
       "type": "VEC2",
       "componentType": 5123,
-      "count": 8,
+      "count": 7,
       "normalized": true,
       "byteOffset": 0,
       "bufferView": 3
@@ -57,7 +57,7 @@
     {
       "type": "VEC3",
       "componentType": 5122,
-      "count": 22,
+      "count": 91,
       "max": [
         28379,
         728,
@@ -77,85 +77,85 @@
     {
       "buffer": 1,
       "byteOffset": 0,
-      "byteLength": 144,
+      "byteLength": 504,
       "target": 34963,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
           "byteOffset": 0,
-          "byteLength": 42,
+          "byteLength": 102,
           "mode": "TRIANGLES",
           "byteStride": 2,
-          "count": 72
+          "count": 252
         }
       }
     },
     {
       "buffer": 1,
-      "byteOffset": 144,
-      "byteLength": 88,
+      "byteOffset": 504,
+      "byteLength": 364,
       "target": 34962,
       "byteStride": 4,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
-          "byteOffset": 44,
-          "byteLength": 55,
+          "byteOffset": 104,
+          "byteLength": 139,
           "mode": "ATTRIBUTES",
           "filter": "OCTAHEDRAL",
           "byteStride": 4,
-          "count": 22
+          "count": 91
         }
       }
     },
     {
       "buffer": 1,
-      "byteOffset": 232,
-      "byteLength": 64,
+      "byteOffset": 868,
+      "byteLength": 56,
       "target": 34962,
       "byteStride": 8,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
-          "byteOffset": 100,
-          "byteLength": 80,
+          "byteOffset": 244,
+          "byteLength": 74,
           "mode": "ATTRIBUTES",
           "byteStride": 8,
-          "count": 8
+          "count": 7
         }
       }
     },
     {
       "buffer": 1,
-      "byteOffset": 296,
-      "byteLength": 32,
+      "byteOffset": 924,
+      "byteLength": 28,
       "target": 34962,
       "byteStride": 4,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
-          "byteOffset": 180,
-          "byteLength": 78,
+          "byteOffset": 320,
+          "byteLength": 71,
           "mode": "ATTRIBUTES",
           "byteStride": 4,
-          "count": 8
+          "count": 7
         }
       }
     },
     {
       "buffer": 1,
-      "byteOffset": 328,
-      "byteLength": 176,
+      "byteOffset": 952,
+      "byteLength": 728,
       "target": 34962,
       "byteStride": 8,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
-          "byteOffset": 260,
-          "byteLength": 139,
+          "byteOffset": 392,
+          "byteLength": 436,
           "mode": "ATTRIBUTES",
           "byteStride": 8,
-          "count": 22
+          "count": 91
         }
       }
     }
@@ -186,11 +186,11 @@
   ],
   "buffers": [
     {
-      "uri": "buffer-dc515f5f09ab4830.bin",
-      "byteLength": 400
+      "uri": "buffer-2cb1b0281ee1baa3.bin",
+      "byteLength": 828
     },
     {
-      "byteLength": 504,
+      "byteLength": 1680,
       "extensions": {
         "EXT_meshopt_compression": {
           "fallback": true
@@ -199,19 +199,6 @@
     }
   ],
   "materials": [
-    {
-      "name": "Tile corn face side",
-      "pbrMetallicRoughness": {
-        "baseColorFactor": [
-          1,
-          0.6795424696265424,
-          0,
-          1
-        ],
-        "roughnessFactor": 0.85,
-        "metallicFactor": 0.02
-      }
-    },
     {
       "name": "Tile corn face",
       "doubleSided": true,
@@ -225,6 +212,19 @@
       "extensions": {
         "KHR_materials_unlit": {}
       }
+    },
+    {
+      "name": "Tile corn face side",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.9559733532482866,
+          0.8713671191959567,
+          0.7912979403281551,
+          1
+        ],
+        "roughnessFactor": 0.85,
+        "metallicFactor": 0.02
+      }
     }
   ],
   "meshes": [
@@ -236,7 +236,7 @@
             "TEXCOORD_0": 4
           },
           "mode": 4,
-          "material": 1,
+          "material": 0,
           "indices": 0
         },
         {
@@ -245,7 +245,7 @@
             "POSITION": 5
           },
           "mode": 4,
-          "material": 0,
+          "material": 1,
           "indices": 1
         }
       ]

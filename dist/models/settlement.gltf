@@ -13,12 +13,20 @@
       "bufferView": 0
     },
     {
+      "type": "VEC2",
+      "componentType": 5126,
+      "count": 16,
+      "normalized": false,
+      "byteOffset": 0,
+      "bufferView": 1
+    },
+    {
       "type": "VEC3",
       "componentType": 5120,
       "count": 16,
       "normalized": true,
       "byteOffset": 0,
-      "bufferView": 1
+      "bufferView": 2
     },
     {
       "type": "SCALAR",
@@ -29,12 +37,20 @@
       "bufferView": 0
     },
     {
+      "type": "VEC2",
+      "componentType": 5126,
+      "count": 32,
+      "normalized": false,
+      "byteOffset": 0,
+      "bufferView": 3
+    },
+    {
       "type": "VEC3",
       "componentType": 5120,
       "count": 32,
       "normalized": true,
       "byteOffset": 0,
-      "bufferView": 2
+      "bufferView": 4
     },
     {
       "type": "VEC3",
@@ -52,7 +68,7 @@
       ],
       "normalized": true,
       "byteOffset": 0,
-      "bufferView": 3
+      "bufferView": 5
     },
     {
       "type": "VEC3",
@@ -70,7 +86,7 @@
       ],
       "normalized": true,
       "byteOffset": 0,
-      "bufferView": 4
+      "bufferView": 6
     }
   ],
   "bufferViews": [
@@ -93,13 +109,30 @@
     {
       "buffer": 1,
       "byteOffset": 168,
+      "byteLength": 128,
+      "target": 34962,
+      "byteStride": 8,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "buffer": 0,
+          "byteOffset": 48,
+          "byteLength": 143,
+          "mode": "ATTRIBUTES",
+          "byteStride": 8,
+          "count": 16
+        }
+      }
+    },
+    {
+      "buffer": 1,
+      "byteOffset": 296,
       "byteLength": 64,
       "target": 34962,
       "byteStride": 4,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
-          "byteOffset": 48,
+          "byteOffset": 192,
           "byteLength": 42,
           "mode": "ATTRIBUTES",
           "filter": "OCTAHEDRAL",
@@ -110,14 +143,31 @@
     },
     {
       "buffer": 1,
-      "byteOffset": 232,
+      "byteOffset": 360,
+      "byteLength": 256,
+      "target": 34962,
+      "byteStride": 8,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "buffer": 0,
+          "byteOffset": 236,
+          "byteLength": 164,
+          "mode": "ATTRIBUTES",
+          "byteStride": 8,
+          "count": 32
+        }
+      }
+    },
+    {
+      "buffer": 1,
+      "byteOffset": 616,
       "byteLength": 128,
       "target": 34962,
       "byteStride": 4,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
-          "byteOffset": 92,
+          "byteOffset": 400,
           "byteLength": 63,
           "mode": "ATTRIBUTES",
           "filter": "OCTAHEDRAL",
@@ -128,14 +178,14 @@
     },
     {
       "buffer": 1,
-      "byteOffset": 360,
+      "byteOffset": 744,
       "byteLength": 128,
       "target": 34962,
       "byteStride": 8,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
-          "byteOffset": 156,
+          "byteOffset": 464,
           "byteLength": 109,
           "mode": "ATTRIBUTES",
           "byteStride": 8,
@@ -145,14 +195,14 @@
     },
     {
       "buffer": 1,
-      "byteOffset": 488,
+      "byteOffset": 872,
       "byteLength": 256,
       "target": 34962,
       "byteStride": 8,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
-          "byteOffset": 268,
+          "byteOffset": 576,
           "byteLength": 179,
           "mode": "ATTRIBUTES",
           "byteStride": 8,
@@ -163,11 +213,11 @@
   ],
   "buffers": [
     {
-      "uri": "buffer-30941b335e3b6d17.bin",
-      "byteLength": 448
+      "uri": "buffer-71c039cee34f855e.bin",
+      "byteLength": 756
     },
     {
-      "byteLength": 744,
+      "byteLength": 1128,
       "extensions": {
         "EXT_meshopt_compression": {
           "fallback": true
@@ -177,12 +227,18 @@
   ],
   "materials": [
     {
+      "name": "Molded plastic face",
       "pbrMetallicRoughness": {
-        "roughnessFactor": 0.78,
+        "roughnessFactor": 0.68,
         "metallicFactor": 0
+      },
+      "normalTexture": {
+        "index": 0,
+        "scale": 0.9
       }
     },
     {
+      "name": "Molded plastic side",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
           0.7156935005005721,
@@ -190,8 +246,12 @@
           0.7156935005005721,
           1
         ],
-        "roughnessFactor": 0.88,
+        "roughnessFactor": 0.72,
         "metallicFactor": 0
+      },
+      "normalTexture": {
+        "index": 0,
+        "scale": 0.9
       }
     }
   ],
@@ -200,8 +260,9 @@
       "primitives": [
         {
           "attributes": {
-            "NORMAL": 1,
-            "POSITION": 4
+            "TEXCOORD_0": 1,
+            "NORMAL": 2,
+            "POSITION": 6
           },
           "mode": 4,
           "material": 0,
@@ -209,12 +270,13 @@
         },
         {
           "attributes": {
-            "NORMAL": 3,
-            "POSITION": 5
+            "TEXCOORD_0": 4,
+            "NORMAL": 5,
+            "POSITION": 7
           },
           "mode": 4,
           "material": 1,
-          "indices": 2
+          "indices": 3
         }
       ]
     }
@@ -240,10 +302,36 @@
   "scene": 0,
   "extensionsUsed": [
     "EXT_meshopt_compression",
+    "EXT_texture_avif",
     "KHR_mesh_quantization"
   ],
   "extensionsRequired": [
     "EXT_meshopt_compression",
+    "EXT_texture_avif",
     "KHR_mesh_quantization"
+  ],
+  "images": [
+    {
+      "mimeType": "image/avif",
+      "uri": "molded-plastic-normal.avif"
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "extensions": {
+        "EXT_texture_avif": {
+          "source": 0
+        }
+      }
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
   ]
 }

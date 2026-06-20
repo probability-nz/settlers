@@ -62,9 +62,14 @@ const standard = (color, props = {}) =>
   new THREE.MeshStandardMaterial({ color, roughness: 0.85, metalness: 0.02, ...props });
 
 const basic = (props) => new THREE.MeshBasicMaterial({ color: "white", ...props });
+
+// shared light edge color: pieces read as paper, so cut edges show the same
+// pale stock on cards, tiles, and the business card rather than a printed face
+const paperEdgeColor = "linen";
 const GLTF_LINEAR_FILTER = 9729;
 const GLTF_LINEAR_MIPMAP_LINEAR_FILTER = 9987;
 const GLTF_CLAMP_TO_EDGE = 33071;
+const GLTF_REPEAT = 10497;
 const AVIF_QUALITY = "60";
 
 const avifName = (name) => name.replace(/\.png$/u, ".avif");
@@ -100,25 +105,80 @@ const mesh = (geometry, material, position = [0, 0, 0], rotation = [0, 0, 0]) =>
   return result;
 };
 
+const flattenedEdgeNormal = ({ outward, v, normalTilt }) => {
+  const centered = v * 2 - 1;
+  const shaped = Math.sign(centered) * Math.max(0, Math.abs(centered) - 0.38) / 0.62;
+  const eased = shaped * shaped * (3 - 2 * Math.abs(shaped));
+  const up = -Math.sin(normalTilt) * eased;
+  const out = Math.sqrt(Math.max(0, 1 - up * up));
+  return [outward[0] * out, up, outward[1] * out];
+};
+
 const cardGeometry = (width, height, thickness) => {
   const x = width / 2;
   const y = thickness / 2;
   const z = height / 2;
+  const normalTilt = THREE.MathUtils.degToRad(5);
+  const edgeSegments = 8;
+  const edgeDepthSegments = 6;
   const positions = [];
   const normals = [];
   const uvs = [];
   const indices = [];
 
-  const addFace = ({ corners, normal, materialIndex, faceUvs = [[0, 0], [1, 0], [1, 1], [0, 1]] }) => {
+  const addFace = ({
+    corners,
+    normal,
+    faceNormals,
+    materialIndex,
+    faceUvs = [[0, 0], [1, 0], [1, 1], [0, 1]],
+  }) => {
     const start = indices.length;
     const offset = positions.length / 3;
     for (const [index, corner] of corners.entries()) {
       positions.push(...corner);
-      normals.push(...normal);
+      normals.push(...(faceNormals?.[index] ?? normal));
       uvs.push(...faceUvs[index]);
     }
     indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
     geometry.addGroup(start, 6, materialIndex);
+  };
+
+  const addCurvedEdge = ({ bottomStart, topStart, topEnd, bottomEnd, outward, repeat }) => {
+    const lerp = (a, b, t) => a.map((value, axis) => value + (b[axis] - value) * t);
+    for (let lengthIndex = 0; lengthIndex < edgeSegments; lengthIndex += 1) {
+      const t0 = lengthIndex / edgeSegments;
+      const t1 = (lengthIndex + 1) / edgeSegments;
+      for (let depthIndex = 0; depthIndex < edgeDepthSegments; depthIndex += 1) {
+        const v0 = depthIndex / edgeDepthSegments;
+        const v1 = (depthIndex + 1) / edgeDepthSegments;
+        const bottom0 = lerp(bottomStart, bottomEnd, t0);
+        const top0 = lerp(topStart, topEnd, t0);
+        const bottom1 = lerp(bottomStart, bottomEnd, t1);
+        const top1 = lerp(topStart, topEnd, t1);
+        addFace({
+          corners: [
+            lerp(bottom0, top0, v0),
+            lerp(bottom0, top0, v1),
+            lerp(bottom1, top1, v1),
+            lerp(bottom1, top1, v0),
+          ],
+          faceNormals: [
+            flattenedEdgeNormal({ outward, v: v0, normalTilt }),
+            flattenedEdgeNormal({ outward, v: v1, normalTilt }),
+            flattenedEdgeNormal({ outward, v: v1, normalTilt }),
+            flattenedEdgeNormal({ outward, v: v0, normalTilt }),
+          ],
+          materialIndex: 0,
+          faceUvs: [
+            [repeat * t0, v0],
+            [repeat * t0, v1],
+            [repeat * t1, v1],
+            [repeat * t1, v0],
+          ],
+        });
+      }
+    }
   };
 
   const geometry = new THREE.BufferGeometry();
@@ -136,26 +196,132 @@ const cardGeometry = (width, height, thickness) => {
     materialIndex: 2,
     faceUvs: backUvs,
   });
-  addFace({
-    corners: [[x, -y, -z], [x, y, -z], [x, y, z], [x, -y, z]],
-    normal: [1, 0, 0],
-    materialIndex: 0,
+  addCurvedEdge({
+    bottomStart: [x, -y, -z],
+    topStart: [x, y, -z],
+    topEnd: [x, y, z],
+    bottomEnd: [x, -y, z],
+    outward: [1, 0],
+    repeat: height / thickness,
   });
-  addFace({
-    corners: [[-x, -y, z], [-x, y, z], [-x, y, -z], [-x, -y, -z]],
-    normal: [-1, 0, 0],
-    materialIndex: 0,
+  addCurvedEdge({
+    bottomStart: [-x, -y, z],
+    topStart: [-x, y, z],
+    topEnd: [-x, y, -z],
+    bottomEnd: [-x, -y, -z],
+    outward: [-1, 0],
+    repeat: height / thickness,
   });
-  addFace({
-    corners: [[-x, -y, z], [x, -y, z], [x, y, z], [-x, y, z]],
-    normal: [0, 0, 1],
-    materialIndex: 0,
+  addCurvedEdge({
+    bottomStart: [-x, -y, z],
+    topStart: [-x, y, z],
+    topEnd: [x, y, z],
+    bottomEnd: [x, -y, z],
+    outward: [0, 1],
+    repeat: width / thickness,
   });
-  addFace({
-    corners: [[x, -y, -z], [-x, -y, -z], [-x, y, -z], [x, y, -z]],
-    normal: [0, 0, -1],
-    materialIndex: 0,
+  addCurvedEdge({
+    bottomStart: [x, -y, -z],
+    topStart: [x, y, -z],
+    topEnd: [-x, y, -z],
+    bottomEnd: [-x, -y, -z],
+    outward: [0, -1],
+    repeat: width / thickness,
   });
+
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
+  geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+  geometry.setIndex(indices);
+  return geometry;
+};
+
+const hexTileGeometry = ({ radius, thickness }) => {
+  const y = thickness / 2;
+  const normalTilt = THREE.MathUtils.degToRad(5);
+  const sides = 6;
+  const edgeDepthSegments = 6;
+  const positions = [];
+  const normals = [];
+  const uvs = [];
+  const indices = [];
+  const geometry = new THREE.BufferGeometry();
+
+  const addVertex = ({ position, normal, uv }) => {
+    positions.push(...position);
+    normals.push(...normal);
+    uvs.push(...uv);
+    return positions.length / 3 - 1;
+  };
+
+  const addTri = (a, b, c, materialIndex) => {
+    const start = indices.length;
+    indices.push(a, b, c);
+    geometry.addGroup(start, 3, materialIndex);
+  };
+
+  const addQuad = (corners, faceNormals, faceUvs, materialIndex) => {
+    const start = indices.length;
+    const offset = positions.length / 3;
+    for (const [index, corner] of corners.entries()) {
+      positions.push(...corner);
+      normals.push(...faceNormals[index]);
+      uvs.push(...faceUvs[index]);
+    }
+    indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
+    geometry.addGroup(start, 6, materialIndex);
+  };
+
+  const uvFor = ([x, , z]) => [0.5 + x / (radius * 2), 0.5 + z / (radius * 2)];
+  const ring = Array.from({ length: sides }, (_, index) => {
+    const angle = Math.PI / 6 + (index / sides) * Math.PI * 2;
+    return [Math.cos(angle) * radius, Math.sin(angle) * radius];
+  });
+
+  const topCenter = addVertex({ position: [0, y, 0], normal: [0, 1, 0], uv: [0.5, 0.5] });
+  const bottomCenter = addVertex({ position: [0, -y, 0], normal: [0, -1, 0], uv: [0.5, 0.5] });
+  const top = ring.map(([x, z]) => addVertex({ position: [x, y, z], normal: [0, 1, 0], uv: uvFor([x, y, z]) }));
+  const bottom = ring.map(([x, z]) => addVertex({ position: [x, -y, z], normal: [0, -1, 0], uv: uvFor([x, -y, z]) }));
+
+  for (let index = 0; index < sides; index += 1) {
+    const next = (index + 1) % sides;
+    addTri(topCenter, top[next], top[index], 1);
+    addTri(bottomCenter, bottom[index], bottom[next], 2);
+  }
+
+  for (let sideIndex = 0; sideIndex < sides; sideIndex += 1) {
+    const next = (sideIndex + 1) % sides;
+    const bottomStart = [ring[sideIndex][0], -y, ring[sideIndex][1]];
+    const topStart = [ring[sideIndex][0], y, ring[sideIndex][1]];
+    const topEnd = [ring[next][0], y, ring[next][1]];
+    const bottomEnd = [ring[next][0], -y, ring[next][1]];
+    const midX = (ring[sideIndex][0] + ring[next][0]) / 2;
+    const midZ = (ring[sideIndex][1] + ring[next][1]) / 2;
+    const length = Math.hypot(midX, midZ);
+    const outward = [midX / length, midZ / length];
+    const lerp = (a, b, t) => a.map((value, axis) => value + (b[axis] - value) * t);
+
+    for (let depthIndex = 0; depthIndex < edgeDepthSegments; depthIndex += 1) {
+      const v0 = depthIndex / edgeDepthSegments;
+      const v1 = (depthIndex + 1) / edgeDepthSegments;
+      addQuad([
+        lerp(bottomStart, topStart, v0),
+        lerp(bottomStart, topStart, v1),
+        lerp(bottomEnd, topEnd, v1),
+        lerp(bottomEnd, topEnd, v0),
+      ], [
+        flattenedEdgeNormal({ outward, v: v0, normalTilt }),
+        flattenedEdgeNormal({ outward, v: v1, normalTilt }),
+        flattenedEdgeNormal({ outward, v: v1, normalTilt }),
+        flattenedEdgeNormal({ outward, v: v0, normalTilt }),
+      ], [
+        [sideIndex, v0],
+        [sideIndex, v1],
+        [sideIndex + 1, v1],
+        [sideIndex + 1, v0],
+      ], 0);
+    }
+  }
 
   geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
   geometry.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
@@ -166,6 +332,8 @@ const cardGeometry = (width, height, thickness) => {
 
 const coinGeometry = ({ radius, thickness, segments = 20 }) => {
   const y = thickness / 2;
+  const normalTilt = THREE.MathUtils.degToRad(5);
+  const edgeDepthSegments = 6;
   const positions = [];
   const normals = [];
   const uvs = [];
@@ -183,8 +351,7 @@ const coinGeometry = ({ radius, thickness, segments = 20 }) => {
   const bottomCenter = addVertex({ position: [0, -y, 0], normal: [0, -1, 0], uv: [0.5, 0.5] });
   const top = [];
   const bottom = [];
-  const sideTop = [];
-  const sideBottom = [];
+  const side = Array.from({ length: edgeDepthSegments + 1 }, () => []);
 
   for (let index = 0; index < segments; index += 1) {
     const angle = (index / segments) * Math.PI * 2;
@@ -192,11 +359,17 @@ const coinGeometry = ({ radius, thickness, segments = 20 }) => {
     const z = Math.sin(angle) * radius;
     const u = 0.5 + Math.cos(angle) * 0.5;
     const v = 0.5 + Math.sin(angle) * 0.5;
-    const sideNormal = [Math.cos(angle), 0, Math.sin(angle)];
+    const outward = [Math.cos(angle), Math.sin(angle)];
     top.push(addVertex({ position: [x, y, z], normal: [0, 1, 0], uv: [u, v] }));
     bottom.push(addVertex({ position: [x, -y, z], normal: [0, -1, 0], uv: [u, v] }));
-    sideTop.push(addVertex({ position: [x, y, z], normal: sideNormal, uv: [index / segments, 1] }));
-    sideBottom.push(addVertex({ position: [x, -y, z], normal: sideNormal, uv: [index / segments, 0] }));
+    for (let depthIndex = 0; depthIndex <= edgeDepthSegments; depthIndex += 1) {
+      const depth = depthIndex / edgeDepthSegments;
+      side[depthIndex].push(addVertex({
+        position: [x, -y + thickness * depth, z],
+        normal: flattenedEdgeNormal({ outward, v: depth, normalTilt }),
+        uv: [index / segments, depth],
+      }));
+    }
   }
 
   geometry.addGroup(0, segments * 3, 1);
@@ -205,12 +378,14 @@ const coinGeometry = ({ radius, thickness, segments = 20 }) => {
     indices.push(topCenter, top[next], top[index]);
   }
 
-  geometry.addGroup(indices.length, segments * 9, 0);
+  geometry.addGroup(indices.length, segments * 3 + segments * edgeDepthSegments * 6, 0);
   for (let index = 0; index < segments; index += 1) {
     const next = (index + 1) % segments;
     indices.push(bottomCenter, bottom[index], bottom[next]);
-    indices.push(sideBottom[index], sideBottom[next], sideTop[next]);
-    indices.push(sideBottom[index], sideTop[next], sideTop[index]);
+    for (let depthIndex = 0; depthIndex < edgeDepthSegments; depthIndex += 1) {
+      indices.push(side[depthIndex][index], side[depthIndex + 1][next], side[depthIndex][next]);
+      indices.push(side[depthIndex][index], side[depthIndex + 1][index], side[depthIndex + 1][next]);
+    }
   }
 
   geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
@@ -245,14 +420,15 @@ const cuttingMatGeometry = ({ width, height, thickness, grid = 0.01 }) => {
   const cellsZ = 56;
   const gridWidth = cellsX * grid;
   const gridHeight = cellsZ * grid;
+  const edgeOverlap = lineWidth;
 
   for (let index = 0; index <= cellsX; index += 1) {
     const width = index > 0 && index % 10 === 0 ? majorLineWidth : lineWidth;
-    addRect({ x: -gridWidth / 2 + index * grid, z: 0, width, depth: gridHeight, y });
+    addRect({ x: -gridWidth / 2 + index * grid, z: 0, width, depth: gridHeight + edgeOverlap, y });
   }
   for (let index = 0; index <= cellsZ; index += 1) {
     const depth = index > 0 && index % 10 === 0 ? majorLineWidth : lineWidth;
-    addRect({ x: 0, z: -gridHeight / 2 + index * grid, width: gridWidth, depth, y });
+    addRect({ x: 0, z: -gridHeight / 2 + index * grid, width: gridWidth + edgeOverlap, depth, y });
   }
 
   const geometry = new THREE.BufferGeometry();
@@ -264,9 +440,8 @@ const cuttingMatGeometry = ({ width, height, thickness, grid = 0.01 }) => {
 
 const cuttingMat = ({ width = 0.841, height = 0.594, thickness = 0.002 } = {}) => {
   const base = standard(oceanColor, { roughness: 0.7, metalness: 0 });
-  const grid = basic({ color: "white", transparent: true, opacity: 0.65 });
+  const grid = basic({ color: "#bed3e5" });
   grid.side = THREE.DoubleSide;
-  grid.depthWrite = false;
   return group(
     mesh(new THREE.BoxGeometry(width, thickness, height), base),
     mesh(cuttingMatGeometry({ width, height, thickness }), grid),
@@ -415,7 +590,7 @@ const developmentCardFrontTexture = async () => {
     width: 630px;
     height: 880px;
     box-sizing: border-box;
-    background: steelblue;
+    background: maroon;
     color: white;
     font-family: ${monoTextFontStack};
     display: flex;
@@ -845,6 +1020,50 @@ const counterTexture = async (value) => {
   return imageName;
 };
 
+const moldedPlasticNormalTexture = async () => {
+  const imageName = "molded-plastic-normal.png";
+  const htmlPath = join(modelsDir, "molded-plastic-normal.html");
+  const imagePath = join(modelsDir, imageName);
+  const tileSize = 256;
+  const flecks = Array.from({ length: 520 }, (_, index) => ({
+    x: (index * 47) % tileSize,
+    y: (index * 83) % tileSize,
+    width: 2 + ((index * 11) % 6),
+    height: 1 + (index % 2),
+    rotation: (index * 29) % 180,
+    fill: index % 3 === 0 ? "rgb(176,128,220)" : "rgb(80,128,255)",
+    opacity: 0.22 + ((index * 17) % 26) / 100,
+  }));
+  const stipple = flecks.flatMap((fleck) =>
+    [-1, 0, 1].flatMap((xRepeat) =>
+      [-1, 0, 1].map((yRepeat) =>
+        `<rect x="${fleck.x + xRepeat * tileSize}" y="${fleck.y + yRepeat * tileSize}" width="${fleck.width}" height="${fleck.height}" rx="${fleck.height / 2}" fill="${fleck.fill}" opacity="${fleck.opacity}" transform="rotate(${fleck.rotation} ${fleck.x + xRepeat * tileSize} ${fleck.y + yRepeat * tileSize})"/>`,
+      ),
+    ),
+  ).join("");
+  await writeFile(htmlPath, `<!doctype html>
+<meta charset="utf-8">
+<style>
+  html, body {
+    margin: 0;
+    width: ${tileSize}px;
+    height: ${tileSize}px;
+    overflow: hidden;
+    background: rgb(128, 128, 255);
+  }
+  svg {
+    display: block;
+  }
+</style>
+<svg width="${tileSize}" height="${tileSize}" viewBox="0 0 ${tileSize} ${tileSize}" xmlns="http://www.w3.org/2000/svg">
+  <rect width="${tileSize}" height="${tileSize}" fill="rgb(128,128,255)"/>
+  ${stipple}
+</svg>
+`);
+  await captureTexture({ htmlPath, imagePath, windowSize: `${tileSize},${tileSize}` });
+  return imageName;
+};
+
 const texturedCard = ({
   imageUri,
   frontImageUri = imageUri,
@@ -855,10 +1074,13 @@ const texturedCard = ({
   materialName = "Textured card face",
   frontMaterialName = `${materialName} front`,
   backMaterialName = `${materialName} back`,
-  edgeMaterial = standard("linen", { roughness: 0.86, metalness: 0 }),
+  edgeMaterialName = `${materialName} edge`,
+  edgeMaterial = standard(paperEdgeColor, { roughness: 0.86, metalness: 0 }),
   frontMaterial = standard("white", { roughness: 0.8, metalness: 0 }),
   backMaterial = standard("white", { roughness: 0.8, metalness: 0 }),
 }) => {
+  edgeMaterial.name = edgeMaterialName;
+  edgeMaterial.side = THREE.DoubleSide;
   frontMaterial.name = frontMaterialName;
   frontMaterial.side = THREE.DoubleSide;
   backMaterial.name = backMaterialName;
@@ -875,12 +1097,12 @@ const texturedCard = ({
   return result;
 };
 
-const texturedHex = ({ color, imageUri, materialName }) => {
-  const side = standard(color);
+const texturedHex = ({ color, edgeColor = color, imageUri, materialName }) => {
+  const side = standard(edgeColor);
   const face = basic({ color: "white" });
   side.name = `${materialName} side`;
   face.name = materialName;
-  const geometry = correctHexTextureUVs(new THREE.CylinderGeometry(0.045, 0.045, 0.002, 6));
+  const geometry = hexTileGeometry({ radius: 0.045, thickness: 0.002 });
   const result = group(
     mesh(geometry, [side, face, side]),
   );
@@ -890,6 +1112,7 @@ const texturedHex = ({ color, imageUri, materialName }) => {
 
 const tile = (key, { color }) => texturedHex({
   color,
+  edgeColor: paperEdgeColor,
   imageUri: `tile-${key}.png`,
   materialName: `Tile ${key} face`,
 });
@@ -897,6 +1120,7 @@ const tile = (key, { color }) => texturedHex({
 const harbor = ({ key }) => {
   return texturedHex({
     color: portColor,
+    edgeColor: paperEdgeColor,
     imageUri: `harbor-${key}.png`,
     materialName: `Harbor ${key} face`,
   });
@@ -1056,20 +1280,66 @@ const flatProfile = (points, depth) => {
   geometry.computeBoundingBox();
   const { min, max } = geometry.boundingBox;
   geometry.translate(-(min.x + max.x) / 2, -(min.y + max.y) / 2, -(min.z + max.z) / 2);
+  remapReliefUvs(geometry, [0, 1]);
   return geometry;
+};
+
+const remapReliefUvs = (geometry, materialIndices, tileSize = 0.0035) => {
+  const positions = geometry.getAttribute("position");
+  const normals = geometry.getAttribute("normal");
+  const uvs = geometry.getAttribute("uv");
+  const indices = geometry.getIndex();
+
+  for (const group of geometry.groups) {
+    if (!materialIndices.includes(group.materialIndex)) continue;
+    for (let offset = group.start; offset < group.start + group.count; offset += 1) {
+      const vertex = indices ? indices.getX(offset) : offset;
+      const nx = Math.abs(normals.getX(vertex));
+      const ny = Math.abs(normals.getY(vertex));
+      const nz = Math.abs(normals.getZ(vertex));
+      const u = nx >= ny && nx >= nz
+        ? positions.getZ(vertex)
+        : positions.getX(vertex);
+      const v = ny >= nx && ny >= nz
+        ? positions.getZ(vertex)
+        : positions.getY(vertex);
+      uvs.setXY(
+        vertex,
+        u / tileSize,
+        v / tileSize,
+      );
+    }
+  }
+  uvs.needsUpdate = true;
 };
 
 const roofFlatHalfLength = (halfLength, rise) =>
   (Math.sqrt(4 * halfLength ** 2 + 3 * rise ** 2) - halfLength) / 3;
 
-const woodFace = standard("white", { roughness: 0.78, metalness: 0 });
-const woodSide = standard("gainsboro", { roughness: 0.88, metalness: 0 });
-const woodEnd = standard("whitesmoke", { roughness: 0.82, metalness: 0 });
-const woodMaterials = [woodFace, woodSide];
+const pieceFace = standard("white", { roughness: 0.68, metalness: 0 });
+pieceFace.name = "Molded plastic face";
+const pieceSide = standard("gainsboro", { roughness: 0.72, metalness: 0 });
+pieceSide.name = "Molded plastic side";
+const pieceEnd = standard("whitesmoke", { roughness: 0.68, metalness: 0 });
+pieceEnd.name = "Molded plastic end";
+const pieceMaterials = [pieceFace, pieceSide];
+const moldedPlasticNormalPatch = (material) => ({
+  materialName: material.name,
+  normalUri: "molded-plastic-normal.png",
+  normalScale: 0.9,
+  repeat: true,
+});
 
 const road = () => {
   const geometry = new THREE.BoxGeometry(0.025, 0.004, 0.004);
-  return group(mesh(geometry, [woodEnd, woodEnd, woodFace, woodSide, woodSide, woodSide]));
+  remapReliefUvs(geometry, [0, 1, 2, 3, 4, 5]);
+  const result = group(mesh(geometry, [pieceEnd, pieceEnd, pieceFace, pieceSide, pieceSide, pieceSide]));
+  result.userData.texturePatches = [
+    moldedPlasticNormalPatch(pieceEnd),
+    moldedPlasticNormalPatch(pieceFace),
+    moldedPlasticNormalPatch(pieceSide),
+  ];
+  return result;
 };
 
 const house = () => {
@@ -1077,13 +1347,18 @@ const house = () => {
   const roofRise = 0.005;
   const wallHeight = 0.007;
   const height = wallHeight + roofRise;
-  return group(mesh(flatProfile([
+  const result = group(mesh(flatProfile([
     [-halfLength, 0],
     [-halfLength, wallHeight],
     [0, height],
     [halfLength, wallHeight],
     [halfLength, 0],
-  ], 0.01), woodMaterials));
+  ], 0.01), pieceMaterials));
+  result.userData.texturePatches = [
+    moldedPlasticNormalPatch(pieceFace),
+    moldedPlasticNormalPatch(pieceSide),
+  ];
+  return result;
 };
 
 const settlement = () => {
@@ -1094,7 +1369,7 @@ const settlement = () => {
   const abutmentEnd = 0.0125;
   const height = wallHeight + roofRise;
   const roofHalfLength = roofFlatHalfLength(bodyHalfLength, roofRise);
-  return group(mesh(flatProfile([
+  const result = group(mesh(flatProfile([
     [-bodyHalfLength, 0],
     [-bodyHalfLength, wallHeight],
     [-roofHalfLength, height],
@@ -1103,23 +1378,86 @@ const settlement = () => {
     [bodyHalfLength, abutmentHeight],
     [abutmentEnd, abutmentHeight],
     [abutmentEnd, 0],
-  ], 0.01), woodMaterials));
+  ], 0.01), pieceMaterials));
+  result.userData.texturePatches = [
+    moldedPlasticNormalPatch(pieceFace),
+    moldedPlasticNormalPatch(pieceSide),
+  ];
+  return result;
+};
+
+// tapered square shaft with a single flat chamfer on each vertical edge, so
+// the cross-section is an octagon (square with cut corners). Base/top widths
+// and bevel are in metres; the base ring sits on the tile at y=0.
+const obeliskGeometry = ({ baseWidth, topWidth, bevel, height }) => {
+  const ring = (width, y) => {
+    const h = width / 2;
+    const a = h - bevel;
+    return [
+      [a, y, h], [h, y, a], [h, y, -a], [a, y, -h],
+      [-a, y, -h], [-h, y, -a], [-h, y, a], [-a, y, h],
+    ];
+  };
+  const base = ring(baseWidth, 0);
+  const top = ring(topWidth, height);
+  const positions = [];
+  // push a triangle, flipping its winding if it faces away from `outward`
+  const pushTri = (p, q, r, outward) => {
+    const ux = q[0] - p[0], uy = q[1] - p[1], uz = q[2] - p[2];
+    const vx = r[0] - p[0], vy = r[1] - p[1], vz = r[2] - p[2];
+    const nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+    const tri = nx * outward[0] + ny * outward[1] + nz * outward[2] < 0 ? [p, r, q] : [p, q, r];
+    for (const v of tri) positions.push(v[0], v[1], v[2]);
+  };
+  for (let i = 0; i < 8; i += 1) {
+    const j = (i + 1) % 8;
+    const outward = [base[i][0] + base[j][0], 0, base[i][2] + base[j][2]];
+    pushTri(base[i], base[j], top[j], outward);
+    pushTri(base[i], top[j], top[i], outward);
+    pushTri([0, height, 0], top[i], top[j], [0, 1, 0]);
+    pushTri([0, 0, 0], base[i], base[j], [0, -1, 0]);
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.computeVertexNormals();
+  return geometry;
+};
+
+const obeliskFootCapGeometry = ({ width, bevel }) => {
+  const h = width / 2;
+  const a = h - bevel;
+  const ring = [
+    [a, 0, h], [h, 0, a], [h, 0, -a], [a, 0, -h],
+    [-a, 0, -h], [-h, 0, -a], [-h, 0, a], [-a, 0, h],
+  ];
+  const positions = [];
+  for (let index = 0; index < ring.length; index += 1) {
+    const nextIndex = (index + 1) % ring.length;
+    positions.push(0, 0, 0, ring[index][0], 0, ring[index][2], ring[nextIndex][0], 0, ring[nextIndex][2]);
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.computeVertexNormals();
+  return geometry;
 };
 
 const robber = () => {
   const plastic = new THREE.MeshPhysicalMaterial({
     color: "indigo",
-    clearcoat: 0.25,
-    clearcoatRoughness: 0.5,
     metalness: 0,
-    roughness: 0.72,
+    roughness: 0.28,
+    clearcoat: 1,
+    clearcoatRoughness: 0.08,
+    iridescence: 0.9,
+    iridescenceIOR: 1.8,
+    iridescenceThicknessRange: [120, 720],
+    specularIntensity: 1,
+    specularColor: "mediumspringgreen",
   });
-  const result = group(
-    mesh(new THREE.ConeGeometry(0.02, 0.055, 14), plastic, [0, 0.0275, 0]),
-    mesh(new THREE.SphereGeometry(0.014, 10, 8), plastic, [0, 0.0503, 0]),
+  return group(
+    mesh(obeliskGeometry({ baseWidth: 0.025, topWidth: 0.015, bevel: 0.005, height: 0.03 }), plastic),
+    mesh(obeliskFootCapGeometry({ width: 0.025, bevel: 0.005 }), plastic, [0, 0.00008, 0]),
   );
-  result.scale.setScalar(0.75);
-  return result;
 };
 
 const dataUriToBuffer = (uri) => {
@@ -1141,6 +1479,21 @@ const exportGltf = async (name, object) => {
     output.samplers ??= [];
     output.extensionsUsed ??= [];
     output.extensionsRequired ??= [];
+    const addAvifTexture = (imageUri, { repeat = false } = {}) => {
+      const samplerIndex = output.samplers.push({
+        magFilter: GLTF_LINEAR_FILTER,
+        minFilter: GLTF_LINEAR_MIPMAP_LINEAR_FILTER,
+        wrapS: repeat ? GLTF_REPEAT : GLTF_CLAMP_TO_EDGE,
+        wrapT: repeat ? GLTF_REPEAT : GLTF_CLAMP_TO_EDGE,
+      }) - 1;
+      const imageIndex = output.images.push({ uri: avifName(imageUri) }) - 1;
+      return output.textures.push({
+        sampler: samplerIndex,
+        extensions: {
+          EXT_texture_avif: { source: imageIndex },
+        },
+      }) - 1;
+    };
     if (!output.extensionsUsed.includes("EXT_texture_avif")) {
       output.extensionsUsed.push("EXT_texture_avif");
     }
@@ -1152,23 +1505,20 @@ const exportGltf = async (name, object) => {
       if (materialIndex === undefined || materialIndex < 0) {
         throw new Error(`Missing texture patch material ${texturePatch.materialName}`);
       }
-      const samplerIndex = output.samplers.push({
-        magFilter: GLTF_LINEAR_FILTER,
-        minFilter: GLTF_LINEAR_MIPMAP_LINEAR_FILTER,
-        wrapS: GLTF_CLAMP_TO_EDGE,
-        wrapT: GLTF_CLAMP_TO_EDGE,
-      }) - 1;
-      const imageIndex = output.images.push({ uri: avifName(texturePatch.imageUri) }) - 1;
-      const textureIndex = output.textures.push({
-        sampler: samplerIndex,
-        extensions: {
-          EXT_texture_avif: { source: imageIndex },
-        },
-      }) - 1;
       output.materials[materialIndex].pbrMetallicRoughness ??= {};
-      output.materials[materialIndex].pbrMetallicRoughness.baseColorFactor = [1, 1, 1, 1];
-      output.materials[materialIndex].pbrMetallicRoughness.baseColorTexture = { index: textureIndex };
-      output.materials[materialIndex].doubleSided = true;
+      if (texturePatch.imageUri !== undefined) {
+        const textureIndex = addAvifTexture(texturePatch.imageUri, { repeat: texturePatch.repeat === true });
+        output.materials[materialIndex].pbrMetallicRoughness.baseColorFactor = [1, 1, 1, 1];
+        output.materials[materialIndex].pbrMetallicRoughness.baseColorTexture = { index: textureIndex };
+        output.materials[materialIndex].doubleSided = true;
+      }
+      if (texturePatch.normalUri !== undefined) {
+        const textureIndex = addAvifTexture(texturePatch.normalUri, { repeat: texturePatch.repeat === true });
+        output.materials[materialIndex].normalTexture = {
+          index: textureIndex,
+          scale: texturePatch.normalScale ?? 1,
+        };
+      }
     }
     for (const node of output.nodes ?? []) {
       delete node.extras?.texturePatch;
@@ -1251,18 +1601,31 @@ const assets = [
 
 await rm(modelsDir, { recursive: true, force: true });
 await mkdir(modelsDir, { recursive: true });
+await moldedPlasticNormalTexture();
 await buildingCostTexture();
 await businessCardTexture();
 await businessCardBackTexture();
 await resourceCardFrontTexture();
-await Promise.all(Object.entries(resources).map(([key, spec]) => resourceCardBackTexture(key, spec)));
+for (const [key, spec] of Object.entries(resources)) {
+  await resourceCardBackTexture(key, spec);
+}
 await developmentCardFrontTexture();
-await Promise.all(Object.entries(developmentCards).map(([key, spec]) => developmentCardBackTexture(key, spec)));
-await Promise.all(Object.entries(awardCards).map(([key, spec]) => awardCardTexture(key, spec)));
-await Promise.all(Object.entries(resources).map(([key, spec]) => tileTexture(key, spec)));
+for (const [key, spec] of Object.entries(developmentCards)) {
+  await developmentCardBackTexture(key, spec);
+}
+for (const [key, spec] of Object.entries(awardCards)) {
+  await awardCardTexture(key, spec);
+}
+for (const [key, spec] of Object.entries(resources)) {
+  await tileTexture(key, spec);
+}
 await tileTexture("desert", { label: "DESERT" });
-await Promise.all(harbors.map(harborTexture));
-await Promise.all(counterValues.map(counterTexture));
+for (const harbor of harbors) {
+  await harborTexture(harbor);
+}
+for (const value of counterValues) {
+  await counterTexture(value);
+}
 await Promise.all(assets.map(([name, build]) => exportGltf(name, build())));
 
 console.log(`Generated ${assets.length} GLTF assets in dist/models/`);

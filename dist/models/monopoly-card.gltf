@@ -31,7 +31,7 @@
     {
       "type": "SCALAR",
       "componentType": 5123,
-      "count": 24,
+      "count": 1152,
       "normalized": false,
       "byteOffset": 12,
       "bufferView": 0
@@ -39,7 +39,7 @@
     {
       "type": "VEC3",
       "componentType": 5120,
-      "count": 16,
+      "count": 252,
       "normalized": true,
       "byteOffset": 0,
       "bufferView": 3
@@ -91,7 +91,7 @@
     {
       "type": "VEC3",
       "componentType": 5122,
-      "count": 16,
+      "count": 252,
       "max": [
         23458,
         224,
@@ -111,29 +111,29 @@
     {
       "buffer": 1,
       "byteOffset": 0,
-      "byteLength": 60,
+      "byteLength": 2316,
       "target": 34963,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
           "byteOffset": 0,
-          "byteLength": 28,
+          "byteLength": 436,
           "mode": "TRIANGLES",
           "byteStride": 2,
-          "count": 30
+          "count": 1158
         }
       }
     },
     {
       "buffer": 1,
-      "byteOffset": 60,
+      "byteOffset": 2316,
       "byteLength": 16,
       "target": 34962,
       "byteStride": 4,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
-          "byteOffset": 28,
+          "byteOffset": 436,
           "byteLength": 37,
           "mode": "ATTRIBUTES",
           "filter": "OCTAHEDRAL",
@@ -144,14 +144,14 @@
     },
     {
       "buffer": 1,
-      "byteOffset": 76,
+      "byteOffset": 2332,
       "byteLength": 16,
       "target": 34962,
       "byteStride": 4,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
-          "byteOffset": 68,
+          "byteOffset": 476,
           "byteLength": 37,
           "mode": "ATTRIBUTES",
           "filter": "OCTAHEDRAL",
@@ -162,32 +162,32 @@
     },
     {
       "buffer": 1,
-      "byteOffset": 92,
-      "byteLength": 64,
+      "byteOffset": 2348,
+      "byteLength": 1008,
       "target": 34962,
       "byteStride": 4,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
-          "byteOffset": 108,
-          "byteLength": 49,
+          "byteOffset": 516,
+          "byteLength": 324,
           "mode": "ATTRIBUTES",
           "filter": "OCTAHEDRAL",
           "byteStride": 4,
-          "count": 16
+          "count": 252
         }
       }
     },
     {
       "buffer": 1,
-      "byteOffset": 156,
+      "byteOffset": 3356,
       "byteLength": 32,
       "target": 34962,
       "byteStride": 8,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
-          "byteOffset": 160,
+          "byteOffset": 840,
           "byteLength": 62,
           "mode": "ATTRIBUTES",
           "byteStride": 8,
@@ -197,14 +197,14 @@
     },
     {
       "buffer": 1,
-      "byteOffset": 188,
+      "byteOffset": 3388,
       "byteLength": 16,
       "target": 34962,
       "byteStride": 4,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
-          "byteOffset": 224,
+          "byteOffset": 904,
           "byteLength": 53,
           "mode": "ATTRIBUTES",
           "byteStride": 4,
@@ -214,14 +214,14 @@
     },
     {
       "buffer": 1,
-      "byteOffset": 204,
+      "byteOffset": 3404,
       "byteLength": 32,
       "target": 34962,
       "byteStride": 8,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
-          "byteOffset": 280,
+          "byteOffset": 960,
           "byteLength": 62,
           "mode": "ATTRIBUTES",
           "byteStride": 8,
@@ -231,18 +231,18 @@
     },
     {
       "buffer": 1,
-      "byteOffset": 236,
-      "byteLength": 128,
+      "byteOffset": 3436,
+      "byteLength": 2016,
       "target": 34962,
       "byteStride": 8,
       "extensions": {
         "EXT_meshopt_compression": {
           "buffer": 0,
-          "byteOffset": 344,
-          "byteLength": 88,
+          "byteOffset": 1024,
+          "byteLength": 676,
           "mode": "ATTRIBUTES",
           "byteStride": 8,
-          "count": 16
+          "count": 252
         }
       }
     }
@@ -285,11 +285,11 @@
   ],
   "buffers": [
     {
-      "uri": "buffer-7ee507e058e69a9e.bin",
-      "byteLength": 432
+      "uri": "buffer-65f85b6318cd0fbe.bin",
+      "byteLength": 1700
     },
     {
-      "byteLength": 364,
+      "byteLength": 5452,
       "extensions": {
         "EXT_meshopt_compression": {
           "fallback": true
@@ -321,11 +321,13 @@
       }
     },
     {
+      "name": "Development card monopoly face edge",
+      "doubleSided": true,
       "pbrMetallicRoughness": {
         "baseColorFactor": [
           0.9559733532482866,
           0.8713671191959567,
-          0.7912979403281553,
+          0.7912979403281551,
           1
         ],
         "roughnessFactor": 0.86,

@@ -9,6 +9,65 @@ import { promisify } from "node:util";
 const exec = promisify(execFile);
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const modelsDir = join(root, "dist", "models");
+const GLTF_LINEAR_FILTER = 9729;
+const GLTF_LINEAR_MIPMAP_LINEAR_FILTER = 9987;
+const GLTF_REPEAT = 10497;
+const moldedPlasticNormalAssets = new Set(["road.gltf", "house.gltf", "settlement.gltf"]);
+const moldedPlasticMaterials = new Set(["Molded plastic end", "Molded plastic face", "Molded plastic side"]);
+
+const applyMoldedPlasticNormal = (name, gltf) => {
+  if (!moldedPlasticNormalAssets.has(name)) {
+    return false;
+  }
+
+  const materials = gltf.materials ?? [];
+  const materialIndexes = materials
+    .map((material, index) => moldedPlasticMaterials.has(material.name) ? index : -1)
+    .filter((index) => index >= 0);
+
+  if (materialIndexes.length === 0) {
+    return false;
+  }
+
+  gltf.images ??= [];
+  gltf.textures ??= [];
+  gltf.samplers ??= [];
+  gltf.extensionsUsed ??= [];
+  gltf.extensionsRequired ??= [];
+
+  const samplerIndex = gltf.samplers.push({
+    magFilter: GLTF_LINEAR_FILTER,
+    minFilter: GLTF_LINEAR_MIPMAP_LINEAR_FILTER,
+    wrapS: GLTF_REPEAT,
+    wrapT: GLTF_REPEAT,
+  }) - 1;
+  const imageIndex = gltf.images.push({
+    mimeType: "image/avif",
+    uri: "molded-plastic-normal.avif",
+  }) - 1;
+  const textureIndex = gltf.textures.push({
+    sampler: samplerIndex,
+    extensions: {
+      EXT_texture_avif: { source: imageIndex },
+    },
+  }) - 1;
+
+  if (!gltf.extensionsUsed.includes("EXT_texture_avif")) {
+    gltf.extensionsUsed.push("EXT_texture_avif");
+  }
+  if (!gltf.extensionsRequired.includes("EXT_texture_avif")) {
+    gltf.extensionsRequired.push("EXT_texture_avif");
+  }
+
+  for (const materialIndex of materialIndexes) {
+    materials[materialIndex].normalTexture = {
+      index: textureIndex,
+      scale: 0.9,
+    };
+  }
+
+  return true;
+};
 
 const gltfNames = (await readdir(modelsDir)).filter((name) => name.endsWith(".gltf")).sort();
 
@@ -32,6 +91,7 @@ for (const name of gltfNames) {
     ]);
 
     const gltf = JSON.parse(await readFile(optimized, "utf8"));
+    applyMoldedPlasticNormal(name, gltf);
     for (const [index, buffer] of (gltf.buffers ?? []).entries()) {
       if (typeof buffer.uri !== "string") {
         continue;

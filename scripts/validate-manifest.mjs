@@ -1,12 +1,12 @@
 import { access, readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { SCHEMA_URL } from "@probability-nz/types";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const distDir = join(root, "dist");
 const packageJson = JSON.parse(await readFile(join(distDir, "package.json"), "utf8"));
 const manifest = JSON.parse(await readFile(join(distDir, packageJson.main), "utf8"));
+const SCHEMA_URL = "https://registry.probabilityusercontent.nz/npm/@probability-nz/types/-/types-0.0.0.tgz/dist/analog.json";
 
 const fail = (message) => {
   throw new Error(`validate-manifest: ${message}`);
