@@ -441,11 +441,15 @@ const cuttingMatGeometry = ({ width, height, thickness, grid = 0.01 }) => {
 const cuttingMat = ({ width = 0.841, height = 0.594, thickness = 0.002 } = {}) => {
   const base = standard(oceanColor, { roughness: 0.7, metalness: 0 });
   const grid = basic({ color: "#bed3e5" });
+  base.side = THREE.DoubleSide;
   grid.side = THREE.DoubleSide;
-  return group(
-    mesh(new THREE.BoxGeometry(width, thickness, height), base),
-    mesh(cuttingMatGeometry({ width, height, thickness }), grid),
-  );
+  const baseMesh = mesh(cardGeometry(width, height, thickness), [base, base, base]);
+  const gridMesh = mesh(cuttingMatGeometry({ width, height, thickness }), grid);
+  baseMesh.castShadow = false;
+  baseMesh.receiveShadow = false;
+  gridMesh.castShadow = false;
+  gridMesh.receiveShadow = false;
+  return group(baseMesh, gridMesh);
 };
 
 const correctHexTextureUVs = (geometry) => {
@@ -1020,6 +1024,45 @@ const counterTexture = async (value) => {
   return imageName;
 };
 
+const rulerTickTexture = async () => {
+  const imageName = "ruler-ticks.png";
+  const svgPath = join(modelsDir, "ruler-ticks.svg");
+  const imagePath = join(modelsDir, imageName);
+  const finalImagePath = avifName(imagePath);
+  const lengthMm = 205;
+  const measuredMm = 200;
+  const strokeWidth = 0.18;
+  const ticks = [];
+
+  for (let mm = 1; mm <= measuredMm; mm += 1) {
+    const isCm = mm % 10 === 0;
+    const isHalfCm = mm % 5 === 0;
+    const fullTickLength = isCm ? 10 : isHalfCm ? 6 : 3;
+    const tickLength = mm <= 5 ? mm : fullTickLength;
+    ticks.push(`<line x1="${mm}" y1="0" x2="${mm}" y2="${tickLength}"/>`);
+    ticks.push(`<line x1="0" y1="${mm}" x2="${tickLength}" y2="${mm}"/>`);
+  }
+
+  await writeFile(svgPath, `
+<svg width="1024" height="1024" viewBox="0 0 ${lengthMm} ${lengthMm}" xmlns="http://www.w3.org/2000/svg">
+  <rect width="${lengthMm}" height="${lengthMm}" fill="lightskyblue" fill-opacity="0.34"/>
+  <g fill="none" stroke="black" stroke-width="${strokeWidth}" stroke-linecap="square" shape-rendering="crispEdges">
+    ${ticks.join("\n    ")}
+  </g>
+</svg>
+`);
+  await exec("magick", [
+    "-background",
+    "none",
+    svgPath,
+    "-quality",
+    AVIF_QUALITY,
+    finalImagePath,
+  ]);
+  await rm(svgPath, { force: true });
+  return imageName;
+};
+
 const moldedPlasticNormalTexture = async () => {
   const imageName = "molded-plastic-normal.png";
   const htmlPath = join(modelsDir, "molded-plastic-normal.html");
@@ -1159,18 +1202,26 @@ const lShapeGeometry = ({ length, armWidth, thickness, insideBrace, bevelStartFr
     [topChamfer, length],
   ];
   const positions = [];
+  const uvs = [];
   const indices = [];
-  const point = ([x, z], y) => positions.push(x - length / 2, y, z - length / 2) / 3 - 1;
+  const point = ([x, z], y) => {
+    positions.push(x - length / 2, y, z - length / 2);
+    uvs.push(x / length, z / length);
+    return positions.length / 3 - 1;
+  };
   const bottomIndices = bottom.map((p) => point(p, bottomY));
   const middleIndices = bottom.map((p) => point(p, bevelStartY));
   const topIndices = top.map((p) => point(p, topY));
   const triangles = THREE.ShapeUtils.triangulateShape(bottom.map(([x, z]) => new THREE.Vector2(x, z)), []);
   const topTriangles = THREE.ShapeUtils.triangulateShape(top.map(([x, z]) => new THREE.Vector2(x, z)), []);
 
+  const bottomStart = indices.length;
   for (const [a, b, c] of triangles) {
     indices.push(bottomIndices[a], bottomIndices[b], bottomIndices[c]);
   }
+  const bottomCount = indices.length - bottomStart;
 
+  const bodyStart = indices.length;
   for (const [a, b, c] of topTriangles) {
     indices.push(topIndices[c], topIndices[b], topIndices[a]);
   }
@@ -1182,36 +1233,14 @@ const lShapeGeometry = ({ length, armWidth, thickness, insideBrace, bevelStartFr
     indices.push(middleIndices[index], topIndices[next], middleIndices[next]);
     indices.push(middleIndices[index], topIndices[index], topIndices[next]);
   }
+  const bodyCount = indices.length - bodyStart;
 
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
   geometry.setIndex(indices);
-  geometry.computeVertexNormals();
-  return geometry;
-};
-
-const tickMarksGeometry = (rects, y) => {
-  const positions = [];
-  const indices = [];
-
-  for (const { x, z, width, depth } of rects) {
-    const left = x - width / 2;
-    const right = x + width / 2;
-    const top = z - depth / 2;
-    const bottom = z + depth / 2;
-    const offset = positions.length / 3;
-    positions.push(
-      left, y, top,
-      right, y, top,
-      right, y, bottom,
-      left, y, bottom,
-    );
-    indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
-  }
-
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-  geometry.setIndex(indices);
+  geometry.addGroup(bottomStart, bottomCount, 1);
+  geometry.addGroup(bodyStart, bodyCount, 0);
   geometry.computeVertexNormals();
   return geometry;
 };
@@ -1222,10 +1251,6 @@ const ruler = () => {
   const thickness = 0.0015;
   const insideBrace = 0.01;
   const bevelStartFromBottom = thickness / 2;
-  const measuredLength = 0.2;
-  const origin = -length / 2;
-  const markDepth = 0.00016;
-  const bottom = -thickness / 2 + markDepth / 2;
   const acrylic = standard("lightskyblue", {
     color: "lightskyblue",
     transparent: true,
@@ -1234,38 +1259,13 @@ const ruler = () => {
     metalness: 0,
     depthWrite: false,
   });
-  const marks = basic({ color: "black" });
-  marks.side = THREE.DoubleSide;
-  const tickWidth = 0.00018;
-  const ticks = [];
-
-  for (let mm = 1; mm <= measuredLength * 1000; mm += 1) {
-    const isCm = mm % 10 === 0;
-    const isHalfCm = mm % 5 === 0;
-    const distance = mm / 1000;
-    const fullTickLength = isCm ? 0.01 : isHalfCm ? 0.006 : 0.003;
-    const tickLength = mm > 0 && mm <= 5 ? distance : fullTickLength;
-    const x = origin + distance;
-    const z = origin + distance;
-
-    ticks.push({
-      x,
-      z: origin + tickLength / 2,
-      width: tickWidth,
-      depth: tickLength,
-    });
-    ticks.push({
-      x: origin + tickLength / 2,
-      z,
-      width: tickLength,
-      depth: tickWidth,
-    });
-  }
-
-  return group(
-    mesh(lShapeGeometry({ length, armWidth, thickness, insideBrace, bevelStartFromBottom }), acrylic),
-    mesh(tickMarksGeometry(ticks, bottom), marks),
+  const marks = basic({ color: "white", transparent: true });
+  marks.name = "Ruler bottom tick marks";
+  const result = group(
+    mesh(lShapeGeometry({ length, armWidth, thickness, insideBrace, bevelStartFromBottom }), [acrylic, marks]),
   );
+  result.userData.texturePatch = { materialName: marks.name, imageUri: "ruler-ticks.png" };
+  return result;
 };
 
 const flatProfile = (points, depth) => {
@@ -1605,6 +1605,7 @@ await moldedPlasticNormalTexture();
 await buildingCostTexture();
 await businessCardTexture();
 await businessCardBackTexture();
+await rulerTickTexture();
 await resourceCardFrontTexture();
 for (const [key, spec] of Object.entries(resources)) {
   await resourceCardBackTexture(key, spec);
