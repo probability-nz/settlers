@@ -300,7 +300,6 @@
   "materials": [
     {
       "name": "Development card library face front",
-      "doubleSided": true,
       "pbrMetallicRoughness": {
         "roughnessFactor": 0.8,
         "metallicFactor": 0,
@@ -311,7 +310,6 @@
     },
     {
       "name": "Development card library face back",
-      "doubleSided": true,
       "pbrMetallicRoughness": {
         "roughnessFactor": 0.8,
         "metallicFactor": 0,

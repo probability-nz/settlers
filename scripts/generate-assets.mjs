@@ -1031,22 +1031,25 @@ const rulerTickTexture = async () => {
   const finalImagePath = avifName(imagePath);
   const lengthMm = 205;
   const measuredMm = 200;
-  const strokeWidth = 0.18;
+  const tickStrokeWidth = 0.28;
+  const halfCmStrokeWidth = 0.34;
+  const cmStrokeWidth = 0.42;
   const ticks = [];
 
   for (let mm = 1; mm <= measuredMm; mm += 1) {
     const isCm = mm % 10 === 0;
     const isHalfCm = mm % 5 === 0;
+    const strokeWidth = isCm ? cmStrokeWidth : isHalfCm ? halfCmStrokeWidth : tickStrokeWidth;
     const fullTickLength = isCm ? 10 : isHalfCm ? 6 : 3;
     const tickLength = mm <= 5 ? mm : fullTickLength;
-    ticks.push(`<line x1="${mm}" y1="0" x2="${mm}" y2="${tickLength}"/>`);
-    ticks.push(`<line x1="0" y1="${mm}" x2="${tickLength}" y2="${mm}"/>`);
+    ticks.push(`<line x1="${mm}" y1="0" x2="${mm}" y2="${tickLength}" stroke-width="${strokeWidth}"/>`);
+    ticks.push(`<line x1="0" y1="${mm}" x2="${tickLength}" y2="${mm}" stroke-width="${strokeWidth}"/>`);
   }
 
   await writeFile(svgPath, `
 <svg width="1024" height="1024" viewBox="0 0 ${lengthMm} ${lengthMm}" xmlns="http://www.w3.org/2000/svg">
   <rect width="${lengthMm}" height="${lengthMm}" fill="lightskyblue" fill-opacity="0.34"/>
-  <g fill="none" stroke="black" stroke-width="${strokeWidth}" stroke-linecap="square" shape-rendering="crispEdges">
+  <g fill="none" stroke="black" stroke-linecap="square" shape-rendering="crispEdges">
     ${ticks.join("\n    ")}
   </g>
 </svg>
@@ -1125,17 +1128,15 @@ const texturedCard = ({
   edgeMaterial.name = edgeMaterialName;
   edgeMaterial.side = THREE.DoubleSide;
   frontMaterial.name = frontMaterialName;
-  frontMaterial.side = THREE.DoubleSide;
   backMaterial.name = backMaterialName;
-  backMaterial.side = THREE.DoubleSide;
   const result = mesh(cardGeometry(width, height, thickness), [
     edgeMaterial,
     frontMaterial,
     backMaterial,
   ]);
   result.userData.texturePatches = [
-    { materialName: frontMaterial.name, imageUri: frontImageUri },
-    { materialName: backMaterial.name, imageUri: backImageUri },
+    { materialName: frontMaterial.name, imageUri: frontImageUri, doubleSided: false },
+    { materialName: backMaterial.name, imageUri: backImageUri, doubleSided: false },
   ];
   return result;
 };
@@ -1510,7 +1511,7 @@ const exportGltf = async (name, object) => {
         const textureIndex = addAvifTexture(texturePatch.imageUri, { repeat: texturePatch.repeat === true });
         output.materials[materialIndex].pbrMetallicRoughness.baseColorFactor = [1, 1, 1, 1];
         output.materials[materialIndex].pbrMetallicRoughness.baseColorTexture = { index: textureIndex };
-        output.materials[materialIndex].doubleSided = true;
+        output.materials[materialIndex].doubleSided = texturePatch.doubleSided ?? true;
       }
       if (texturePatch.normalUri !== undefined) {
         const textureIndex = addAvifTexture(texturePatch.normalUri, { repeat: texturePatch.repeat === true });

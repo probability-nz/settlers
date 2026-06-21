@@ -227,7 +227,6 @@
   "materials": [
     {
       "name": "Building cost card face front",
-      "doubleSided": true,
       "pbrMetallicRoughness": {
         "roughnessFactor": 0.8,
         "metallicFactor": 0,
