@@ -1,4 +1,2 @@
-allowBuilds:
-  cbor-extract: true
-  esbuild: true
-  sharp: true
+onlyBuiltDependencies:
+  - esbuild

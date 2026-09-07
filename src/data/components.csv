@@ -1,0 +1,92 @@
+nickname,template,folder,copies,label,color,emoji,title,text,value,fill,size
+resource_back,back,cards/resources,1,RESOURCE,oldlace,,,,,,7.8
+brick,resource,cards/resources,19,BRICK,peru,🧱,,,,,
+corn,resource,cards/resources,19,CORN,gold,🌽,,,,,
+timber,resource,cards/resources,19,TIMBER,seagreen,🪵,,,,,
+ore,resource,cards/resources,19,ORE,slategray,🪨,,,,,
+wool,resource,cards/resources,19,WOOL,yellowgreen,🐑,,,,,
+development_back,back,cards/development,1,DEVELOPMENT,maroon,,,,,white,5.8
+knight,development,cards/development,14,,,,KNIGHT,"MOVE ROBBER
+STEAL 1 CARD
+FROM NEIGHBOR",,,
+road-building,development,cards/development,2,,,,ROAD BUILDING,"PLACE 2 ROADS
+FOR FREE",,,
+year-of-plenty,development,cards/development,2,,,,YEAR OF PLENTY,"TAKE ANY 2
+RESOURCE CARDS
+FROM PILE",,,
+monopoly,development,cards/development,2,,,,MONOPOLY,"NAME RESOURCE
+ALL PLAYERS
+GIVE YOU THEIRS",,,
+chapel,development,cards/development,1,,,,CHAPEL,"KEEP HIDDEN
++1 POINT",,,
+great-hall,development,cards/development,1,,,,GREAT HALL,"KEEP HIDDEN
++1 POINT",,,
+library,development,cards/development,1,,,,LIBRARY,"KEEP HIDDEN
++1 POINT",,,
+market,development,cards/development,1,,,,MARKET,"KEEP HIDDEN
++1 POINT",,,
+university,development,cards/development,1,,,,UNIVERSITY,"KEEP HIDDEN
++1 POINT",,,
+largest-army,award,cards/awards,1,,lightpink,,LARGEST ARMY,2 VICTORY POINTS,,,
+longest-road,award,cards/awards,1,,paleturquoise,,LONGEST ROAD,2 VICTORY POINTS,,,
+building-costs,costs,cards/reference,1,,#fff3c7,,"BUILDING
+COSTS","ROAD:
+🧱🪵
+HOUSE:
+🧱🪵🐑🌽
+CITY:
+🌽🌽🪨🪨🪨
+DEVELOPMENT CARD:
+🐑🌽🪨",,,
+business_front,business,cards/credits,1,,#f7f3e8,,SETTLERS PROTOTYPE,"NEFTALY HERNANDEZ
+
+DATE: 2026-06-20
+LICENSE: CC BY-SA 4.0
+
+🗑💧
+https://garbo.succus.games/",,,
+business_back,business-back,cards/credits,1,,#050807,,,🗑💧,,#31d66f,
+brick,tile,tiles,3,BRICK,peru,🧱,,,,,
+corn,tile,tiles,4,CORN,gold,🌽,,,,,
+timber,tile,tiles,4,TIMBER,seagreen,🪵,,,,,
+ore,tile,tiles,3,ORE,slategray,🪨,,,,,
+wool,tile,tiles,4,WOOL,yellowgreen,🐑,,,,,
+desert,tile,tiles,1,DESERT,tan,,,,,,
+3-1,harbor,harbors,4,,cadetblue,,PORT,"ANY
+3:1",,white,
+brick,harbor,harbors,1,,cadetblue,,PORT,"BRICK
+2:1",,white,
+corn,harbor,harbors,1,,cadetblue,,PORT,"CORN
+2:1",,white,
+timber,harbor,harbors,1,,cadetblue,,PORT,"TIMBER
+2:1",,white,
+ore,harbor,harbors,1,,cadetblue,,PORT,"ORE
+2:1",,white,
+wool,harbor,harbors,1,,cadetblue,,PORT,"WOOL
+2:1",,white,
+counter_back,counter-back,counters,1,,,,,,,,
+2,counter,counters,1,,,,,,2,,
+3,counter,counters,2,,,,,,3,,
+4,counter,counters,2,,,,,,4,,
+5,counter,counters,2,,,,,,5,,
+6,counter,counters,2,,,,,,6,,
+8,counter,counters,2,,,,,,8,,
+9,counter,counters,2,,,,,,9,,
+10,counter,counters,2,,,,,,10,,
+11,counter,counters,2,,,,,,11,,
+12,counter,counters,1,,,,,,12,,
+road,road,pieces/red,15,,indianred,,,,,,
+house,house,pieces/red,5,,indianred,,,,,,
+city,city,pieces/red,4,,indianred,,,,,,
+road,road,pieces/blue,15,,cornflowerblue,,,,,,
+house,house,pieces/blue,5,,cornflowerblue,,,,,,
+city,city,pieces/blue,4,,cornflowerblue,,,,,,
+road,road,pieces/white,15,,white,,,,,,
+house,house,pieces/white,5,,white,,,,,,
+city,city,pieces/white,4,,white,,,,,,
+road,road,pieces/orange,15,,orange,,,,,,
+house,house,pieces/orange,5,,orange,,,,,,
+city,city,pieces/orange,4,,orange,,,,,,
+robber,robber,pieces,1,,,,,,,,
+cutting-mat,cutting-mat,tools,1,,,,,,,,
+ruler,ruler,tools,1,,,,,,,,

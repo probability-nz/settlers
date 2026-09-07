@@ -1,23 +1,22 @@
 {
-  "name": "settlers-probability-example",
+  "name": "settlers-svg",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "generate:assets": "node scripts/generate-assets.mjs",
-    "optimize:gltfs": "node scripts/optimize-gltfs.mjs",
-    "arrange:pieces": "node scripts/arrange-pieces.mjs",
-    "validate": "node scripts/validate-manifest.mjs",
-    "clean": "rm -f dist/mod.zip",
-    "build": "pnpm generate:assets && pnpm optimize:gltfs && pnpm arrange:pieces && pnpm validate",
-    "modfile": "pnpm clean && pnpm build && cd dist && zip -qr mod.zip package.json probability.json models",
-    "dev": "vite --host 127.0.0.1 --port 9208 --strictPort"
+    "generate:assets": "node --import tsx src/generate.jsx",
+    "validate": "node --import tsx --test tests/export-svg.test.mjs",
+    "build": "npm run generate:assets && npm run validate",
+    "dev": "node --watch-path=src --import tsx src/generate.jsx"
   },
   "dependencies": {
-    "@probability-nz/types": "file:../sdk/packages/types",
-    "three": "^0.184.0"
+    "csv-parse": "^6.1.0",
+    "opentype.js": "1.3.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@gltf-transform/cli": "^4.4.0",
-    "vite": "^6.3.5"
+    "@xmldom/xmldom": "^0.8.11",
+    "tsx": "^4.20.0"
   }
 }
