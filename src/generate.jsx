@@ -7,6 +7,7 @@ import { Asset } from './assets.jsx';
 import { Fonts } from './svg.jsx';
 import { loadCatalogue } from './catalogue.mjs';
 import { loadFonts } from './fonts.mjs';
+import { Rules } from './assets/rules.jsx';
 
 const outputDirectory = fileURLToPath(new URL('../dist/svg/', import.meta.url));
 await rm(outputDirectory, { recursive: true, force: true });
@@ -28,7 +29,12 @@ try {
     await writeFile(path, `${svg}\n`);
   }
 
-  console.log(`Exported ${assets.length} self-contained SVGs to ${outputDirectory}`);
+  const rulesPath = join(outputDirectory, 'cards/reference/rules.svg');
+  await mkdir(dirname(rulesPath), { recursive: true });
+  const rules = renderToStaticMarkup(<Fonts.Provider value={fonts}><Rules /></Fonts.Provider>);
+  await writeFile(rulesPath, `${rules}\n`, { flag: 'wx' });
+
+  console.log(`Exported ${assets.length + 1} self-contained SVGs to ${outputDirectory}`);
 } catch (error) {
   await rm(outputDirectory, { recursive: true, force: true });
   throw error;

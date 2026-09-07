@@ -29,7 +29,7 @@ university,development,cards/development,1,,,,UNIVERSITY,"KEEP HIDDEN
 +1 POINT",,,
 largest-army,award,cards/awards,1,,lightpink,,LARGEST ARMY,2 VICTORY POINTS,,,
 longest-road,award,cards/awards,1,,paleturquoise,,LONGEST ROAD,2 VICTORY POINTS,,,
-building-costs,costs,cards/reference,1,,#fff3c7,,"BUILDING
+building-costs,costs,cards/reference,4,,#fff3c7,,"BUILDING
 COSTS","ROAD:
 🧱🪵
 HOUSE:

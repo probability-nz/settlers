@@ -6,13 +6,14 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { DOMParser } from '@xmldom/xmldom';
 import { loadCatalogue, parseCatalogue } from '../src/catalogue.mjs';
 import { loadFonts } from '../src/fonts.mjs';
-import { Fonts, Text } from '../src/svg.jsx';
+import { Fonts, Text, Svg } from '../src/svg.jsx';
 import { Asset, templates } from '../src/assets.jsx';
+import { Rules } from '../src/assets/rules.jsx';
 
 const outputDirectory = new URL('../dist/svg/', import.meta.url);
 const svgNamespace = 'http://www.w3.org/2000/svg';
 const allowedElements = new Set([
-  'svg', 'title', 'g', 'path', 'polygon', 'rect', 'circle', 'line',
+  'svg', 'title', 'g', 'path', 'polygon', 'rect', 'circle', 'line', 'defs', 'use',
 ]);
 
 function parseSvg(source) {
@@ -48,7 +49,7 @@ test('CSV supports spreadsheet BOMs, quoted commas, multiline text and quantitie
 test('multiline text preserves blank lines and selects the emoji font', async () => {
   const fonts = await loadFonts();
   const render = (...children) => renderToStaticMarkup(
-    createElement(Fonts.Provider, { value: fonts }, ...children),
+    createElement(Fonts.Provider, { value: fonts }, createElement(Svg, { width: 40, height: 40 }, ...children)),
   );
   const props = { x: 20, y: 10, size: 4, lineHeight: 5 };
   assert.equal(
@@ -58,6 +59,19 @@ test('multiline text preserves blank lines and selects the emoji font', async ()
       createElement(Text, { ...props, y: 20, emoji: true }, '🧱'),
     ),
   );
+});
+
+test('glyph definitions are reused across text components and sizes', async () => {
+  const fonts = await loadFonts();
+  const source = renderToStaticMarkup(createElement(Fonts.Provider, { value: fonts },
+    createElement(Svg, { width: 40, height: 40 },
+      createElement(Text, { x: 10, y: 10, size: 4 }, 'AA'),
+      createElement(Text, { x: 10, y: 20, size: 8 }, 'A'),
+      createElement(Text, { x: 10, y: 30, size: 4, bold: true }, 'A'))));
+  const document = parseSvg(source);
+  assert.equal(document.getElementsByTagName('path').length, 2);
+  const uses = Array.from(document.getElementsByTagName('use'));
+  assert.deepEqual(uses.map(use => use.getAttribute('href')), ['#glyph0', '#glyph0', '#glyph0', '#glyph1']);
 });
 
 test('invalid spreadsheet data fails before export', () => {
@@ -99,6 +113,7 @@ test('duplicate CSV columns cannot silently overwrite content or quantities', ()
 
 test('exports match the current source and contain well-formed, self-contained vectors', async () => {
   const assets = await loadCatalogue();
+  assets.push({ path: 'cards/reference/rules.svg', width: 297, height: 210 });
   const fonts = await loadFonts();
   const entries = await readdir(outputDirectory, { recursive: true });
   const files = entries.filter(file => file.endsWith('.svg'));
@@ -107,14 +122,15 @@ test('exports match the current source and contain well-formed, self-contained v
   for (const asset of assets) {
     const source = await readFile(new URL(asset.path, outputDirectory), 'utf8');
     const expected = renderToStaticMarkup(
-      createElement(Fonts.Provider, { value: fonts }, createElement(Asset, { asset })),
-    );
-    assert.equal(source, `${expected}\n`, `${asset.path}: stale or modified export; regenerate assets`);
+      createElement(Fonts.Provider, { value: fonts },
+        asset.kind ? createElement(Asset, { asset }) : createElement(Rules)),
+    ) + '\n';
+    assert.equal(source, expected, `${asset.path}: stale or modified export; regenerate assets`);
     const document = parseSvg(source);
     const root = document.documentElement;
 
     assert.equal(root.namespaceURI, svgNamespace);
-    const origin = templates[asset.kind].origin ?? [0, 0];
+    const origin = templates[asset.kind]?.origin ?? [0, 0];
     assert.equal(root.getAttribute('viewBox'), `${origin.join(' ')} ${asset.width} ${asset.height}`);
     assert.equal(root.getAttribute('width'), `${asset.width}mm`);
     assert.equal(root.getAttribute('height'), `${asset.height}mm`);
@@ -123,7 +139,10 @@ test('exports match the current source and contain well-formed, self-contained v
     for (const element of Array.from(document.getElementsByTagName('*'))) {
       assert.ok(allowedElements.has(element.tagName), `${asset.path}: ${element.tagName}`);
       for (const attribute of Array.from(element.attributes)) {
-        assert.ok(!/^(?:on|href|style)/iu.test(attribute.name));
+        if (attribute.name === 'href') {
+          assert.match(attribute.value, /^#glyph\d+$/u);
+          assert.ok(document.getElementById(attribute.value.slice(1)), 'glyph reference resolves inside this SVG');
+        } else assert.ok(!/^(?:on|href|style)/iu.test(attribute.name));
         assert.ok(!/url\s*\(|NaN|Infinity/u.test(attribute.value));
       }
     }
