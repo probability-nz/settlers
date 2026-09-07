@@ -7,7 +7,7 @@ import { DOMParser } from '@xmldom/xmldom';
 import { loadCatalogue, parseCatalogue } from '../src/catalogue.mjs';
 import { loadFonts } from '../src/fonts.mjs';
 import { Fonts, Text } from '../src/svg.jsx';
-import { Asset } from '../src/assets.jsx';
+import { Asset, templates } from '../src/assets.jsx';
 
 const outputDirectory = new URL('../dist/svg/', import.meta.url);
 const svgNamespace = 'http://www.w3.org/2000/svg';
@@ -114,7 +114,8 @@ test('exports match the current source and contain well-formed, self-contained v
     const root = document.documentElement;
 
     assert.equal(root.namespaceURI, svgNamespace);
-    assert.equal(root.getAttribute('viewBox'), `0 0 ${asset.width} ${asset.height}`);
+    const origin = templates[asset.kind].origin ?? [0, 0];
+    assert.equal(root.getAttribute('viewBox'), `${origin.join(' ')} ${asset.width} ${asset.height}`);
     assert.equal(root.getAttribute('width'), `${asset.width}mm`);
     assert.equal(root.getAttribute('height'), `${asset.height}mm`);
     assert.ok(Buffer.byteLength(source) < 16 * 1024 * 1024);
@@ -133,19 +134,22 @@ test('physical dimensions and viewBox coordinates use millimetres directly', asy
   const fonts = await loadFonts();
   const sizes = [
     ['back', 63, 88],
-    ['counter', 25, 25],
-    ['counter-back', 25, 25],
+    ['counter', 24.4, 24.4, '0.3 0.3'],
+    ['counter-back', 24.4, 24.4, '0.3 0.3'],
+    ['tile', 77.9422, 90, '6.0289 0'],
+    ['harbor', 77.9422, 90, '6.0289 0'],
+    ['road', 25, 4],
     ['ruler', 205, 205],
     ['cutting-mat', 841, 594],
   ];
-  for (const [template, width, height] of sizes) {
-    const [asset] = parseCatalogue(`nickname,template,folder,label,color,size,value\nexample,${template},test,TEST,linen,7.8,2`);
+  for (const [template, width, height, origin = '0 0'] of sizes) {
+    const [asset] = parseCatalogue(`nickname,template,folder,label,color,size,value,title,text\nexample,${template},test,TEST,linen,7.8,2,PORT,2:1`);
     const source = renderToStaticMarkup(
       createElement(Fonts.Provider, { value: fonts }, createElement(Asset, { asset })),
     );
     const root = parseSvg(source).documentElement;
     assert.equal(root.getAttribute('width'), `${width}mm`);
     assert.equal(root.getAttribute('height'), `${height}mm`);
-    assert.equal(root.getAttribute('viewBox'), `0 0 ${width} ${height}`);
+    assert.equal(root.getAttribute('viewBox'), `${origin} ${width} ${height}`);
   }
 });

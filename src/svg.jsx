@@ -49,13 +49,13 @@ export function Text({
   });
 }
 
-export function Svg({ width, height, title, children }) {
+export function Svg({ width, height, origin = [0, 0], title, children }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width={`${width}mm`}
       height={`${height}mm`}
-      viewBox={`0 0 ${width} ${height}`}
+      viewBox={`${origin.join(' ')} ${width} ${height}`}
     >
       {title && <title>{title}</title>}
       {children}

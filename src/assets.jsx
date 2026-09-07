@@ -13,10 +13,10 @@ export const templates = {
   costs: { Component: cards.BuildingCostsCard, dimensions: [88, 126], required: ['title', 'text', 'color'] },
   business: { Component: cards.BusinessCard, dimensions: [90, 55], required: ['title', 'text', 'color'] },
   'business-back': { Component: cards.BusinessCardBack, dimensions: [90, 55], required: ['text', 'color'] },
-  tile: { Component: pieces.ResourceTile, dimensions: [90, 90], required: ['label', 'color'] },
-  harbor: { Component: pieces.Harbor, dimensions: [90, 90], required: ['title', 'text', 'color'] },
-  counter: { Component: pieces.Counter, dimensions: [25, 25], required: ['value'] },
-  'counter-back': { Component: pieces.CounterBack, dimensions: [25, 25] },
+  tile: { Component: pieces.ResourceTile, dimensions: [77.9422, 90], origin: [6.0289, 0], required: ['label', 'color'] },
+  harbor: { Component: pieces.Harbor, dimensions: [77.9422, 90], origin: [6.0289, 0], required: ['title', 'text', 'color'] },
+  counter: { Component: pieces.Counter, dimensions: [24.4, 24.4], origin: [0.3, 0.3], required: ['value'] },
+  'counter-back': { Component: pieces.CounterBack, dimensions: [24.4, 24.4], origin: [0.3, 0.3] },
   road: { Component: pieces.Road, dimensions: [25, 4], required: ['color'] },
   house: { Component: pieces.House, dimensions: [14, 12], required: ['color'] },
   city: { Component: pieces.City, dimensions: [16, 17], required: ['color'] },
@@ -29,13 +29,14 @@ export function Asset({ asset }) {
   if (!Object.hasOwn(templates, asset.kind)) {
     throw new Error(`Unknown asset kind: ${asset.kind}`);
   }
-  const { Component } = templates[asset.kind];
+  const { Component, origin } = templates[asset.kind];
 
   return (
     <Svg
       width={asset.width}
       height={asset.height}
-      title={asset.name.replaceAll('_', ' ').replaceAll('-', ' ')}
+      origin={origin}
+      title={asset.nickname.replaceAll('_', ' ').replaceAll('-', ' ')}
     >
       <Component {...asset} />
     </Svg>
