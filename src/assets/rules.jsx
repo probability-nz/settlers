@@ -1,5 +1,5 @@
 import React from 'react';
-import { Svg, Text } from '../svg.jsx';
+import { Text } from '../svg.jsx';
 
 // Rulebook (mohitagw15856), CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
 // https://github.com/mohitagw15856/rulebook/blob/main/games/catan/rules.md
@@ -10,7 +10,7 @@ function RuleText(props) {
 
 export function Rules() {
   return (
-    <Svg width={297} height={210} title="Catan rules">
+    <>
       <rect width={297} height={210} fill="#f7f3e8" />
       <RuleText x={12} y={18} size={8} bold>{"CATAN"}</RuleText>
       <RuleText x={12} y={27}>{"Build settlements on a board that pays out on dice rolls, and trade for the resources you are short of.\nThe trading is the game; the building is the scoreboard."}</RuleText>
@@ -68,6 +68,6 @@ export function Rules() {
       <RuleText x={155} y={173.1} size={4.5} bold fill="#7d302e">{"Placement restrictions"}</RuleText>
       <RuleText x={155} y={179.6}>{"Settlements must be at least two intersections apart,\nand roads must connect to your own network."}</RuleText>
       <RuleText x={285} y={202} align="end">{"CC-BY 4.0 https://github.com/mohitagw15856/rulebook"}</RuleText>
-    </Svg>
+    </>
   );
 }

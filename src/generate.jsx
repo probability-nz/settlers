@@ -2,14 +2,16 @@ import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import React from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { renderSvg } from './render-svg.mjs';
+import { renderGallery } from './gallery.mjs';
 import { Asset } from './assets.jsx';
 import { Fonts } from './svg.jsx';
 import { loadCatalogue } from './catalogue.mjs';
 import { loadFonts } from './fonts.mjs';
-import { Rules } from './assets/rules.jsx';
 
 const outputDirectory = fileURLToPath(new URL('../dist/svg/', import.meta.url));
+const galleryPath = join(outputDirectory, '../README.md');
+await rm(galleryPath, { force: true });
 await rm(outputDirectory, { recursive: true, force: true });
 
 try {
@@ -17,10 +19,11 @@ try {
     loadCatalogue(process.argv[2]),
     loadFonts(),
   ]);
+  await mkdir(outputDirectory, { recursive: true });
 
   for (const asset of assets) {
     const path = join(outputDirectory, asset.path);
-    const svg = renderToStaticMarkup(
+    const svg = renderSvg(
       <Fonts.Provider value={fonts}>
         <Asset asset={asset} />
       </Fonts.Provider>,
@@ -29,13 +32,11 @@ try {
     await writeFile(path, `${svg}\n`);
   }
 
-  const rulesPath = join(outputDirectory, 'cards/reference/rules.svg');
-  await mkdir(dirname(rulesPath), { recursive: true });
-  const rules = renderToStaticMarkup(<Fonts.Provider value={fonts}><Rules /></Fonts.Provider>);
-  await writeFile(rulesPath, `${rules}\n`, { flag: 'wx' });
+  await writeFile(galleryPath, renderGallery(assets.map(asset => asset.path)));
 
-  console.log(`Exported ${assets.length + 1} self-contained SVGs to ${outputDirectory}`);
+  console.log(`Exported ${assets.length} self-contained SVGs to ${outputDirectory}`);
 } catch (error) {
+  await rm(galleryPath, { force: true });
   await rm(outputDirectory, { recursive: true, force: true });
   throw error;
 }

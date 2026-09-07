@@ -1,35 +1,39 @@
-nickname,template,folder,copies,label,color,emoji,title,text,value,fill,size
-resource_back,back,cards/resources,1,RESOURCE,oldlace,,,,,,7.8
-brick,resource,cards/resources,19,BRICK,peru,🧱,,,,,
-corn,resource,cards/resources,19,CORN,gold,🌽,,,,,
-timber,resource,cards/resources,19,TIMBER,seagreen,🪵,,,,,
-ore,resource,cards/resources,19,ORE,slategray,🪨,,,,,
-wool,resource,cards/resources,19,WOOL,yellowgreen,🐑,,,,,
-development_back,back,cards/development,1,DEVELOPMENT,maroon,,,,,white,5.8
-knight,development,cards/development,14,,,,KNIGHT,"MOVE ROBBER
+nickname,template,folder,copies,label,color,emoji,title,text,value,fill,size,thickness
+resource_back,back,playmat/bank/resources/brick,1,RESOURCE,oldlace,,,,,,7.8,0.6
+resource_back,back,playmat/bank/resources/corn,1,RESOURCE,oldlace,,,,,,7.8,0.6
+resource_back,back,playmat/bank/resources/timber,1,RESOURCE,oldlace,,,,,,7.8,0.6
+resource_back,back,playmat/bank/resources/ore,1,RESOURCE,oldlace,,,,,,7.8,0.6
+resource_back,back,playmat/bank/resources/wool,1,RESOURCE,oldlace,,,,,,7.8,0.6
+brick,resource,playmat/bank/resources/brick,19,BRICK,peru,🧱,,,,,,0.6
+corn,resource,playmat/bank/resources/corn,19,CORN,gold,🌽,,,,,,0.6
+timber,resource,playmat/bank/resources/timber,19,TIMBER,seagreen,🪵,,,,,,0.6
+ore,resource,playmat/bank/resources/ore,19,ORE,slategray,🪨,,,,,,0.6
+wool,resource,playmat/bank/resources/wool,19,WOOL,yellowgreen,🐑,,,,,,0.6
+development_back,back,playmat/bank/development,1,DEVELOPMENT,maroon,,,,,white,5.8,0.6
+knight,development,playmat/bank/development,14,,,,KNIGHT,"MOVE ROBBER
 STEAL 1 CARD
-FROM NEIGHBOR",,,
-road-building,development,cards/development,2,,,,ROAD BUILDING,"PLACE 2 ROADS
-FOR FREE",,,
-year-of-plenty,development,cards/development,2,,,,YEAR OF PLENTY,"TAKE ANY 2
+FROM NEIGHBOR",,,,0.6
+road-building,development,playmat/bank/development,2,,,,ROAD BUILDING,"PLACE 2 ROADS
+FOR FREE",,,,0.6
+year-of-plenty,development,playmat/bank/development,2,,,,YEAR OF PLENTY,"TAKE ANY 2
 RESOURCE CARDS
-FROM PILE",,,
-monopoly,development,cards/development,2,,,,MONOPOLY,"NAME RESOURCE
+FROM PILE",,,,0.6
+monopoly,development,playmat/bank/development,2,,,,MONOPOLY,"NAME RESOURCE
 ALL PLAYERS
-GIVE YOU THEIRS",,,
-chapel,development,cards/development,1,,,,CHAPEL,"KEEP HIDDEN
-+1 POINT",,,
-great-hall,development,cards/development,1,,,,GREAT HALL,"KEEP HIDDEN
-+1 POINT",,,
-library,development,cards/development,1,,,,LIBRARY,"KEEP HIDDEN
-+1 POINT",,,
-market,development,cards/development,1,,,,MARKET,"KEEP HIDDEN
-+1 POINT",,,
-university,development,cards/development,1,,,,UNIVERSITY,"KEEP HIDDEN
-+1 POINT",,,
-largest-army,award,cards/awards,1,,lightpink,,LARGEST ARMY,2 VICTORY POINTS,,,
-longest-road,award,cards/awards,1,,paleturquoise,,LONGEST ROAD,2 VICTORY POINTS,,,
-building-costs,costs,cards/reference,4,,#fff3c7,,"BUILDING
+GIVE YOU THEIRS",,,,0.6
+chapel,development,playmat/bank/development,1,,,,CHAPEL,"KEEP HIDDEN
++1 POINT",,,,0.6
+great-hall,development,playmat/bank/development,1,,,,GREAT HALL,"KEEP HIDDEN
++1 POINT",,,,0.6
+library,development,playmat/bank/development,1,,,,LIBRARY,"KEEP HIDDEN
++1 POINT",,,,0.6
+market,development,playmat/bank/development,1,,,,MARKET,"KEEP HIDDEN
++1 POINT",,,,0.6
+university,development,playmat/bank/development,1,,,,UNIVERSITY,"KEEP HIDDEN
++1 POINT",,,,0.6
+largest-army,award,playmat/awards/largest-army,1,,lightpink,,LARGEST ARMY,2 VICTORY POINTS,,,,2
+longest-road,award,playmat/awards/longest-road,1,,paleturquoise,,LONGEST ROAD,2 VICTORY POINTS,,,,2
+building-costs,costs,playmat/players/red,1,,#fff3c7,,"BUILDING
 COSTS","ROAD:
 🧱🪵
 HOUSE:
@@ -37,56 +41,84 @@ HOUSE:
 CITY:
 🌽🌽🪨🪨🪨
 DEVELOPMENT CARD:
-🐑🌽🪨",,,
-business_front,business,cards/credits,1,,#f7f3e8,,SETTLERS PROTOTYPE,"NEFTALY HERNANDEZ
+🐑🌽🪨",,,,2
+building-costs,costs,playmat/players/blue,1,,#fff3c7,,"BUILDING
+COSTS","ROAD:
+🧱🪵
+HOUSE:
+🧱🪵🐑🌽
+CITY:
+🌽🌽🪨🪨🪨
+DEVELOPMENT CARD:
+🐑🌽🪨",,,,2
+building-costs,costs,playmat/players/white,1,,#fff3c7,,"BUILDING
+COSTS","ROAD:
+🧱🪵
+HOUSE:
+🧱🪵🐑🌽
+CITY:
+🌽🌽🪨🪨🪨
+DEVELOPMENT CARD:
+🐑🌽🪨",,,,2
+building-costs,costs,playmat/players/orange,1,,#fff3c7,,"BUILDING
+COSTS","ROAD:
+🧱🪵
+HOUSE:
+🧱🪵🐑🌽
+CITY:
+🌽🌽🪨🪨🪨
+DEVELOPMENT CARD:
+🐑🌽🪨",,,,2
+business_front,business,business-card,1,,#f7f3e8,,SETTLERS PROTOTYPE,"NEFTALY HERNANDEZ
 
 DATE: 2026-06-20
 LICENSE: CC BY-SA 4.0
 
 🗑💧
-https://garbo.succus.games/",,,
-business_back,business-back,cards/credits,1,,#050807,,,🗑💧,,#31d66f,
-brick,tile,tiles,3,BRICK,peru,🧱,,,,,
-corn,tile,tiles,4,CORN,gold,🌽,,,,,
-timber,tile,tiles,4,TIMBER,seagreen,🪵,,,,,
-ore,tile,tiles,3,ORE,slategray,🪨,,,,,
-wool,tile,tiles,4,WOOL,yellowgreen,🐑,,,,,
-desert,tile,tiles,1,DESERT,tan,,,,,,
-3-1,harbor,harbors,4,,cadetblue,,PORT,"ANY
-3:1",,white,
-brick,harbor,harbors,1,,cadetblue,,PORT,"BRICK
-2:1",,white,
-corn,harbor,harbors,1,,cadetblue,,PORT,"CORN
-2:1",,white,
-timber,harbor,harbors,1,,cadetblue,,PORT,"TIMBER
-2:1",,white,
-ore,harbor,harbors,1,,cadetblue,,PORT,"ORE
-2:1",,white,
-wool,harbor,harbors,1,,cadetblue,,PORT,"WOOL
-2:1",,white,
-counter_back,counter-back,counters,1,,,,,,,,
-2,counter,counters,1,,,,,,2,,
-3,counter,counters,2,,,,,,3,,
-4,counter,counters,2,,,,,,4,,
-5,counter,counters,2,,,,,,5,,
-6,counter,counters,2,,,,,,6,,
-8,counter,counters,2,,,,,,8,,
-9,counter,counters,2,,,,,,9,,
-10,counter,counters,2,,,,,,10,,
-11,counter,counters,2,,,,,,11,,
-12,counter,counters,1,,,,,,12,,
-road,road,pieces/red,15,,indianred,,,,,,
-house,house,pieces/red,5,,indianred,,,,,,
-city,city,pieces/red,4,,indianred,,,,,,
-road,road,pieces/blue,15,,cornflowerblue,,,,,,
-house,house,pieces/blue,5,,cornflowerblue,,,,,,
-city,city,pieces/blue,4,,cornflowerblue,,,,,,
-road,road,pieces/white,15,,white,,,,,,
-house,house,pieces/white,5,,white,,,,,,
-city,city,pieces/white,4,,white,,,,,,
-road,road,pieces/orange,15,,orange,,,,,,
-house,house,pieces/orange,5,,orange,,,,,,
-city,city,pieces/orange,4,,orange,,,,,,
-robber,robber,pieces,1,,,,,,,,
-cutting-mat,cutting-mat,tools,1,,,,,,,,
-ruler,ruler,tools,1,,,,,,,,
+https://garbo.succus.games/",,,,0.35
+business_back,business-back,business-card,1,,#050807,,,🗑💧,,#31d66f,,0.35
+brick,tile,playmat/terrain/brick,3,BRICK,peru,🧱,,,,,,2
+corn,tile,playmat/terrain/corn,4,CORN,gold,🌽,,,,,,2
+timber,tile,playmat/terrain/timber,4,TIMBER,seagreen,🪵,,,,,,2
+ore,tile,playmat/terrain/ore,3,ORE,slategray,🪨,,,,,,2
+wool,tile,playmat/terrain/wool,4,WOOL,yellowgreen,🐑,,,,,,2
+desert,tile,playmat/terrain/desert,1,DESERT,tan,,,,,,,2
+3-1,harbor,playmat/ports,4,,cadetblue,,PORT,"ANY
+3:1",,white,,2
+brick,harbor,playmat/ports,1,,cadetblue,,PORT,"BRICK
+2:1",,white,,2
+corn,harbor,playmat/ports,1,,cadetblue,,PORT,"CORN
+2:1",,white,,2
+timber,harbor,playmat/ports,1,,cadetblue,,PORT,"TIMBER
+2:1",,white,,2
+ore,harbor,playmat/ports,1,,cadetblue,,PORT,"ORE
+2:1",,white,,2
+wool,harbor,playmat/ports,1,,cadetblue,,PORT,"WOOL
+2:1",,white,,2
+counter_back,counter-back,playmat/numbers,1,,,,,,,,,2
+2,counter,playmat/numbers,1,,,,,,2,,,2
+3,counter,playmat/numbers,2,,,,,,3,,,2
+4,counter,playmat/numbers,2,,,,,,4,,,2
+5,counter,playmat/numbers,2,,,,,,5,,,2
+6,counter,playmat/numbers,2,,,,,,6,,,2
+8,counter,playmat/numbers,2,,,,,,8,,,2
+9,counter,playmat/numbers,2,,,,,,9,,,2
+10,counter,playmat/numbers,2,,,,,,10,,,2
+11,counter,playmat/numbers,2,,,,,,11,,,2
+12,counter,playmat/numbers,1,,,,,,12,,,2
+road,road,playmat/players/red/roads,15,,indianred,,,,,,,4
+house,house,playmat/players/red/houses,5,,indianred,,,,,,,10
+city,city,playmat/players/red/cities,4,,indianred,,,,,,,10
+road,road,playmat/players/blue/roads,15,,cornflowerblue,,,,,,,4
+house,house,playmat/players/blue/houses,5,,cornflowerblue,,,,,,,10
+city,city,playmat/players/blue/cities,4,,cornflowerblue,,,,,,,10
+road,road,playmat/players/white/roads,15,,white,,,,,,,4
+house,house,playmat/players/white/houses,5,,white,,,,,,,10
+city,city,playmat/players/white/cities,4,,white,,,,,,,10
+road,road,playmat/players/orange/roads,15,,orange,,,,,,,4
+house,house,playmat/players/orange/houses,5,,orange,,,,,,,10
+city,city,playmat/players/orange/cities,4,,orange,,,,,,,10
+robber,robber,playmat/robber,1,,,,,,,,,10
+cutting-mat,cutting-mat,playmat,1,,,,,,,,,2
+ruler,ruler,ruler,1,,,,,,,,,1
+rules,rules,playmat/rules,1,,,,,,,,,2

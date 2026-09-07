@@ -35,6 +35,10 @@ function parseRow(row) {
   }
 
   const size = row.size ? Number(row.size) : undefined;
+  const thickness = row.thickness || undefined;
+  if (thickness !== undefined && (!/^\d+(?:\.\d+)?$/u.test(thickness) || !Number.isFinite(Number(thickness)) || Number(thickness) <= 0)) {
+    throw new Error('thickness must be a positive decimal number in mm');
+  }
   if (size !== undefined && (!Number.isFinite(size) || size <= 0)) {
     throw new Error('size must be a positive number');
   }
@@ -52,6 +56,7 @@ function parseRow(row) {
     height,
     value,
     size,
+    thickness,
     fill: row.fill || undefined,
   };
 }
@@ -76,8 +81,10 @@ export function parseCatalogue(source) {
 
       // Probability imports each file as one piece, so expand quantities here.
       for (let copy = 1; copy <= asset.copies; copy++) {
-        const suffix = asset.copies > 1 ? `_${String(copy).padStart(3, '0')}` : '';
-        const name = `${row.nickname}${suffix}`;
+        // Import thickness (capture 1) with /[\W_](\d+(?:\.\d+)?)mm[\W_]\d+\.svg$/i.
+        const thickness = asset.thickness === undefined ? '' : `_${asset.thickness}mm`;
+        const suffix = asset.copies > 1 || thickness ? `_${String(copy).padStart(3, '0')}` : '';
+        const name = `${row.nickname}${thickness}${suffix}`;
         const path = `${row.folder}/${name}.svg`;
         if (paths.has(path)) throw new Error(`duplicate output path ${path}`);
 

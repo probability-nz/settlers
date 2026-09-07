@@ -3,12 +3,13 @@ import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { renderSvg } from '../src/render-svg.mjs';
+import { renderGallery } from '../src/gallery.mjs';
 import { DOMParser } from '@xmldom/xmldom';
 import { loadCatalogue, parseCatalogue } from '../src/catalogue.mjs';
 import { loadFonts } from '../src/fonts.mjs';
 import { Fonts, Text, Svg } from '../src/svg.jsx';
 import { Asset, templates } from '../src/assets.jsx';
-import { Rules } from '../src/assets/rules.jsx';
 
 const outputDirectory = new URL('../dist/svg/', import.meta.url);
 const svgNamespace = 'http://www.w3.org/2000/svg';
@@ -48,7 +49,7 @@ test('CSV supports spreadsheet BOMs, quoted commas, multiline text and quantitie
 
 test('multiline text preserves blank lines and selects the emoji font', async () => {
   const fonts = await loadFonts();
-  const render = (...children) => renderToStaticMarkup(
+  const render = (...children) => renderSvg(
     createElement(Fonts.Provider, { value: fonts }, createElement(Svg, { width: 40, height: 40 }, ...children)),
   );
   const props = { x: 20, y: 10, size: 4, lineHeight: 5 };
@@ -63,15 +64,40 @@ test('multiline text preserves blank lines and selects the emoji font', async ()
 
 test('glyph definitions are reused across text components and sizes', async () => {
   const fonts = await loadFonts();
-  const source = renderToStaticMarkup(createElement(Fonts.Provider, { value: fonts },
+  const element = createElement(Fonts.Provider, { value: fonts },
     createElement(Svg, { width: 40, height: 40 },
       createElement(Text, { x: 10, y: 10, size: 4 }, 'AA'),
       createElement(Text, { x: 10, y: 20, size: 8 }, 'A'),
-      createElement(Text, { x: 10, y: 30, size: 4, bold: true }, 'A'))));
+      createElement(Text, { x: 10, y: 30, size: 4, bold: true }, 'A')));
+  const raw = renderToStaticMarkup(element);
+  assert.equal(parseSvg(raw).getElementsByTagName('path').length, 4);
+  assert.equal(parseSvg(raw).getElementsByTagName('use').length, 0);
+  const source = renderSvg(element);
+  assert.equal(renderSvg(element), source, 'repeated exports do not retain state');
+  assert.equal(renderToStaticMarkup(element), raw, 'export does not change React rendering');
   const document = parseSvg(source);
   assert.equal(document.getElementsByTagName('path').length, 2);
   const uses = Array.from(document.getElementsByTagName('use'));
   assert.deepEqual(uses.map(use => use.getAttribute('href')), ['#glyph0', '#glyph0', '#glyph0', '#glyph1']);
+});
+
+test('thickness is encoded before the copy number, including single cards', () => {
+  const header = 'nickname,template,folder,copies,thickness';
+  const assets = parseCatalogue(`${header}\nexample,cutting-mat,test,2,0.6\nsingle,cutting-mat,test,1,2`);
+  assert.deepEqual(assets.map(asset => asset.path), [
+    'test/example_0.6mm_001.svg', 'test/example_0.6mm_002.svg', 'test/single_2mm_001.svg',
+  ]);
+  const pattern = /[\W_](\d+(?:\.\d+)?)mm[\W_]\d+\.svg$/i;
+  for (const name of ['brick_0.6mm_002.svg', 'brick 0.6MM-002.svg', 'brick.0.6mm.002.svg', 'brick@0.6MM!002.svg']) {
+    assert.equal(name.match(pattern)?.[1], '0.6');
+  }
+  for (const thickness of ['0', '-1', 'NaN', 'Infinity', '0.6mm', '1e3']) {
+    assert.throws(() => parseCatalogue(`${header}\nx,cutting-mat,test,1,${thickness}`), /thickness/);
+  }
+  for (const thickness of ['0.0000001', '1000000000000000000000']) {
+    const [asset] = parseCatalogue(`${header}\nx,cutting-mat,test,1,${thickness}`);
+    assert.equal(asset.path.match(pattern)?.[1], thickness, 'decimal thickness survives filename round-trip');
+  }
 });
 
 test('invalid spreadsheet data fails before export', () => {
@@ -113,24 +139,26 @@ test('duplicate CSV columns cannot silently overwrite content or quantities', ()
 
 test('exports match the current source and contain well-formed, self-contained vectors', async () => {
   const assets = await loadCatalogue();
-  assets.push({ path: 'cards/reference/rules.svg', width: 297, height: 210 });
   const fonts = await loadFonts();
   const entries = await readdir(outputDirectory, { recursive: true });
   const files = entries.filter(file => file.endsWith('.svg'));
   assert.deepEqual(files.sort(), assets.map(asset => asset.path).sort());
+  const gallery = await readFile(new URL('../dist/README.md', import.meta.url), 'utf8');
+  assert.equal(gallery, renderGallery(files), 'stale or modified gallery; regenerate assets');
+  const embeddedPaths = [...gallery.matchAll(/!\[[^\]]*\]\(svg\/([^)]+)\)/gu)].map(match => match[1]);
+  assert.deepEqual(embeddedPaths.sort(), files.sort(), 'gallery embeds every exported SVG exactly once');
 
   for (const asset of assets) {
     const source = await readFile(new URL(asset.path, outputDirectory), 'utf8');
-    const expected = renderToStaticMarkup(
-      createElement(Fonts.Provider, { value: fonts },
-        asset.kind ? createElement(Asset, { asset }) : createElement(Rules)),
+    const expected = renderSvg(
+      createElement(Fonts.Provider, { value: fonts }, createElement(Asset, { asset })),
     ) + '\n';
     assert.equal(source, expected, `${asset.path}: stale or modified export; regenerate assets`);
     const document = parseSvg(source);
     const root = document.documentElement;
 
     assert.equal(root.namespaceURI, svgNamespace);
-    const origin = templates[asset.kind]?.origin ?? [0, 0];
+    const origin = templates[asset.kind].origin ?? [0, 0];
     assert.equal(root.getAttribute('viewBox'), `${origin.join(' ')} ${asset.width} ${asset.height}`);
     assert.equal(root.getAttribute('width'), `${asset.width}mm`);
     assert.equal(root.getAttribute('height'), `${asset.height}mm`);
@@ -163,7 +191,7 @@ test('physical dimensions and viewBox coordinates use millimetres directly', asy
   ];
   for (const [template, width, height, origin = '0 0'] of sizes) {
     const [asset] = parseCatalogue(`nickname,template,folder,label,color,size,value,title,text\nexample,${template},test,TEST,linen,7.8,2,PORT,2:1`);
-    const source = renderToStaticMarkup(
+    const source = renderSvg(
       createElement(Fonts.Provider, { value: fonts }, createElement(Asset, { asset })),
     );
     const root = parseSvg(source).documentElement;

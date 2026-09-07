@@ -3,6 +3,7 @@ import { Svg } from './svg.jsx';
 import * as cards from './assets/cards.jsx';
 import * as pieces from './assets/pieces.jsx';
 import * as tools from './assets/tools.jsx';
+import { Rules } from './assets/rules.jsx';
 
 // Each template owns its component, physical dimensions (mm), and CSV fields.
 export const templates = {
@@ -23,20 +24,21 @@ export const templates = {
   robber: { Component: pieces.Robber, dimensions: [18, 36] },
   'cutting-mat': { Component: tools.CuttingMat, dimensions: [841, 594] },
   ruler: { Component: tools.Ruler, dimensions: [205, 205] },
+  rules: { Component: Rules, dimensions: [297, 210], title: 'Catan rules' },
 };
 
 export function Asset({ asset }) {
   if (!Object.hasOwn(templates, asset.kind)) {
     throw new Error(`Unknown asset kind: ${asset.kind}`);
   }
-  const { Component, origin } = templates[asset.kind];
+  const { Component, origin, title } = templates[asset.kind];
 
   return (
     <Svg
       width={asset.width}
       height={asset.height}
       origin={origin}
-      title={asset.nickname.replaceAll('_', ' ').replaceAll('-', ' ')}
+      title={title ?? asset.nickname.replaceAll('_', ' ').replaceAll('-', ' ')}
     >
       <Component {...asset} />
     </Svg>
