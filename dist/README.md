@@ -1,11 +1,5 @@
 # SVG list
 
-## business-card
-
-![business-card/business_back_0.35mm_001.svg](svg/business-card/business_back_0.35mm_001.svg)
-
-![business-card/business_front_0.35mm_001.svg](svg/business-card/business_front_0.35mm_001.svg)
-
 ## playmat/awards/largest-army
 
 ![playmat/awards/largest-army/largest-army_2mm_001.svg](svg/playmat/awards/largest-army/largest-army_2mm_001.svg)
@@ -277,6 +271,12 @@
 ![playmat/bank/resources/wool/wool_0.6mm_018.svg](svg/playmat/bank/resources/wool/wool_0.6mm_018.svg)
 
 ![playmat/bank/resources/wool/wool_0.6mm_019.svg](svg/playmat/bank/resources/wool/wool_0.6mm_019.svg)
+
+## playmat/business-card
+
+![playmat/business-card/business_back_0.35mm_001.svg](svg/playmat/business-card/business_back_0.35mm_001.svg)
+
+![playmat/business-card/business_front_0.35mm_001.svg](svg/playmat/business-card/business_front_0.35mm_001.svg)
 
 ## playmat
 
@@ -576,7 +576,7 @@
 
 ## playmat/robber
 
-![playmat/robber/robber_10mm_001.svg](svg/playmat/robber/robber_10mm_001.svg)
+![playmat/robber/robber_18mm_001.svg](svg/playmat/robber/robber_18mm_001.svg)
 
 ## playmat/rules
 

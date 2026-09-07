@@ -69,14 +69,14 @@ CITY:
 🌽🌽🪨🪨🪨
 DEVELOPMENT CARD:
 🐑🌽🪨",,,,2
-business_front,business,business-card,1,,#f7f3e8,,SETTLERS PROTOTYPE,"NEFTALY HERNANDEZ
+business_front,business,playmat/business-card,1,,#f7f3e8,,SETTLERS PROTOTYPE,"NEFTALY HERNANDEZ
 
 DATE: 2026-06-20
 LICENSE: CC BY-SA 4.0
 
 🗑💧
 https://garbo.succus.games/",,,,0.35
-business_back,business-back,business-card,1,,#050807,,,🗑💧,,#31d66f,,0.35
+business_back,business-back,playmat/business-card,1,,#050807,,,🗑💧,,#31d66f,,0.35
 brick,tile,playmat/terrain/brick,3,BRICK,peru,🧱,,,,,,2
 corn,tile,playmat/terrain/corn,4,CORN,gold,🌽,,,,,,2
 timber,tile,playmat/terrain/timber,4,TIMBER,seagreen,🪵,,,,,,2
@@ -118,7 +118,7 @@ city,city,playmat/players/white/cities,4,,white,,,,,,,10
 road,road,playmat/players/orange/roads,15,,orange,,,,,,,4
 house,house,playmat/players/orange/houses,5,,orange,,,,,,,10
 city,city,playmat/players/orange/cities,4,,orange,,,,,,,10
-robber,robber,playmat/robber,1,,,,,,,,,10
+robber,robber,playmat/robber,1,,,,,,,,,18
 cutting-mat,cutting-mat,playmat,1,,,,,,,,,2
 ruler,ruler,ruler,1,,,,,,,,,1
 rules,rules,playmat/rules,1,,,,,,,,,2
