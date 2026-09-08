@@ -72,9 +72,9 @@ export function City({ color }) {
 export function Robber({ width, height }) {
   return (
     <polygon
-      points="0,36 0,32.5 2.5,30.5 4.5,2 6.5,0 11.5,0 13.5,2 15.5,30.5 18,32.5 18,36"
-      transform={`scale(${width / 18} ${height / 36})`}
+      points={`${width / 2},0 ${width},${height} 0,${height}`}
       fill="#363636"
+      fillOpacity={0.8}
     />
   );
 }

@@ -21,7 +21,7 @@ export const templates = {
   road: { Component: pieces.Road, dimensions: [25, 4], required: ['color'] },
   house: { Component: pieces.House, dimensions: [14, 12], required: ['color'] },
   city: { Component: pieces.City, dimensions: [16, 17], required: ['color'] },
-  robber: { Component: pieces.Robber, dimensions: [22, 43] },
+  robber: { Component: pieces.Robber, dimensions: [35, 35 * Math.sqrt(3) / 2] },
   'cutting-mat': { Component: tools.CuttingMat, dimensions: [841, 594] },
   ruler: { Component: tools.Ruler, dimensions: [205, 205] },
   rules: { Component: Rules, dimensions: [297, 210], title: 'Settlers rules' },
