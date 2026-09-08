@@ -12,7 +12,7 @@ export function Rules() {
   return (
     <>
       <rect width={297} height={210} fill="#f7f3e8" />
-      <RuleText x={12} y={18} size={8} bold>{"CATAN"}</RuleText>
+      <RuleText x={12} y={18} size={8} bold>{"SETTLERS"}</RuleText>
       <RuleText x={12} y={27}>{"Build settlements on a board that pays out on dice rolls, and trade for the resources you are short of.\nThe trading is the game; the building is the scoreboard."}</RuleText>
       <RuleText x={12} y={43} size={4.5} bold fill="#7d302e">{"The board"}</RuleText>
       <RuleText x={12} y={49.5}>{"Nineteen hexes, each a terrain type producing one\nresource, each with a number token from 2 to 12 (the\ndesert has none and starts with the robber)."}</RuleText>

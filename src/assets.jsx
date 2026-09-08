@@ -24,7 +24,7 @@ export const templates = {
   robber: { Component: pieces.Robber, dimensions: [22, 43] },
   'cutting-mat': { Component: tools.CuttingMat, dimensions: [841, 594] },
   ruler: { Component: tools.Ruler, dimensions: [205, 205] },
-  rules: { Component: Rules, dimensions: [297, 210], title: 'Catan rules' },
+  rules: { Component: Rules, dimensions: [297, 210], title: 'Settlers rules' },
 };
 
 export function Asset({ asset }) {
