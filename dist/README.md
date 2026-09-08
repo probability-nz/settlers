@@ -280,7 +280,7 @@
 
 ## playmat
 
-![playmat/cutting-mat_2mm_001.svg](svg/playmat/cutting-mat_2mm_001.svg)
+![playmat/cutting-mat_3mm_001.svg](svg/playmat/cutting-mat_3mm_001.svg)
 
 ## playmat/numbers
 
