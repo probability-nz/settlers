@@ -49,7 +49,7 @@ export function Ruler() {
   return (
     <>
       <polygon
-        points="0,0 205,0 205,30 30,30 30,205 0,205"
+        points="0,0 205,0 205,30 40,30 30,40 30,205 0,205"
         fill="lightskyblue"
         fillOpacity="0.55"
       />
