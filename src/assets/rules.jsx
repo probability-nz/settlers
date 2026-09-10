@@ -67,7 +67,7 @@ export function Rules() {
       <RuleText x={155} y={153.4}>{"First to ten wins. You announce it on your own turn —\ndevelopment card points stay hidden until then, which\nis why games often end a turn before everyone expects."}</RuleText>
       <RuleText x={155} y={173.1} size={4.5} bold fill="#7d302e">{"Placement restrictions"}</RuleText>
       <RuleText x={155} y={179.6}>{"Settlements must be at least two intersections apart,\nand roads must connect to your own network."}</RuleText>
-      <RuleText x={285} y={202} align="end">{"CC-BY 4.0 https://github.com/mohitagw15856/rulebook"}</RuleText>
+      <RuleText x={285} y={202} align="end">{"Rules: CC-BY 4.0 https://github.com/mohitagw15856/rulebook"}</RuleText>
     </>
   );
 }
