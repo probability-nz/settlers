@@ -1,4 +1,8 @@
-# SVG list
+# Game assets
+
+## 3D robber
+
+[Robber glTF](svg/robber/robber.gltf) — keep [robber.bin](svg/robber/robber.bin) beside it when importing; the SVG alternative is in the same folder.
 
 ## awards/largest-army
 

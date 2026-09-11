@@ -1,5 +1,9 @@
 export function renderGallery(paths) {
-  const blocks = ['# SVG list'];
+  const blocks = [
+    '# Game assets',
+    '## 3D robber',
+    '[Robber glTF](svg/robber/robber.gltf) — keep [robber.bin](svg/robber/robber.bin) beside it when importing; the SVG alternative is in the same folder.',
+  ];
   let previousFolder;
   for (const path of [...paths].sort()) {
     const folder = path.slice(0, path.lastIndexOf('/'));

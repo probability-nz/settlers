@@ -17,6 +17,51 @@ const allowedElements = new Set([
   'svg', 'title', 'g', 'path', 'polygon', 'rect', 'circle', 'line', 'defs', 'use',
 ]);
 
+test('generated robber preserves dimensions, triangles and purple/green physical material', async () => {
+  const { renderRobberGltf } = await import('../src/render-gltf.jsx');
+  const source = await readFile(new URL('robber/robber.gltf', outputDirectory), 'utf8');
+  const generated = await renderRobberGltf();
+  assert.equal(source, generated.gltf, 'stale model; regenerate assets');
+  const model = JSON.parse(source);
+  assert.equal(model.asset.version, '2.0');
+  assert.equal(model.scenes[model.scene].name, 'robber');
+  assert.equal(model.meshes.length, 1);
+  const primitive = model.meshes[0].primitives[0];
+  assert.equal(model.accessors[primitive.indices].count, 96, '32 body triangles, including the bottom face, without the extra cap');
+  const positions = model.accessors[primitive.attributes.POSITION];
+  for (const [actual, expected] of [
+    ...positions.min.map((value, index) => [value, [-0.0125, 0, -0.0125][index]]),
+    ...positions.max.map((value, index) => [value, [0.0125, 0.03, 0.0125][index]]),
+  ]) assert.ok(Math.abs(actual - expected) < 1e-8);
+  const material = model.materials[primitive.material];
+  assert.deepEqual(material.pbrMetallicRoughness, {
+    baseColorFactor: [0.07036009568874305, 0, 0.22322795730611386, 1],
+    metallicFactor: 0,
+    roughnessFactor: 0.28,
+  });
+  assert.deepEqual(material.extensions, {
+    KHR_materials_clearcoat: { clearcoatFactor: 1, clearcoatRoughnessFactor: 0.08 },
+    KHR_materials_iridescence: {
+      iridescenceFactor: 0.9, iridescenceIor: 1.8,
+      iridescenceThicknessMinimum: 120, iridescenceThicknessMaximum: 720,
+    },
+    KHR_materials_specular: { specularFactor: 1, specularColorFactor: [0, 0.9559733532482866, 0.3231432091022285] },
+  });
+  for (const buffer of model.buffers) {
+    assert.equal(buffer.uri, 'robber.bin');
+    const exported = await readFile(new URL(`robber/${buffer.uri}`, outputDirectory));
+    assert.equal(exported.byteLength, buffer.byteLength);
+    assert.deepEqual(exported, generated.buffer, 'stale mesh buffer; regenerate assets');
+  }
+  assert.equal(source, `${JSON.stringify(model)}\n`, 'JSON is minified');
+  assert.ok(!(model.images?.length), 'robber material has no image textures');
+  const robber = (await loadCatalogue()).find(asset => asset.kind === 'robber');
+  assert.equal(robber.path, 'robber/robber_25mm_001.svg');
+  assert.deepEqual((await readdir(new URL('robber/', outputDirectory))).sort(), [
+    'robber.bin', 'robber.gltf', 'robber_25mm_001.svg',
+  ]);
+});
+
 function parseSvg(source) {
   const errors = [];
   const recordError = message => errors.push(message);
