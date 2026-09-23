@@ -2,7 +2,8 @@
 
 This repository generates SVG images and includes a 3D robber for a board game similar to [Settlers of Catan](https://www.catan.com/), by Klaus Teuber. It can be imported directly into Probability.
 
-[![Settlers game screenshot](screenshot.png)](https://neftalydotcom.prob.nz/title/settlers)
+[![Settlers game screenshot 1](settlers-screenshot-1.png)](https://neftalydotcom.prob.nz/title/settlers)
+[![Settlers game screenshot 2](settlers-screenshot-2.png)](https://neftalydotcom.prob.nz/title/settlers)
 [Play Settlers on Probability](https://neftalydotcom.prob.nz/title/settlers)
 
 To change the setup, edit the `src/data/components.csv` spreadsheet and run:
