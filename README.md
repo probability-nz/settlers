@@ -14,6 +14,14 @@ npm install
 npm run build
 ```
 
+## Saved game
+
+[Download the complete Probability game](dist/settlers.zip). The archive includes the saved layout, all models and textures, landscape building-cost cards, and the 40 × 40 cm [private play mat](private-play-area_4mm_001.svg). The mat SVG includes its font and emoji attribution.
+
+Terrain, number tokens, and ports follow the beginner setup on page 3 of the [Catan rules](https://www.catan.com/sites/default/files/2021-06/catan_base_rules_2020_200707.pdf). Hex tiles retain a 1 mm gap. Other positions are rounded to millimetres, and every colour uses the same piece-stack positions and rotations.
+
+The ZIP is a snapshot exported from the live game; `npm run build` regenerates the SVG artwork, not the saved game layout. After updating the live game, use its **Create → Save** action to replace `dist/settlers.zip`.
+
 ## Notes
 
 The SVG use real dimensions (mm not px), so the import tool can auto-size.

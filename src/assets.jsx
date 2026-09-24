@@ -11,7 +11,7 @@ export const templates = {
   resource: { Component: cards.ResourceCard, dimensions: [63, 88], required: ['label', 'color', 'emoji'] },
   development: { Component: cards.DevelopmentCard, dimensions: [63, 88], required: ['title', 'text'] },
   award: { Component: cards.AwardCard, dimensions: [88, 126], required: ['title', 'text', 'color'] },
-  costs: { Component: cards.BuildingCostsCard, dimensions: [88, 126], required: ['title', 'text', 'color'] },
+  costs: { Component: cards.BuildingCostsCard, dimensions: [126, 88], required: ['title', 'text', 'color'] },
   business: { Component: cards.BusinessCard, dimensions: [90, 55], required: ['title', 'text', 'color'] },
   'business-back': { Component: cards.BusinessCardBack, dimensions: [90, 55], required: ['text', 'color'] },
   tile: { Component: pieces.ResourceTile, dimensions: [77.9422, 90], origin: [6.0289, 0], required: ['label', 'color'] },

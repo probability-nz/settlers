@@ -48,10 +48,19 @@ export function AwardCard({ width, height, color, title, text }) {
 }
 
 export function BuildingCostsCard({ width, height, color, title, text }) {
+  const lines = text.split('\n');
+  const rows = Array.from({ length: lines.length / 2 }, (_, i) => ({
+    label: lines[i * 2], resources: lines[i * 2 + 1],
+  }));
   return (
     <Card width={width} height={height} color={color}>
-      <Text x={44} y={24.6} size={8.6} lineHeight={8.6} bold>{title}</Text>
-      <Text x={44} y={46.2} size={6.2} lineHeight={8.4} bold>{text}</Text>
+      <Text x={width / 2} y={14} size={7} bold>{title}</Text>
+      {rows.map(({ label, resources }, i) => (
+        <React.Fragment key={label}>
+          <Text x={30} y={30 + i * 15} size={4.4} bold align="start">{label}</Text>
+          <Text x={83} y={31 + i * 15} size={6} emoji align="start">{resources}</Text>
+        </React.Fragment>
+      ))}
     </Card>
   );
 }

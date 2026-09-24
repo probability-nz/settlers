@@ -33,8 +33,7 @@ university,development,bank/development,1,,,,UNIVERSITY,"KEEP HIDDEN
 +1 POINT",,,,0.6
 largest-army,award,awards/largest-army,1,,lightpink,,LARGEST ARMY,2 VICTORY POINTS,,,,2
 longest-road,award,awards/longest-road,1,,paleturquoise,,LONGEST ROAD,2 VICTORY POINTS,,,,2
-building-costs,costs,players/red,1,,#fff3c7,,"BUILDING
-COSTS","ROAD:
+building-costs,costs,players/red,1,,#fff3c7,,BUILDING COSTS,"ROAD:
 🧱🪵
 HOUSE:
 🧱🪵🐑🌽
@@ -42,8 +41,7 @@ CITY:
 🌽🌽🪨🪨🪨
 DEVELOPMENT CARD:
 🐑🌽🪨",,,,2
-building-costs,costs,players/blue,1,,#fff3c7,,"BUILDING
-COSTS","ROAD:
+building-costs,costs,players/blue,1,,#fff3c7,,BUILDING COSTS,"ROAD:
 🧱🪵
 HOUSE:
 🧱🪵🐑🌽
@@ -51,8 +49,7 @@ CITY:
 🌽🌽🪨🪨🪨
 DEVELOPMENT CARD:
 🐑🌽🪨",,,,2
-building-costs,costs,players/white,1,,#fff3c7,,"BUILDING
-COSTS","ROAD:
+building-costs,costs,players/white,1,,#fff3c7,,BUILDING COSTS,"ROAD:
 🧱🪵
 HOUSE:
 🧱🪵🐑🌽
@@ -60,8 +57,7 @@ CITY:
 🌽🌽🪨🪨🪨
 DEVELOPMENT CARD:
 🐑🌽🪨",,,,2
-building-costs,costs,players/orange,1,,#fff3c7,,"BUILDING
-COSTS","ROAD:
+building-costs,costs,players/orange,1,,#fff3c7,,BUILDING COSTS,"ROAD:
 🧱🪵
 HOUSE:
 🧱🪵🐑🌽
