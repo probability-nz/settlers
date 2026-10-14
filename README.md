@@ -16,7 +16,7 @@ npm run build
 
 ## Saved game
 
-[Download the complete Probability game](dist/settlers.zip). The archive includes the saved layout, all models and textures, landscape building-cost cards, and the 40 × 40 cm [private play mat](private-play-area_4mm_001.svg). The mat SVG includes its font and emoji attribution.
+[Download the complete Probability game](dist/settlers.zip). The archive includes the saved layout, all models and textures, landscape building-cost cards, and a functional 40 × 40 cm private play area. It replaces the placeholder mat at the same position, rotation, and dimensions (including its 4 mm thickness), and remains locked. The original [mat artwork](private-play-area_4mm_001.svg) is retained as a source asset but is no longer included in the game archive.
 
 Terrain, number tokens, and ports follow the beginner setup on page 3 of the [Catan rules](https://www.catan.com/sites/default/files/2021-06/catan_base_rules_2020_200707.pdf). Hex tiles retain a 1 mm gap. Other positions are rounded to millimetres, and every colour uses the same piece-stack positions and rotations.
 
